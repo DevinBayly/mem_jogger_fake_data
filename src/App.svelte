@@ -1,0 +1,66 @@
+<script>
+  export let name;
+
+  import * as d3 from "d3";
+  import Gant from "./gant_chart.svelte";
+  window.onload = async () => {
+    let paulData = await fetch(
+      "http://192.168.1.3:8000/paulFebruaryTokenized.csv"
+    ).then(res => res.text());
+	console.log(paulData);
+	let buildingNameData = await fetch(
+		"http://192.168.1.3:8000/building_names.csv"
+	).then(res=>res.text())
+    let dsv = d3.dsvFormat(",");
+	paulData = dsv.parse(paulData);
+	buildingNameData = dsv.parse(buildingNameData)
+	console.log(paulData,buildingNameData);
+	const graph = new Gant({
+		target:document.body,
+		props: {
+			data:paulData,
+			buildingData:buildingNameData
+		}
+	})
+  };
+</script>
+
+<style>
+  main {
+    text-align: center;
+    padding: 1em;
+    max-width: 240px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    color: #ff3e00;
+    text-transform: uppercase;
+    font-size: 4em;
+    font-weight: 100;
+  }
+
+  @media (min-width: 640px) {
+    main {
+      max-width: none;
+    }
+  }
+</style>
+
+<main>
+  <h1>Hello {name}!</h1>
+  <p>
+    Visit the
+    <a href="https://svelte.dev/tutorial">Svelte tutorial</a>
+    to learn how to build Svelte apps.
+  </p>
+  <p>changed</p>
+</main>
+
+
+<div id="graph">
+<svg>
+
+</svg>
+</div>
+
