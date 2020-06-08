@@ -51,7 +51,6 @@
 </div>
 <div id="graph">
 <svg id="top">
-
 </svg>
 <svg id="brushable">
 </svg>

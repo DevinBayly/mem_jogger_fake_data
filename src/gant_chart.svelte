@@ -7,5 +7,6 @@ export let buildingData
 let gb = gantBase(data,buildingData)
 gb.setup()
 gb.run()
+gb.generateBrush()
 
 </script>
