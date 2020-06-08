@@ -1,6 +1,9 @@
 import * as d3 from "d3"
 export let gantBase = (data, buildingReferences) => {
     let ob = {}
+    ob.data = data
+    // later on these are not the same
+    ob.mutableData = data
     console.log("making gantBase");
 
     ob.dimensions = {
@@ -17,24 +20,32 @@ export let gantBase = (data, buildingReferences) => {
     ob.brushStart = function () {
         console.log("brush starting")
     }
-    ob.brushActive = function () {
+
+    ob.brushEnd = function () {
         // filter the existing data, trigger the update process for visualization
         const ext = d3.brushSelection(this)
-
+        // convert brush coordinates into dates
+        const t1 = ob.brushableXScale.invert(ext[0])
+        const t2 = ob.brushableXScale.invert(ext[1])
+        ob.mutableData =[]
+        for (let e of ob.data) {
+            // see if it passes brush filter, if so put in mutable data
+            const timeE = d3.isoParse(e._time) 
+            if (timeE> t1 && timeE < t2) {
+                ob.mutableData.push(e)
+            }
+        }
         // convert back from extents to top graph screen dimensions
         // xaxis is the same
-        ob.occupancyBlocks.style("fill", (d,i) => {
-            const datumXPos = ob.xscale(ob.times[i])
-            if (datumXPos >= ext[0] && datumXPos <= ext[1]) {
-                return "red"
-            }
-            return "black"
-        })
+        // remove the entire top graph and start over
+        d3.select("#top").remove()
+        d3.select("#topgraph").append("svg").attr("id","top")
+        ob.setup()
+        ob.run()
     }
     ob.setup = () => {
         console.log("setting up");
 
-        ob.data = data
         // get an array of the building names, and their other info
         ob.buildings = []
         ob.times = []
@@ -42,7 +53,7 @@ export let gantBase = (data, buildingReferences) => {
         buildingReferences.map(e => {
             ob.buildingNumNameMap[e.Alpha] = e.Name
         })
-        for (let entry of ob.data) {
+        for (let entry of ob.mutableData) {
             let wapID = ob.calcWapID(entry)
             if (ob.buildings.indexOf(wapID) == -1) {
                 ob.buildings.push(wapID)
@@ -79,6 +90,7 @@ export let gantBase = (data, buildingReferences) => {
             .range([0, ob.dimensions.width - ob.dimensions.margin - ob.maxText])
         // calculate length of title
     }
+
     ob.run = () => {
         console.log("running");
 
@@ -162,7 +174,7 @@ export let gantBase = (data, buildingReferences) => {
 
         })
         // 
-        ob.occupancyBlocks = ob.datagroup.selectAll("rect").data(ob.data).enter().append("rect")
+        ob.occupancyBlocks = ob.datagroup.selectAll("rect").data(ob.mutableData).enter().append("rect")
         ob.occupancyBlocks
             .attr("x", (d, i) => {
                 return ob.xscale(ob.times[i])
@@ -207,14 +219,17 @@ export let gantBase = (data, buildingReferences) => {
         ob.brushSvg = d3.select("#brushable")
             .attr("width", ob.brushableDimensions.innerwidth)
             .attr("height", ob.brushableDimensions.innerheight)
+        // make a copy while the data is still for the global view
+        ob.brushableXScale = ob.xscale.copy()
         // make all the same rectangles but with different ydims
         ob.brushableYScale = d3.scaleBand()
             .domain(d3.range(ob.buildings.length + 1))
             .range([ob.brushableDimensions.margin, ob.brushableDimensions.innerheight])
             .round(true)
+        
         ob.brushRects = ob.brushSvg.selectAll("rect").data(ob.data).enter().append("rect")
             .attr("x", (d, i) => {
-                return ob.xscale(ob.times[i])
+                return ob.brushableXScale(ob.times[i])
             })
             .attr("y", d => {
                 let wapID = ob.calcWapID(d)
@@ -222,7 +237,7 @@ export let gantBase = (data, buildingReferences) => {
                 return ob.brushableYScale(i)
             })
             .attr("width", (d, i) => {
-                return ob.xscale(ob.times[i + 1]) - ob.xscale(ob.times[i])
+                return ob.brushableXScale(ob.times[i + 1]) - ob.brushableXScale(ob.times[i])
             })
             .attr("height", ob.brushableYScale.bandwidth())
             .attr("fill", "black")
@@ -232,8 +247,7 @@ export let gantBase = (data, buildingReferences) => {
         // define functions for start and brushed
         // extent is the possible canvas that can be brushed
         ob.brush = d3.brushX()
-            .on("start", ob.brushStart)
-            .on("brush", ob.brushActive)
+            .on("end",ob.brushEnd)
             .extent([
                 [ob.brushableDimensions.margin, ob.brushableDimensions.margin],
                 [ob.brushableDimensions.innerwidth, ob.brushableDimensions.height]

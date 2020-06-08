@@ -49,10 +49,14 @@
 <div id="tooltipHolder">
 <p id="tipText"></p>
 </div>
-<div id="graph">
+<div id="graphs">
+<div id="topgraph">
 <svg id="top">
 </svg>
+</div>
+<div id="bottomgraph">
 <svg id="brushable">
 </svg>
+</div>
 </div>
 
