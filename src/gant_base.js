@@ -4,10 +4,17 @@ export let gantBase = (data, buildingReferences) => {
     console.log("making gantBase");
 
     ob.dimensions = {
-        width: 4500,
-        height: 1500,
+        width: window.innerWidth,
+        height: window.innerHeight,
         margin: 20,
     }
+    ob.brushableDimensions = {
+        width:window.innerWidth,
+        height:200,
+        margin:20
+
+    }
+    
     ob.calcWapID = (e) => {
         let buildingName = ob.buildingNumNameMap[e.apBuildingNumber]
         let wapID = `${buildingName} ${e.apRoomNumber} ${e.apDescription}`
@@ -88,7 +95,7 @@ export let gantBase = (data, buildingReferences) => {
         // lines
         for (let i = 0; i < ob.buildings.length + 1; i++) {
             //
-            let linedata = [{ x: 0, y: i }, { x: ob.dimensions.width, y: i }]
+            let linedata = [{ x: 0, y: i }, { x: ob.dimensions.width-ob.dimensions.margin, y: i }]
             ob.lineGenerator = d3.line()
                 .x((d) => {
                     return d.x
@@ -102,7 +109,6 @@ export let gantBase = (data, buildingReferences) => {
                 .attr("d", ob.lineGenerator)
 
         }
-        // make the bottom line
 
         // actual data in blocks
         ob.datagroup = ob.svg.append("g")
@@ -122,7 +128,13 @@ export let gantBase = (data, buildingReferences) => {
             })
             .attr("height", ob.yscale.bandwidth())
             .attr("fill", "black")
-
+        // making the full scale viewer at the bottom
+        ob.xAxis = d3.axisTop(ob.xscale)
+            .tickPadding(0)
+        ob.xAxisElement = ob.svg.append("g")
+            .attr("class","top-xaxis")
+            .attr("transform",`translate(${ob.maxText},${ob.yscale(0)})`)
+            .call(ob.xAxis)
     }
     return ob
 }
