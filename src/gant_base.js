@@ -96,7 +96,7 @@ export let gantBase = (data, buildingReferences) => {
 
         ob.svg = d3.select("svg")
         ob.svg.attr("width", ob.dimensions.width)
-            .attr("height", ob.dimensions.width)
+            .attr("height", ob.dimensions.height)
         ob.lAxisGroup = ob.svg.append("g")
         ob.Leftaxis = ob.lAxisGroup.selectAll("rect").data(ob.buildings).enter().append("rect")
         ob.Leftaxis
@@ -166,7 +166,7 @@ export let gantBase = (data, buildingReferences) => {
                 // to prevent the tooltip from going into the building names on the left
                 // TODO come up with more accurate shift based on width of tooltip and position of line
                 if (xpos < 200) {
-                    xpos += 400
+                    return (xpos + 400) + "px"
                 }
                 return xpos + "px"
             }).style("top", ypos + "px")
@@ -249,7 +249,7 @@ export let gantBase = (data, buildingReferences) => {
         ob.brush = d3.brushX()
             .on("end",ob.brushEnd)
             .extent([
-                [ob.brushableDimensions.margin, ob.brushableDimensions.margin],
+                [0, ob.brushableDimensions.margin],
                 [ob.brushableDimensions.innerwidth, ob.brushableDimensions.height]
             ])
         // create a g element, and define a class for the brush

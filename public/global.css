@@ -87,3 +87,7 @@ button:focus {
 	border-radius:6px;
 	background:white;
 }
+#topgraph{
+	height:500px;
+	overflow:scroll;
+}
