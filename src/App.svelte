@@ -46,7 +46,9 @@
     }
   }
 </style>
-
+<div id="tooltipHolder">
+<p id="tipText"></p>
+</div>
 <div id="graph">
 <svg id="top">
 

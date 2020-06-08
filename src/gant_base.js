@@ -92,6 +92,73 @@ export let gantBase = (data, buildingReferences) => {
             })
             .attr("class", "b-name")
             .text(d => d)
+
+        // actual data in blocks
+        ob.datagroup = ob.svg.append("g")
+            .attr("transform", `translate(${ob.maxText},0)`)
+        // mouse interaction
+        // add a rect in the back that mouse event can trigger on
+        ob.dataBackground = ob.datagroup.append("rect")
+            .attr("id","background")
+            .attr("x",0)
+            .attr("y",0)
+            .attr("width",ob.dimensions.width-ob.dimensions.margin)
+            .attr("height",ob.dimensions.height-ob.dimensions.margin)
+            
+ 
+        // making the full scale viewer at the bottom
+        ob.xAxis = d3.axisTop(ob.xscale)
+            .tickPadding(0)
+        ob.xAxisElement = ob.svg.append("g")
+            .attr("class","top-xaxis")
+            .attr("transform",`translate(${ob.maxText},${ob.yscale(0)})`)
+            .call(ob.xAxis)
+       // draw vertical line with time info on it
+        ob.vertLineGenerator = d3.line()
+            .x((d)=> {
+                return d.x
+            })
+            .y((d)=> {
+                return d.y
+            })
+        // calculate from left padding 
+        const svgContainerPad = {left:document.querySelector("svg").getBoundingClientRect().left,top:document.querySelector("svg").getBoundingClientRect().top}
+        ob.mouseTooltip = d3.select("#tooltipHolder")
+        ob.tooltipText = d3.select("#tipText")
+        // consider on touch also, because of touch screens
+        ob.datagroup.on("mousemove",function(){
+            // should we use transform translation instead of removing and redrawing line? 
+            if(ob.verticalMouseLine) {
+                ob.verticalMouseLine.remove()
+            }
+            // use d3 event to get mouse positions
+            const xpos = d3.event.pageX-ob.maxText-svgContainerPad.left
+            const ypos = d3.event.pageY-svgContainerPad.top
+            ob.verticalMouseLine = ob.datagroup.append("path")
+            // don't forget to subtract whatever padding has been applied to the container of the svg
+                .datum([{x:xpos,y:ob.yscale(0)},{x:xpos,y:ob.yscale(ob.buildings.length)}])
+                .attr("class","vertmouseline")
+                .attr("d",ob.vertLineGenerator)
+            ob.mouseTooltip.style("left",xpos+"px").style("top",ypos+"px")
+            ob.tooltipText.text(()=>{ return ob.xscale.invert(xpos)})
+
+        })
+        // 
+        ob.occupancyBlocks = ob.datagroup.selectAll("rect").data(ob.data).enter().append("rect")
+        ob.occupancyBlocks
+            .attr("x", (d, i) => {
+                return ob.xscale(ob.times[i])
+            })
+            .attr("y", d => {
+                let wapID = ob.calcWapID(d)
+                let i = ob.buildings.indexOf(wapID)
+                return ob.yscale(i)
+            })
+            .attr("width", (d, i) => {
+                return ob.xscale(ob.times[i + 1]) - ob.xscale(ob.times[i])
+            })
+            .attr("height", ob.yscale.bandwidth())
+            .attr("fill", "black")
         // lines
         for (let i = 0; i < ob.buildings.length + 1; i++) {
             //
@@ -109,32 +176,6 @@ export let gantBase = (data, buildingReferences) => {
                 .attr("d", ob.lineGenerator)
 
         }
-
-        // actual data in blocks
-        ob.datagroup = ob.svg.append("g")
-            .attr("transform", `translate(${ob.maxText},0)`)
-        ob.occupancyBlocks = ob.datagroup.selectAll("rect").data(ob.data).enter().append("rect")
-        ob.occupancyBlocks
-            .attr("x", (d, i) => {
-                return ob.xscale(ob.times[i])
-            })
-            .attr("y", d => {
-                let wapID = ob.calcWapID(d)
-                let i = ob.buildings.indexOf(wapID)
-                return ob.yscale(i)
-            })
-            .attr("width", (d, i) => {
-                return ob.xscale(ob.times[i + 1]) - ob.xscale(ob.times[i])
-            })
-            .attr("height", ob.yscale.bandwidth())
-            .attr("fill", "black")
-        // making the full scale viewer at the bottom
-        ob.xAxis = d3.axisTop(ob.xscale)
-            .tickPadding(0)
-        ob.xAxisElement = ob.svg.append("g")
-            .attr("class","top-xaxis")
-            .attr("transform",`translate(${ob.maxText},${ob.yscale(0)})`)
-            .call(ob.xAxis)
     }
     return ob
 }
