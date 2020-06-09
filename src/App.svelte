@@ -5,23 +5,23 @@
   import Gant from "./gant_chart.svelte";
   window.onload = async () => {
     let paulData = await fetch(
-      "http://192.168.1.3:8000/paulFebruaryTokenized.csv"
+      "http://192.168.0.12:8000/paulFebruaryTokenized.csv"
     ).then(res => res.text());
-	console.log(paulData);
-	let buildingNameData = await fetch(
-		"http://192.168.1.3:8000/building_names.csv"
-	).then(res=>res.text())
+    console.log(paulData);
+    let buildingNameData = await fetch(
+      "http://192.168.0.12:8000/building_names.csv"
+    ).then(res => res.text());
     let dsv = d3.dsvFormat(",");
-	paulData = dsv.parse(paulData);
-	buildingNameData = dsv.parse(buildingNameData)
-	console.log(paulData,buildingNameData);
-	const graph = new Gant({
-		target:document.body,
-		props: {
-			data:paulData,
-			buildingData:buildingNameData
-		}
-	})
+    paulData = dsv.parse(paulData);
+    buildingNameData = dsv.parse(buildingNameData);
+    console.log(paulData, buildingNameData);
+    const graph = new Gant({
+      target: document.body,
+      props: {
+        data: paulData,
+        buildingData: buildingNameData
+      }
+    });
   };
 </script>
 
@@ -46,17 +46,15 @@
     }
   }
 </style>
+
 <div id="tooltipHolder">
-<p id="tipText"></p>
+  <p id="tipText" />
 </div>
 <div id="graphs">
-<div id="topgraph">
-<svg id="top">
-</svg>
+  <div id="topgraph">
+    <svg id="top" />
+  </div>
+  <div id="bottomgraph">
+    <svg id="brushable" />
+  </div>
 </div>
-<div id="bottomgraph">
-<svg id="brushable">
-</svg>
-</div>
-</div>
-

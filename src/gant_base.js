@@ -5,9 +5,9 @@ export let gantBase = (data, buildingReferences) => {
     // later on these are not the same
     ob.mutableData = data
     console.log("making gantBase");
-
+    const outerMargin = 20
     ob.dimensions = {
-        width: window.innerWidth,
+        width: window.innerWidth-outerMargin,
         height: window.innerHeight,
         margin: 20,
     }
@@ -27,11 +27,11 @@ export let gantBase = (data, buildingReferences) => {
         // convert brush coordinates into dates
         const t1 = ob.brushableXScale.invert(ext[0])
         const t2 = ob.brushableXScale.invert(ext[1])
-        ob.mutableData =[]
+        ob.mutableData = []
         for (let e of ob.data) {
             // see if it passes brush filter, if so put in mutable data
-            const timeE = d3.isoParse(e._time) 
-            if (timeE> t1 && timeE < t2) {
+            const timeE = d3.isoParse(e._time)
+            if (timeE > t1 && timeE < t2) {
                 ob.mutableData.push(e)
             }
         }
@@ -39,7 +39,7 @@ export let gantBase = (data, buildingReferences) => {
         // xaxis is the same
         // remove the entire top graph and start over
         d3.select("#top").remove()
-        d3.select("#topgraph").append("svg").attr("id","top")
+        d3.select("#topgraph").append("svg").attr("id", "top")
         ob.setup()
         ob.run()
     }
@@ -87,7 +87,7 @@ export let gantBase = (data, buildingReferences) => {
                 d3.min(ob.times),
                 d3.max(ob.times)
             ])
-            .range([0, ob.dimensions.width - ob.dimensions.margin - ob.maxText])
+            .range([0, ob.dimensions.width - ob.dimensions.margin*2 - ob.maxText])
         // calculate length of title
     }
 
@@ -95,7 +95,7 @@ export let gantBase = (data, buildingReferences) => {
         console.log("running");
 
         ob.svg = d3.select("svg")
-        ob.svg.attr("width", ob.dimensions.width)
+        ob.svg.attr("width", ob.dimensions.width )
             .attr("height", ob.dimensions.height)
         ob.lAxisGroup = ob.svg.append("g")
         ob.Leftaxis = ob.lAxisGroup.selectAll("rect").data(ob.buildings).enter().append("rect")
@@ -125,8 +125,8 @@ export let gantBase = (data, buildingReferences) => {
             .attr("id", "background")
             .attr("x", 0)
             .attr("y", 0)
-            .attr("width", ob.dimensions.width - ob.dimensions.margin)
-            .attr("height", ob.dimensions.height - ob.dimensions.margin)
+            .attr("width", ob.dimensions.width - ob.dimensions.margin*2- ob.maxText)
+            .attr("height", ob.dimensions.height - ob.dimensions.margin*2)
 
 
         // making the full scale viewer at the bottom
@@ -166,9 +166,9 @@ export let gantBase = (data, buildingReferences) => {
                 // to prevent the tooltip from going into the building names on the left
                 // TODO come up with more accurate shift based on width of tooltip and position of line
                 if (xpos < 200) {
-                    return (xpos + 400) + "px"
+                    return (xpos + 220) + "px"
                 }
-                return xpos + "px"
+                return xpos - 20 + "px"
             }).style("top", ypos + "px")
             ob.tooltipText.text(() => { return ob.xscale.invert(xpos) })
 
@@ -192,7 +192,7 @@ export let gantBase = (data, buildingReferences) => {
         // lines
         for (let i = 0; i < ob.buildings.length + 1; i++) {
             //
-            let linedata = [{ x: 0, y: i }, { x: ob.dimensions.width - ob.dimensions.margin, y: i }]
+            let linedata = [{ x: 0, y: i }, { x: ob.dimensions.width - ob.dimensions.margin*2, y: i }]
             ob.lineGenerator = d3.line()
                 .x((d) => {
                     return d.x
@@ -209,24 +209,30 @@ export let gantBase = (data, buildingReferences) => {
     }
     ob.generateBrush = () => {
         ob.brushableDimensions = {
-            width: window.innerWidth,
+            width: window.innerWidth - outerMargin,
             height: 200,
             margin: 20
 
         }
-        ob.brushableDimensions.innerwidth = window.innerWidth - ob.brushableDimensions.margin * 2,
-            ob.brushableDimensions.innerheight = ob.brushableDimensions.height - ob.brushableDimensions.margin * 2
+        // subtract for both dimensions, and the building text column size 
+        ob.brushableDimensions.innerwidth = ob.brushableDimensions.width
+        ob.brushableDimensions.innerheight = ob.brushableDimensions.height - ob.brushableDimensions.margin * 2
         ob.brushSvg = d3.select("#brushable")
             .attr("width", ob.brushableDimensions.innerwidth)
             .attr("height", ob.brushableDimensions.innerheight)
+        // set topgraph height so we can see all the data even with the bottom graph fixed to the screen
+
+        d3.select("#topgraph").style("height", document.querySelector("#bottomgraph").getBoundingClientRect().top + "px" )
         // make a copy while the data is still for the global view
         ob.brushableXScale = ob.xscale.copy()
+        // make the final range larger so it covers the entire bottom of page
+        ob.brushableXScale.range([0,ob.brushableDimensions.innerwidth - ob.brushableDimensions.margin*2])
         // make all the same rectangles but with different ydims
         ob.brushableYScale = d3.scaleBand()
             .domain(d3.range(ob.buildings.length + 1))
             .range([ob.brushableDimensions.margin, ob.brushableDimensions.innerheight])
             .round(true)
-        
+
         ob.brushRects = ob.brushSvg.selectAll("rect").data(ob.data).enter().append("rect")
             .attr("x", (d, i) => {
                 return ob.brushableXScale(ob.times[i])
@@ -247,7 +253,7 @@ export let gantBase = (data, buildingReferences) => {
         // define functions for start and brushed
         // extent is the possible canvas that can be brushed
         ob.brush = d3.brushX()
-            .on("end",ob.brushEnd)
+            .on("end", ob.brushEnd)
             .extent([
                 [0, ob.brushableDimensions.margin],
                 [ob.brushableDimensions.innerwidth, ob.brushableDimensions.height]
