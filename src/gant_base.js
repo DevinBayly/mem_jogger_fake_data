@@ -7,7 +7,7 @@ export let gantBase = (data, buildingReferences) => {
     console.log("making gantBase");
     const outerMargin = 20
     ob.dimensions = {
-        width: window.innerWidth-outerMargin,
+        width: window.innerWidth - outerMargin,
         height: window.innerHeight,
         margin: 20,
     }
@@ -15,7 +15,7 @@ export let gantBase = (data, buildingReferences) => {
     ob.calcWapID = (e) => {
         let buildingName = ob.buildingNumNameMap[e.apBuildingNumber]
         if (buildingName == undefined) {
-            console.log("missing pair ",e.apBuildingNumber)
+            console.log("missing pair ", e.apBuildingNumber)
         }
         let wapID = `${buildingName} ${e.apRoomNumber} ${e.apDescription}`
         return wapID
@@ -46,8 +46,8 @@ export let gantBase = (data, buildingReferences) => {
         ob.setup()
         ob.run()
     }
-    ob.compare =(a,b)=> {
-        if (ob.buildingOrder.indexOf(a)> ob.buildingOrder.indexOf(b)) {
+    ob.compare = (a, b) => {
+        if (ob.buildingOrder.indexOf(a) > ob.buildingOrder.indexOf(b)) {
             return 1
         }
         if (ob.buildingOrder.indexOf(a) == ob.buildingOrder.indexOf(b)) {
@@ -60,17 +60,24 @@ export let gantBase = (data, buildingReferences) => {
 
         // get an array of the building names, and their other info
         ob.buildings = []
+        // use this for calculating the Xscale
         ob.times = []
+        // map between the building numbers and names people recognize
         ob.buildingNumNameMap = {}
         buildingReferences.map(e => {
             ob.buildingNumNameMap[e.Alpha] = e.Name
         })
+        ob.devices = {}
         for (let entry of ob.mutableData) {
             let wapID = ob.calcWapID(entry)
 
             if (ob.buildings.indexOf(wapID) == -1) {
                 ob.buildings.push(wapID)
             }
+            if (ob.devices[entry["EndPointMatchedProfile"]] == undefined) {
+                ob.devices[entry["EndPointMatchedProfile"]] = []
+            }
+            ob.devices[entry["EndPointMatchedProfile"]].push(entry)
             ob.times.push(d3.isoParse(entry._time))
         }
         // create constant building order to use going forward
@@ -107,7 +114,7 @@ export let gantBase = (data, buildingReferences) => {
                 d3.min(ob.times),
                 d3.max(ob.times)
             ])
-            .range([0, ob.dimensions.width - ob.dimensions.margin*2 - ob.maxText])
+            .range([0, ob.dimensions.width - ob.dimensions.margin * 2 - ob.maxText])
         // calculate length of title
     }
 
@@ -115,7 +122,7 @@ export let gantBase = (data, buildingReferences) => {
         console.log("running");
 
         ob.svg = d3.select("svg")
-        ob.svg.attr("width", ob.dimensions.width )
+        ob.svg.attr("width", ob.dimensions.width)
             .attr("height", ob.dimensions.height)
         ob.lAxisGroup = ob.svg.append("g")
         ob.Leftaxis = ob.lAxisGroup.selectAll("rect").data(ob.buildings).enter().append("rect")
@@ -145,8 +152,8 @@ export let gantBase = (data, buildingReferences) => {
             .attr("id", "background")
             .attr("x", 0)
             .attr("y", 0)
-            .attr("width", ob.dimensions.width - ob.dimensions.margin*2- ob.maxText)
-            .attr("height", ob.dimensions.height - ob.dimensions.margin*2)
+            .attr("width", ob.dimensions.width - ob.dimensions.margin * 2 - ob.maxText)
+            .attr("height", ob.dimensions.height - ob.dimensions.margin * 2)
 
 
         // making the full scale viewer at the bottom
@@ -193,26 +200,37 @@ export let gantBase = (data, buildingReferences) => {
             ob.tooltipText.text(() => { return ob.xscale.invert(xpos) })
 
         })
-        // 
-        ob.occupancyBlocks = ob.datagroup.selectAll("rect").data(ob.mutableData).enter().append("rect")
-        ob.occupancyBlocks
-            .attr("x", (d, i) => {
-                return ob.xscale(ob.times[i])
-            })
-            .attr("y", d => {
-                let wapID = ob.calcWapID(d)
-                let i = ob.buildings.indexOf(wapID)
-                return ob.yscale(i)
-            })
-            .attr("width", (d, i) => {
-                return ob.xscale(ob.times[i + 1]) - ob.xscale(ob.times[i])
-            })
-            .attr("height", ob.yscale.bandwidth())
-            .attr("fill", "black")
-        // lines
+        // split this by device 
+        for (let device in ob.devices) {
+            let deviceData = ob.devices[device]
+            console.log("device", device, "data", deviceData)
+            ob.occupancyBlocks = ob.datagroup.selectAll(".dataElement").data(deviceData,function (d) {
+                return d._time
+            }).enter().append("rect")
+            ob.occupancyBlocks
+                .attr("x", (d) => {
+                    return ob.xscale(d3.isoParse(d._time))
+                })
+                .attr("class", device+" dataElement") // assign both classes
+                .attr("y", d => {
+                    let wapID = ob.calcWapID(d)
+                    let i = ob.buildings.indexOf(wapID)
+                    return ob.yscale(i)
+                })
+                .attr("width", (d, i) => {
+                    // TODO figure out how to convey the lack of confidence about certain end times
+                    if (i + 1 == deviceData.length) {
+                        return 0
+                    }
+                    return ob.xscale(d3.isoParse(deviceData[i + 1]._time)) - ob.xscale(d3.isoParse(deviceData[i]._time))
+                })
+                .attr("height", ob.yscale.bandwidth())
+                .attr("fill", "black")
+        }
+        // horizontal lines
         for (let i = 0; i < ob.buildings.length + 1; i++) {
             //
-            let linedata = [{ x: 0, y: i }, { x: ob.dimensions.width - ob.dimensions.margin*2, y: i }]
+            let linedata = [{ x: 0, y: i }, { x: ob.dimensions.width - ob.dimensions.margin * 2, y: i }]
             ob.lineGenerator = d3.line()
                 .x((d) => {
                     return d.x
@@ -242,11 +260,11 @@ export let gantBase = (data, buildingReferences) => {
             .attr("height", ob.brushableDimensions.innerheight)
         // set topgraph height so we can see all the data even with the bottom graph fixed to the screen
 
-        d3.select("#topgraph").style("height", document.querySelector("#bottomgraph").getBoundingClientRect().top + "px" )
+        d3.select("#topgraph").style("height", document.querySelector("#bottomgraph").getBoundingClientRect().top + "px")
         // make a copy while the data is still for the global view
         ob.brushableXScale = ob.xscale.copy()
         // make the final range larger so it covers the entire bottom of page
-        ob.brushableXScale.range([0,ob.brushableDimensions.innerwidth - ob.brushableDimensions.margin*2])
+        ob.brushableXScale.range([0, ob.brushableDimensions.innerwidth - ob.brushableDimensions.margin * 2])
         // make all the same rectangles but with different ydims
         ob.brushableYScale = d3.scaleBand()
             .domain(d3.range(ob.buildings.length + 1))
@@ -254,22 +272,35 @@ export let gantBase = (data, buildingReferences) => {
             .round(true)
         // make a label axis for bottom chart
         ob.brushXAxis = d3.axisTop(ob.brushableXScale).tickPadding(0)
-        ob.brushXAxisG = ob.brushSvg.append("g").attr("class","brushAxis").attr("transform",`translate(0,${ob.brushableDimensions.margin})`).call(ob.brushXAxis)
+        ob.brushXAxisG = ob.brushSvg.append("g").attr("class", "brushAxis").attr("transform", `translate(0,${ob.brushableDimensions.margin})`).call(ob.brushXAxis)
 
-        ob.brushRects = ob.brushSvg.selectAll("rect").data(ob.data).enter().append("rect")
-            .attr("x", (d, i) => {
-                return ob.brushableXScale(ob.times[i])
-            })
-            .attr("y", d => {
-                let wapID = ob.calcWapID(d)
-                let i = ob.buildings.indexOf(wapID)
-                return ob.brushableYScale(i)
-            })
-            .attr("width", (d, i) => {
-                return ob.brushableXScale(ob.times[i + 1]) - ob.brushableXScale(ob.times[i])
-            })
-            .attr("height", ob.brushableYScale.bandwidth())
-            .attr("fill", "black")
+        // split this by device 
+        for (let device in ob.devices) {
+            let deviceData = ob.devices[device]
+            console.log("device", device, "data", deviceData)
+            ob.occupancyBlocks = ob.brushSvg.selectAll(".dataElement").data(deviceData,function (d) {
+                return d._time
+            }).enter().append("rect")
+            ob.occupancyBlocks
+                .attr("x", (d) => {
+                    return ob.brushableXScale(d3.isoParse(d._time))
+                })
+                .attr("class", device+" dataElement") // assign both classes
+                .attr("y", d => {
+                    let wapID = ob.calcWapID(d)
+                    let i = ob.buildings.indexOf(wapID)
+                    return ob.brushableYScale(i)
+                })
+                .attr("width", (d, i) => {
+                    // TODO figure out how to convey the lack of confidence about certain end times
+                    if (i + 1 == deviceData.length) {
+                        return 0
+                    }
+                    return ob.brushableXScale(d3.isoParse(deviceData[i + 1]._time)) - ob.brushableXScale(d3.isoParse(deviceData[i]._time))
+                })
+                .attr("height", ob.brushableYScale.bandwidth())
+                .attr("fill", "black")
+        }
 
         // brush steps
         // create a brush
