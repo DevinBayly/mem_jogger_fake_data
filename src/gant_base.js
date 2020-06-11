@@ -80,7 +80,6 @@ export let gantBase = (data, buildingReferences) => {
             // change order of buildings so that column is correct order each time
             ob.buildings.sort(ob.compare)
         }
-
         ob.maxText = 0
         for (let buildingString of ob.buildings) {
             let p = document.createElement("p")
@@ -253,6 +252,9 @@ export let gantBase = (data, buildingReferences) => {
             .domain(d3.range(ob.buildings.length + 1))
             .range([ob.brushableDimensions.margin, ob.brushableDimensions.innerheight])
             .round(true)
+        // make a label axis for bottom chart
+        ob.brushXAxis = d3.axisTop(ob.brushableXScale).tickPadding(0)
+        ob.brushXAxisG = ob.brushSvg.append("g").attr("class","brushAxis").attr("transform",`translate(0,${ob.brushableDimensions.margin})`).call(ob.brushXAxis)
 
         ob.brushRects = ob.brushSvg.selectAll("rect").data(ob.data).enter().append("rect")
             .attr("x", (d, i) => {
