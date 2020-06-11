@@ -14,6 +14,9 @@ export let gantBase = (data, buildingReferences) => {
 
     ob.calcWapID = (e) => {
         let buildingName = ob.buildingNumNameMap[e.apBuildingNumber]
+        if (buildingName == undefined) {
+            console.log("missing pair ",e.apBuildingNumber)
+        }
         let wapID = `${buildingName} ${e.apRoomNumber} ${e.apDescription}`
         return wapID
     }
@@ -43,6 +46,15 @@ export let gantBase = (data, buildingReferences) => {
         ob.setup()
         ob.run()
     }
+    ob.compare =(a,b)=> {
+        if (ob.buildingOrder.indexOf(a)> ob.buildingOrder.indexOf(b)) {
+            return 1
+        }
+        if (ob.buildingOrder.indexOf(a) == ob.buildingOrder.indexOf(b)) {
+            return 0
+        }
+        return -1
+    }
     ob.setup = () => {
         console.log("setting up");
 
@@ -55,11 +67,20 @@ export let gantBase = (data, buildingReferences) => {
         })
         for (let entry of ob.mutableData) {
             let wapID = ob.calcWapID(entry)
+
             if (ob.buildings.indexOf(wapID) == -1) {
                 ob.buildings.push(wapID)
             }
             ob.times.push(d3.isoParse(entry._time))
         }
+        // create constant building order to use going forward
+        if (ob.buildingOrder == undefined) {
+            ob.buildingOrder = ob.buildings
+        } else {
+            // change order of buildings so that column is correct order each time
+            ob.buildings.sort(ob.compare)
+        }
+
         ob.maxText = 0
         for (let buildingString of ob.buildings) {
             let p = document.createElement("p")
