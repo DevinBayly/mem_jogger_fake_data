@@ -222,7 +222,17 @@ export let gantBase = (data, buildingReferences) => {
                     if (i + 1 == deviceData.length) {
                         return 0
                     }
-                    return ob.xscale(d3.isoParse(deviceData[i + 1]._time)) - ob.xscale(d3.isoParse(deviceData[i]._time))
+                    // investigate whether the next device data point is outside of a reasonable time connection window. seems like greater than 2 hours is pretty obvious.
+                    let t2 = d3.isoParse(deviceData[i + 1]._time)
+                    let t1 = d3.isoParse(deviceData[i]._time)
+                    // dif is normall in ms so convert by  /(1000*60*60) would be hours
+                    let dif = t2-t1
+                    if (dif/(1000*60*60) > 3) {
+                        return 5
+                    } else {
+                        return ob.xscale(t2) - ob.xscale(t1)
+                    }
+                     
                 })
                 .attr("height", ob.yscale.bandwidth())
                 .attr("fill", "black")
@@ -296,7 +306,16 @@ export let gantBase = (data, buildingReferences) => {
                     if (i + 1 == deviceData.length) {
                         return 0
                     }
-                    return ob.brushableXScale(d3.isoParse(deviceData[i + 1]._time)) - ob.brushableXScale(d3.isoParse(deviceData[i]._time))
+                    // investigate whether the next device data point is outside of a reasonable time connection window. seems like greater than 2 hours is pretty obvious.
+                    let t2 = d3.isoParse(deviceData[i + 1]._time)
+                    let t1 = d3.isoParse(deviceData[i]._time)
+                    // dif is normall in ms so convert by  /(1000*60*60) would be hours
+                    let dif = t2-t1
+                    if (dif/(1000*60*60) > 4) {
+                        return 5
+                    } else {
+                        return ob.xscale(t2) - ob.xscale(t1)
+                    }
                 })
                 .attr("height", ob.brushableYScale.bandwidth())
                 .attr("fill", "black")
