@@ -56,8 +56,15 @@ export let gantBase = (data, buildingReferences) => {
         }
         return -1
     }
+    ob.compareCounts = (a,b)=> {
+        if (ob.buildingOccurences[a] > ob.buildingOccurences[b]) {
+            return -1
+        }
+        return 1
+    }
     ob.initialSetup = () => {
-
+        // used in calculating the order of buildings for column
+        ob.buildingOccurences ={}
         // get an array of the building names, and their other info
         ob.buildings = []
         // map between the building numbers and names people recognize
@@ -65,12 +72,14 @@ export let gantBase = (data, buildingReferences) => {
         buildingReferences.map(e => {
             ob.buildingNumNameMap[e.Alpha] = e.Name
         })
-        for (let entry of ob.mutableData) {
+        for (let entry of ob.data) {
             let wapID = ob.calcWapID(entry)
 
             if (ob.buildings.indexOf(wapID) == -1) {
                 ob.buildings.push(wapID)
+                ob.buildingOccurences[wapID]=0
             }
+            ob.buildingOccurences[wapID]+=1
         }
         ob.maxText = 0
         for (let buildingString of ob.buildings) {
@@ -87,6 +96,9 @@ export let gantBase = (data, buildingReferences) => {
             }
             p.remove()
         }
+        // sort the buildings according to their occurences from most frequent to least
+        ob.buildings.sort(ob.compareCounts)
+
 
         // create a y scale with banding for spacing control
         ob.yscale = d3.scaleBand()
