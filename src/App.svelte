@@ -5,11 +5,11 @@
   import Gant from "./gant_chart.svelte";
   window.onload = async () => {
     let paulData = await fetch(
-      "http://192.168.0.12:8000/paulFebruaryTokenized.csv"
+      "paulFebruaryTokenized.csv"
     ).then(res => res.text());
     console.log(paulData);
     let buildingNameData = await fetch(
-      "http://192.168.0.12:8000/building_names.csv"
+      "building_names.csv"
     ).then(res => res.text());
     let dsv = d3.dsvFormat(",");
     paulData = dsv.parse(paulData);
