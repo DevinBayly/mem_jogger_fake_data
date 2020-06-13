@@ -42,8 +42,6 @@ export let gantBase = (data, buildingReferences) => {
         // convert back from extents to top graph screen dimensions
         // xaxis is the same
         // remove the entire top graph and start over
-        d3.select("#top").remove()
-        d3.select("#topgraph").append("svg").attr("id", "top")
         ob.redoSetup()
         ob.run()
     }
@@ -56,7 +54,7 @@ export let gantBase = (data, buildingReferences) => {
         }
         return -1
     }
-    ob.compareCounts = (a,b)=> {
+    ob.compareCounts = (a, b) => {
         if (ob.buildingOccurences[a] > ob.buildingOccurences[b]) {
             return -1
         }
@@ -64,7 +62,7 @@ export let gantBase = (data, buildingReferences) => {
     }
     ob.initialSetup = () => {
         // used in calculating the order of buildings for column
-        ob.buildingOccurences ={}
+        ob.buildingOccurences = {}
         // get an array of the building names, and their other info
         ob.buildings = []
         // map between the building numbers and names people recognize
@@ -77,9 +75,9 @@ export let gantBase = (data, buildingReferences) => {
 
             if (ob.buildings.indexOf(wapID) == -1) {
                 ob.buildings.push(wapID)
-                ob.buildingOccurences[wapID]=0
+                ob.buildingOccurences[wapID] = 0
             }
-            ob.buildingOccurences[wapID]+=1
+            ob.buildingOccurences[wapID] += 1
         }
         ob.maxText = 0
         for (let buildingString of ob.buildings) {
@@ -222,40 +220,66 @@ export let gantBase = (data, buildingReferences) => {
             let deviceData = ob.devices[device]
             console.log("device", device, "data", deviceData)
             ob.occupancyBlocks = ob.datagroup.selectAll(".dataElement").data(deviceData, function (d) {
-                return d._time
-            }).enter().append("rect")
-            ob.occupancyBlocks
-                .attr("x", (d) => {
-                    return ob.xscale(d3.isoParse(d._time))
-                })
-                .attr("y", d => {
-                    let wapID = ob.calcWapID(d)
-                    let i = ob.buildings.indexOf(wapID)
-                    return ob.yscale(i)
-                })
-                .attr("width", (d, i) => {
-                    // TODO figure out how to convey the lack of confidence about certain end times
-                    // !! doc this
-                    if (i + 1 == deviceData.length) {
-                        let time_end = d3.isoParse(deviceData[i]._time)
-                        time_end = time_end.setSeconds(time_end.getSeconds() + 5*60)
-                        return ob.xscale(time_end) - ob.xscale(d3.isoParse(deviceData[i]._time))
-                    }
-                    // investigate whether the next device data point is outside of a reasonable time connection window. seems like greater than 2 hours is pretty obvious.
-                    let t2 = d3.isoParse(deviceData[i + 1]._time)
-                    let t1 = d3.isoParse(deviceData[i]._time)
-                    // dif is normall in ms so convert by  /(1000*60*60) would be hours
-                    let dif = t2 - t1
-                    if (dif / (1000 * 60 * 60) > 4) {
-                        return 5
-                    } else {
-                        return ob.xscale(t2) - ob.xscale(t1)
-                    }
-
-                })
-                .attr("height", ob.yscale.bandwidth())
-                .attr("fill", ob.deviceScheme(device))
-                .attr("opacity",.5)
+                return d._time + d.EndPointMatchedProfile
+            })
+            ob.occupancyBlocks.join(
+                enter => enter.append("rect")
+                    .attr("x", (d) => {
+                        return -30
+                    })
+                    .attr("y", d => {
+                        let wapID = ob.calcWapID(d)
+                        let i = ob.buildings.indexOf(wapID)
+                        return ob.yscale(i)
+                    })
+                    .attr("width", (d, i) => {
+                        // TODO figure out how to convey the lack of confidence about certain end times
+                        // !! doc this
+                        if (i + 1 == deviceData.length) {
+                            let time_end = d3.isoParse(deviceData[i]._time)
+                            time_end = time_end.setSeconds(time_end.getSeconds() + 5 * 60)
+                            return ob.xscale(time_end) - ob.xscale(d3.isoParse(deviceData[i]._time))
+                        }
+                        // investigate whether the next device data point is outside of a reasonable time connection window. seems like greater than 2 hours is pretty obvious.
+                        let t2 = d3.isoParse(deviceData[i + 1]._time)
+                        let t1 = d3.isoParse(deviceData[i]._time)
+                        // dif is normall in ms so convert by  /(1000*60*60) would be hours
+                        let dif = t2 - t1
+                        if (dif / (1000 * 60 * 60) > 4) {
+                            return 5
+                        } else {
+                            return ob.xscale(t2) - ob.xscale(t1)
+                        }
+                    })
+                    .attr("height", ob.yscale.bandwidth())
+                    .attr("fill", ob.deviceScheme(device))
+                    .attr("opacity", .5)
+                    .call(enter => enter.transition().attr("x", d => ob.xscale(d3.isoParse(d._time)))),
+                update => update.call(update => update.transition()
+                    .attr("width", (d, i) => {
+                        console.log("updating width")
+                        // TODO figure out how to convey the lack of confidence about certain end times
+                        // !! doc this
+                        if (i + 1 == deviceData.length) {
+                            let time_end = d3.isoParse(deviceData[i]._time)
+                            time_end = time_end.setSeconds(time_end.getSeconds() + 5 * 60)
+                            return ob.xscale(time_end) - ob.xscale(d3.isoParse(deviceData[i]._time))
+                        }
+                        // investigate whether the next device data point is outside of a reasonable time connection window. seems like greater than 2 hours is pretty obvious.
+                        let t2 = d3.isoParse(deviceData[i + 1]._time)
+                        let t1 = d3.isoParse(deviceData[i]._time)
+                        // dif is normall in ms so convert by  /(1000*60*60) would be hours
+                        let dif = t2 - t1
+                        if (dif / (1000 * 60 * 60) > 4) {
+                            return 5
+                        } else {
+                            return ob.xscale(t2) - ob.xscale(t1)
+                        }
+                    })
+                    .attr("x",d=>ob.xscale(d3.isoParse(d._time)))
+                ),
+                exit => exit.call(exit => exit.transition().attr("x", -30).remove())
+            )
         }
         // horizontal lines
         for (let i = 0; i < ob.buildings.length + 1; i++) {
@@ -275,10 +299,10 @@ export let gantBase = (data, buildingReferences) => {
 
         }
     }
-    ob.setupBottom =()=> {
+    ob.setupBottom = () => {
 
         ob.brushableDimensions = {
-            width: window.innerWidth - outerMargin , // 500 being for the legend width
+            width: window.innerWidth - outerMargin, // 500 being for the legend width
             height: 200,
             margin: 20
 
@@ -306,7 +330,7 @@ export let gantBase = (data, buildingReferences) => {
         // make a label axis for bottom chart
         ob.brushXAxis = d3.axisTop(ob.brushableXScale).tickPadding(0)
         ob.brushXAxisG = ob.brushSvg.append("g").attr("class", "brushAxis").attr("transform", `translate(${ob.maxText},${ob.brushableDimensions.margin})`).call(ob.brushXAxis)
-        ob.blocksG = ob.brushSvg.append("g").attr("transform",`translate(${ob.maxText},0)`)
+        ob.blocksG = ob.brushSvg.append("g").attr("transform", `translate(${ob.maxText},0)`)
         // split this by device 
         for (let device in ob.devices) {
             let deviceData = ob.devices[device]
@@ -327,7 +351,7 @@ export let gantBase = (data, buildingReferences) => {
                     // TODO figure out how to convey the lack of confidence about certain end times
                     if (i + 1 == deviceData.length) {
                         let time_end = d3.isoParse(deviceData[i]._time)
-                        time_end = time_end.setSeconds(time_end.getSeconds() + 5*60)
+                        time_end = time_end.setSeconds(time_end.getSeconds() + 5 * 60)
                         return ob.brushableXScale(time_end) - ob.brushableXScale(d3.isoParse(deviceData[i]._time))
                     }
                     // investigate whether the next device data point is outside of a reasonable time connection window. seems like greater than 2 hours is pretty obvious.
@@ -343,7 +367,7 @@ export let gantBase = (data, buildingReferences) => {
                 })
                 .attr("height", ob.brushableYScale.bandwidth())
                 .attr("fill", ob.deviceScheme(device))
-                .attr("opacity",.5)
+                .attr("opacity", .5)
         }
 
         // brush steps
@@ -361,11 +385,11 @@ export let gantBase = (data, buildingReferences) => {
         ob.gbrush.call(ob.brush)
         // call the brush constructor with .call
     }
-    ob.makeLegend =()=> {
+    ob.makeLegend = () => {
         // create the legend from the devices in the data 
         ob.legendSvg = d3.select("#legend")
         ob.legend = legend.legendColor().shapeWidth(20).shapeHeight(20).orient("vertical").labelOffset(20).scale(ob.deviceScheme)
-        ob.legendG = ob.brushSvg.append("g").attr("id","legendG").attr("class","deviceLegend").call(ob.legend)
+        ob.legendG = ob.brushSvg.append("g").attr("id", "legendG").attr("class", "deviceLegend").call(ob.legend)
         ob.legendWidth = ob.legendG.node().getBoundingClientRect().width
     }
 
