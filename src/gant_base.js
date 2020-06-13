@@ -243,6 +243,7 @@ export let gantBase = (data, buildingReferences) => {
                 })
                 .attr("height", ob.yscale.bandwidth())
                 .attr("fill", ob.deviceScheme(device))
+                .attr("opacity",.5)
         }
         // horizontal lines
         for (let i = 0; i < ob.buildings.length + 1; i++) {
@@ -330,6 +331,7 @@ export let gantBase = (data, buildingReferences) => {
                 })
                 .attr("height", ob.brushableYScale.bandwidth())
                 .attr("fill", ob.deviceScheme(device))
+                .attr("opacity",.5)
         }
 
         // brush steps
