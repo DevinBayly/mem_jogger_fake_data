@@ -43,7 +43,7 @@ export let gantBase = (data, buildingReferences) => {
         // xaxis is the same
         // remove the entire top graph and start over
         ob.redoSetup()
-        ob.run()
+        ob.reRun()
     }
     ob.compare = (a, b) => {
         if (ob.buildingOrder.indexOf(a) > ob.buildingOrder.indexOf(b)) {
@@ -215,18 +215,55 @@ export let gantBase = (data, buildingReferences) => {
             ob.tooltipText.text(() => { return ob.xscale.invert(xpos) })
 
         })
-        // split this by device 
+       
+        // horizontal lines
+        for (let i = 0; i < ob.buildings.length + 1; i++) {
+            //
+            let linedata = [{ x: 0, y: i }, { x: ob.dimensions.width - ob.dimensions.margin * 2, y: i }]
+            ob.lineGenerator = d3.line()
+                .x((d) => {
+                    return d.x
+                })
+                .y((d) => {
+                    return ob.yscale(d.y)
+                })
+            ob.lines = ob.lAxisGroup.append("path")
+                .datum(linedata)
+                .attr("class", "horizontalline")
+                .attr("d", ob.lineGenerator)
+
+        }
+    }
+    ob.setupBottom = () => {
+
+        ob.brushableDimensions = {
+            width: window.innerWidth - outerMargin, // 500 being for the legend width
+            height: 200,
+            margin: 20
+
+        }
+        // subtract for both dimensions, and the building text column size 
+        ob.brushableDimensions.innerwidth = ob.brushableDimensions.width
+        ob.brushableDimensions.innerheight = ob.brushableDimensions.height - ob.brushableDimensions.margin * 2
+        ob.brushSvg = d3.select("#brushable")
+            .attr("width", ob.brushableDimensions.innerwidth)
+            .attr("height", ob.brushableDimensions.innerheight)
+        // set topgraph height so we can see all the data even with the bottom graph fixed to the screen
+    }
+    ob.reRun = () =>{
+     // split this by device 
         for (let device in ob.devices) {
             let deviceData = ob.devices[device]
             console.log("device", device, "data", deviceData)
             ob.occupancyBlocks = ob.datagroup.selectAll(".dataElement").data(deviceData, function (d) {
-                return d._time + d.EndPointMatchedProfile
+                return d._time + d.EndPointMatchedProfile + d.apRoomNumber
             })
             ob.occupancyBlocks.join(
                 enter => enter.append("rect")
                     .attr("x", (d) => {
                         return -30
                     })
+                    .attr("class","dataElement")
                     .attr("y", d => {
                         let wapID = ob.calcWapID(d)
                         let i = ob.buildings.indexOf(wapID)
@@ -281,39 +318,6 @@ export let gantBase = (data, buildingReferences) => {
                 exit => exit.call(exit => exit.transition().attr("x", -30).remove())
             )
         }
-        // horizontal lines
-        for (let i = 0; i < ob.buildings.length + 1; i++) {
-            //
-            let linedata = [{ x: 0, y: i }, { x: ob.dimensions.width - ob.dimensions.margin * 2, y: i }]
-            ob.lineGenerator = d3.line()
-                .x((d) => {
-                    return d.x
-                })
-                .y((d) => {
-                    return ob.yscale(d.y)
-                })
-            ob.lines = ob.lAxisGroup.append("path")
-                .datum(linedata)
-                .attr("class", "horizontalline")
-                .attr("d", ob.lineGenerator)
-
-        }
-    }
-    ob.setupBottom = () => {
-
-        ob.brushableDimensions = {
-            width: window.innerWidth - outerMargin, // 500 being for the legend width
-            height: 200,
-            margin: 20
-
-        }
-        // subtract for both dimensions, and the building text column size 
-        ob.brushableDimensions.innerwidth = ob.brushableDimensions.width
-        ob.brushableDimensions.innerheight = ob.brushableDimensions.height - ob.brushableDimensions.margin * 2
-        ob.brushSvg = d3.select("#brushable")
-            .attr("width", ob.brushableDimensions.innerwidth)
-            .attr("height", ob.brushableDimensions.innerheight)
-        // set topgraph height so we can see all the data even with the bottom graph fixed to the screen
     }
     ob.generateBrush = () => {
         // calculate the space left to make the brushable region
