@@ -128,7 +128,10 @@ export let gantBase = (data, buildingReferences) => {
         let last_time = new Date(d3.max(ob.times).getTime())
         last_time.setSeconds(last_time.getSeconds() + 5 * 60)
         // create the xscale that handles time 
-        ob.xscale = d3.scaleTime()
+        if (ob.xscale == undefined) {
+            ob.xscale = d3.scaleTime()
+        }
+        ob.xscale
             .domain([
                 d3.min(ob.times),
                 last_time
@@ -219,7 +222,7 @@ export let gantBase = (data, buildingReferences) => {
             ob.tooltipText.text(() => { return ob.xscale.invert(xpos) })
 
         })
-       
+
         // horizontal lines
         for (let i = 0; i < ob.buildings.length + 1; i++) {
             //
@@ -256,40 +259,56 @@ export let gantBase = (data, buildingReferences) => {
             .attr("height", ob.brushableDimensions.innerheight)
         // set topgraph height so we can see all the data even with the bottom graph fixed to the screen
     }
-    ob.reRun = () =>{
+    ob.reRun = () => {
         // update the xscales
-     // split this by device 
+        ob.xAxisElement.transition().call(ob.xAxis)
+        // split this by device 
         for (let device in ob.devices) {
             let deviceData = ob.devices[device]
             console.log("device", device, "data", deviceData)
             ob.occupancyBlocks = ob.datagroup.selectAll(`.dataElement${device}`).data(deviceData, function (d) {
                 return d._time + d.EndPointMatchedProfile + d.apRoomNumber
             })
+            let widthCalc = (d, i) => {
+
+                // TODO figure out how to convey the lack of confidence about certain end times
+                if (i + 1 == deviceData.length) {
+                    let time_end = d3.isoParse(deviceData[i]._time)
+                    time_end = time_end.setSeconds(time_end.getSeconds() + 5 * 60)
+                    return ob.xscale(time_end) - ob.xscale(d3.isoParse(deviceData[i]._time))
+                }
+                // investigate whether the next device data point is outside of a reasonable time connection window. seems like greater than 2 hours is pretty obvious.
+                let t2 = d3.isoParse(deviceData[i + 1]._time)
+                let t1 = d3.isoParse(deviceData[i]._time)
+                // dif is normall in ms so convert by  /(1000*60*60) would be hours
+                let dif = t2 - t1
+                if (dif / (1000 * 60 * 60) > 4) {
+                    return 5
+                } else {
+                    return ob.xscale(t2) - ob.xscale(t1)
+                }
+            }
             ob.occupancyBlocks.join(
                 enter => enter.append("rect")
                     .attr("x", (d) => {
-                        return -30
+                        return 0
                     })
-                    .attr("class",`dataElement${device}`)
+                    .attr("class", `dataElement${device}`)
                     .attr("y", d => {
                         let wapID = ob.calcWapID(d)
                         let i = ob.buildings.indexOf(wapID)
                         return ob.yscale(i)
                     })
-                    .attr("width", (d, i) => {
-                        return 5
-                    })
+                    .attr("width",widthCalc)
                     .attr("height", ob.yscale.bandwidth())
                     .attr("fill", ob.deviceScheme(device))
                     .attr("opacity", .5)
                     .call(enter => enter.transition().attr("x", d => ob.xscale(d3.isoParse(d._time)))),
                 update => update.call(update => update.transition()
-                    .attr("width", (d, i) => {
-                        return 5
-                    })
-                    .attr("x",d=>ob.xscale(d3.isoParse(d._time)))
+                    .attr("width",widthCalc)
+                    .attr("x", d => ob.xscale(d3.isoParse(d._time)))
                 ),
-                exit => exit.call(exit => exit.transition().attr("x", -30).remove())
+                exit => exit.call(exit => exit.transition().attr("x", 0).remove())
             )
         }
     }
