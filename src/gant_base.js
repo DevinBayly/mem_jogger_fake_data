@@ -221,10 +221,10 @@ export let gantBase = (data, buildingReferences) => {
             ob.mouseTooltip.style("left", () => {
                 // to prevent the tooltip from going into the building names on the left
                 // TODO come up with more accurate shift based on width of tooltip and position of line
-                if (xpos < 200) {
-                    return (xpos + 220) + "px"
+                if (xpos + ob.maxTextWidth + 200> ob.xscale.range()[1]) {
+                    return xpos + ob.maxTextWidth - 200 + "px"
                 }
-                return xpos - 20 + "px"
+                return xpos + ob.maxTextWidth + "px"
             }).style("top", ypos + "px")
             ob.tooltipText.text(() => { return ob.xscale.invert(xpos) })
 
