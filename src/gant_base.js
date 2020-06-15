@@ -225,7 +225,7 @@ export let gantBase = (data, buildingReferences) => {
                     return xpos + ob.maxTextWidth - 200 + "px"
                 }
                 return xpos + ob.maxTextWidth + "px"
-            }).style("top", ypos + "px")
+            }).style("top", (ypos + 20) +  "px")
             ob.tooltipText.text(() => { return ob.xscale.invert(xpos) })
 
         })
