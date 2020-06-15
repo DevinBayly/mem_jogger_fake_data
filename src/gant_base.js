@@ -11,6 +11,7 @@ export let gantBase = (data, buildingReferences) => {
     ob.dimensions = {
         width: window.innerWidth - outerMargin,
         height: window.innerHeight,
+        topMargin:2,
         margin: 20,
     }
 
@@ -105,7 +106,7 @@ export let gantBase = (data, buildingReferences) => {
         // create a y scale with banding for spacing control
         ob.yscale = d3.scaleBand()
             .domain(d3.range(ob.buildings.length + 1))
-            .range([ob.dimensions.margin, ob.dimensions.height - ob.dimensions.margin])
+            .range([ob.dimensions.topMargin, ob.dimensions.height - ob.dimensions.margin])
             .round(true)
         // add 5minutes to the final time
         // !! doc this
@@ -143,7 +144,7 @@ export let gantBase = (data, buildingReferences) => {
     ob.run = () => {
         console.log("running");
 
-        ob.svg = d3.select("svg")
+        ob.svg = d3.select("#main")
         ob.svg.attr("width", ob.dimensions.width)
             .attr("height", ob.dimensions.height)
         ob.lAxisGroup = ob.svg.append("g")
@@ -181,9 +182,14 @@ export let gantBase = (data, buildingReferences) => {
         // making the full scale viewer at the bottom
         ob.xAxis = d3.axisTop(ob.xscale)
             .tickPadding(0)
-        ob.xAxisElement = ob.svg.append("g")
+        //
+        ob.topAxisHeight = 40
+        ob.upperAxisSvg = d3.select("#topaxis")
+            .attr("width",ob.dimensions.width)
+            .attr("height",ob.topAxisHeight)
+        ob.xAxisElement = ob.upperAxisSvg.append("g")
             .attr("class", "top-xaxis")
-            .attr("transform", `translate(${ob.maxText},${ob.yscale(0)})`)
+            .attr("transform", `translate(${ob.maxText},${ob.topAxisHeight-1})`) // keeps the bottom line of the axis visible
             .call(ob.xAxis)
         // draw vertical line with time info on it
         ob.vertLineGenerator = d3.line()

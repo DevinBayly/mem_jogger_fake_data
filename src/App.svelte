@@ -51,8 +51,12 @@
   <p id="tipText" />
 </div>
 <div id="graphs">
+  <div id="topaxisholder">
+    <svg id="topaxis">
+    </svg>
+  </div>
   <div id="topgraph">
-    <svg id="top" />
+    <svg id="main" />
   </div>
   <div id="bottomgraph">
     <svg id="brushable" />
