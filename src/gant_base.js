@@ -20,7 +20,7 @@ export let gantBase = (data, buildingReferences) => {
         if (buildingName == undefined) {
             console.log("missing pair ", e.apBuildingNumber)
         }
-        let wapID = `${buildingName} ${e.apRoomNumber} ${e.apDescription}`
+        let wapID = `${buildingName} ${e.apRoomNumber}`
         return wapID
     }
     ob.brushStart = function () {
@@ -310,7 +310,7 @@ export let gantBase = (data, buildingReferences) => {
                     .attr("width", widthCalc)
                     .attr("height", ob.yscale.bandwidth())
                     .attr("fill", ob.deviceScheme(device))
-                    .attr("opacity", .5)
+                    .attr("opacity", .7)
                     .call(enter => enter.transition().attr("x", d => ob.xscale(d3.isoParse(d._time)))),
                 update => update.call(update => update.transition()
                     .attr("width", widthCalc)
@@ -372,7 +372,7 @@ export let gantBase = (data, buildingReferences) => {
                 })
                 .attr("height", ob.brushableYScale.bandwidth())
                 .attr("fill", ob.deviceScheme(device))
-                .attr("opacity", .5)
+                .attr("opacity", .7)
         }
             let data = [[ob.maxTextWidth, 0], [ob.brushableXScale.range()[1]+ob.maxTextWidth, 0]]
             let line = d3.line()

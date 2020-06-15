@@ -1,6 +1,6 @@
 <script>
   export let name;
-
+  import VidOverlay from "./overlayVid.svelte"
   import * as d3 from "d3";
   import Gant from "./gant_chart.svelte";
   window.onload = async () => {
@@ -46,6 +46,8 @@
     }
   }
 </style>
+
+<VidOverlay></VidOverlay>
 
 <div id="tooltipHolder">
   <p id="tipText" />
