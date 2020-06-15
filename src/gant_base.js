@@ -11,7 +11,7 @@ export let gantBase = (data, buildingReferences) => {
     ob.dimensions = {
         width: window.innerWidth - outerMargin,
         height: 900,
-        topMargin:2,
+        topMargin: 2,
         margin: 20,
     }
 
@@ -185,11 +185,11 @@ export let gantBase = (data, buildingReferences) => {
         //
         ob.topAxisHeight = 40
         ob.upperAxisSvg = d3.select("#topaxis")
-            .attr("width",ob.dimensions.width)
-            .attr("height",ob.topAxisHeight)
+            .attr("width", ob.dimensions.width)
+            .attr("height", ob.topAxisHeight)
         ob.xAxisElement = ob.upperAxisSvg.append("g")
             .attr("class", "top-xaxis")
-            .attr("transform", `translate(${ob.maxTextWidth},${ob.topAxisHeight-1})`) // keeps the bottom line of the axis visible
+            .attr("transform", `translate(${ob.maxTextWidth},${ob.topAxisHeight - 1})`) // keeps the bottom line of the axis visible
             .call(ob.xAxis)
         // draw vertical line with time info on it
         ob.vertLineGenerator = d3.line()
@@ -305,13 +305,13 @@ export let gantBase = (data, buildingReferences) => {
                         let i = ob.buildings.indexOf(wapID)
                         return ob.yscale(i)
                     })
-                    .attr("width",widthCalc)
+                    .attr("width", widthCalc)
                     .attr("height", ob.yscale.bandwidth())
                     .attr("fill", ob.deviceScheme(device))
                     .attr("opacity", .5)
                     .call(enter => enter.transition().attr("x", d => ob.xscale(d3.isoParse(d._time)))),
                 update => update.call(update => update.transition()
-                    .attr("width",widthCalc)
+                    .attr("width", widthCalc)
                     .attr("x", d => ob.xscale(d3.isoParse(d._time)))
                 ),
                 exit => exit.call(exit => exit.transition().attr("x", 0).remove())
@@ -372,6 +372,19 @@ export let gantBase = (data, buildingReferences) => {
                 .attr("fill", ob.deviceScheme(device))
                 .attr("opacity", .5)
         }
+            let data = [[ob.maxTextWidth, 0], [ob.brushableXScale.range()[1]+ob.maxTextWidth, 0]]
+            let line = d3.line()
+                .x(d => {
+                    return d[0]
+                })
+                .y(d => {
+                    return d[1]
+                })
+        ob.cursorLine = ob.brushSvg.append("path")
+                .datum(data)
+                .attr("id","brushCursorLine")
+                .attr("stroke", "black")
+                .attr("d", line)
 
         // brush steps
         // create a brush
@@ -385,16 +398,27 @@ export let gantBase = (data, buildingReferences) => {
             ])
         // create a g element, and define a class for the brush
         ob.gbrush = ob.blocksG.append("g").attr("class", "gBrush")
-        ob.gbrush.call(ob.brush)
         // call the brush constructor with .call
-    }
-    ob.makeLegend = () => {
-        // create the legend from the devices in the data 
-        ob.legendSvg = d3.select("#legend")
-        ob.legend = legend.legendColor().shapeWidth(20).shapeHeight(20).orient("vertical").labelOffset(20).scale(ob.deviceScheme)
-        ob.legendG = ob.brushSvg.append("g").attr("id", "legendG").attr("class", "deviceLegend").call(ob.legend)
-        ob.legendWidth = ob.legendG.node().getBoundingClientRect().width
-    }
+        ob.gbrush.call(ob.brush)
+        // make a couple of horizontal lines that show which data is in which rows
+        const svgContainerPad = document.querySelector("#brushable").getBoundingClientRect().top
+        // make the 2 lines off by a bandWidth amount
+        ob.brushSvg.on("mousemove", function () {
+            // calculate the y coordinate, and figure out which rows its in between 
+            const ypos = d3.event.pageY - svgContainerPad
+            // calculate y below and above the mouse
+            // little formula to get the lines above and below using the banded scale
+            // get pos of firstline
+            ob.cursorLine.attr("transform",`translate(0,${ypos - 10})`)
+        })
+}
+ob.makeLegend = () => {
+    // create the legend from the devices in the data 
+    ob.legendSvg = d3.select("#legend")
+    ob.legend = legend.legendColor().shapeWidth(20).shapeHeight(20).orient("vertical").labelOffset(20).scale(ob.deviceScheme)
+    ob.legendG = ob.brushSvg.append("g").attr("id", "legendG").attr("class", "deviceLegend").call(ob.legend)
+    ob.legendWidth = ob.legendG.node().getBoundingClientRect().width
+}
 
-    return ob
+return ob
 }

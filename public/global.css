@@ -95,3 +95,7 @@ button:focus {
 	bottom:0;
 	background:white;
 }
+
+#brushCursorLine {
+	opacity:.5;
+}
