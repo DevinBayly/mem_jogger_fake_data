@@ -105,8 +105,8 @@ export let gantBase = (data, buildingReferences) => {
 
         // create a y scale with banding for spacing control
         ob.yscale = d3.scaleBand()
-            .domain(d3.range(ob.buildings.length + 1))
-            .range([ob.dimensions.topMargin, ob.dimensions.height - ob.dimensions.margin])
+            .domain(d3.range(ob.buildings.length))
+            .range([0, ob.dimensions.height - ob.dimensions.margin])
             .round(true)
         // add 5minutes to the final time
         // !! doc this
@@ -173,6 +173,7 @@ export let gantBase = (data, buildingReferences) => {
         // add a rect in the back that mouse event can trigger on
         ob.dataBackground = ob.datagroup.append("rect")
             .attr("id", "background")
+            .attr("transform",`translate(0,20)`)
             .attr("x", 0)
             .attr("y", 0)
             .attr("width", ob.dimensions.width - ob.dimensions.margin * 2 - ob.maxTextWidth)
@@ -214,7 +215,7 @@ export let gantBase = (data, buildingReferences) => {
             const ypos = d3.event.pageY - svgContainerPad.top
             ob.verticalMouseLine = ob.datagroup.append("path")
                 // don't forget to subtract whatever padding has been applied to the container of the svg
-                .datum([{ x: xpos, y: ob.yscale(0) }, { x: xpos, y: ob.yscale(ob.buildings.length) }])
+                .datum([{ x: xpos, y: ob.yscale(0) }, { x: xpos, y: ob.yscale(ob.buildings.length-1) }])
                 .attr("class", "vertmouseline")
                 .attr("d", ob.vertLineGenerator)
             ob.mouseTooltip.style("left", () => {
@@ -230,6 +231,7 @@ export let gantBase = (data, buildingReferences) => {
         })
 
         // horizontal lines
+        const start = ob.yscale(0)
         for (let i = 0; i < ob.buildings.length + 1; i++) {
             //
             let linedata = [{ x: 0, y: i }, { x: ob.dimensions.width - ob.dimensions.margin * 2, y: i }]
@@ -238,7 +240,7 @@ export let gantBase = (data, buildingReferences) => {
                     return d.x
                 })
                 .y((d) => {
-                    return ob.yscale(d.y)
+                    return d.y*ob.yscale.bandwidth()+start
                 })
             ob.lines = ob.lAxisGroup.append("path")
                 .datum(linedata)
