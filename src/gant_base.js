@@ -10,7 +10,7 @@ export let gantBase = (data, buildingReferences) => {
     const outerMargin = 20
     ob.dimensions = {
         width: window.innerWidth - outerMargin,
-        height: window.innerHeight,
+        height: 900,
         topMargin:2,
         margin: 20,
     }
@@ -84,7 +84,7 @@ export let gantBase = (data, buildingReferences) => {
             }
             ob.buildingOccurences[wapID] += 1
         }
-        ob.maxText = 0
+        ob.maxTextWidth = 0
         for (let buildingString of ob.buildings) {
             let p = document.createElement("p")
             p.style.display = "hidden"
@@ -94,8 +94,8 @@ export let gantBase = (data, buildingReferences) => {
             p.className = "b-name"
             document.body.append(p)
             let width = p.getBoundingClientRect().width
-            if (width > ob.maxText) {
-                ob.maxText = width
+            if (width > ob.maxTextWidth) {
+                ob.maxTextWidth = width
             }
             p.remove()
         }
@@ -137,7 +137,7 @@ export let gantBase = (data, buildingReferences) => {
                 d3.min(ob.times),
                 last_time
             ])
-            .range([0, ob.dimensions.width - ob.dimensions.margin * 2 - ob.maxText])
+            .range([0, ob.dimensions.width - ob.dimensions.margin * 2 - ob.maxTextWidth])
         // calculate length of title
     }
 
@@ -154,12 +154,12 @@ export let gantBase = (data, buildingReferences) => {
                 return ob.yscale(i)
             })
             .attr("x", 0)
-            .attr("width", ob.maxText)
+            .attr("width", ob.maxTextWidth)
             .attr("height", ob.yscale.bandwidth())
             .attr("fill", "white")
             .attr("stroke", "black")
         ob.BuildingText = ob.lAxisGroup.selectAll("text").data(ob.buildings).enter().append("text")
-            .attr("x", ob.maxText / 2)
+            .attr("x", ob.maxTextWidth / 2)
             .attr("y", (d, i) => {
                 return ob.yscale(i) + ob.yscale.bandwidth() / 2 // decide on inner margin
             })
@@ -168,14 +168,14 @@ export let gantBase = (data, buildingReferences) => {
 
         // actual data in blocks
         ob.datagroup = ob.svg.append("g")
-            .attr("transform", `translate(${ob.maxText},0)`)
+            .attr("transform", `translate(${ob.maxTextWidth},0)`)
         // mouse interaction
         // add a rect in the back that mouse event can trigger on
         ob.dataBackground = ob.datagroup.append("rect")
             .attr("id", "background")
             .attr("x", 0)
             .attr("y", 0)
-            .attr("width", ob.dimensions.width - ob.dimensions.margin * 2 - ob.maxText)
+            .attr("width", ob.dimensions.width - ob.dimensions.margin * 2 - ob.maxTextWidth)
             .attr("height", ob.dimensions.height - ob.dimensions.margin * 2)
 
 
@@ -189,7 +189,7 @@ export let gantBase = (data, buildingReferences) => {
             .attr("height",ob.topAxisHeight)
         ob.xAxisElement = ob.upperAxisSvg.append("g")
             .attr("class", "top-xaxis")
-            .attr("transform", `translate(${ob.maxText},${ob.topAxisHeight-1})`) // keeps the bottom line of the axis visible
+            .attr("transform", `translate(${ob.maxTextWidth},${ob.topAxisHeight-1})`) // keeps the bottom line of the axis visible
             .call(ob.xAxis)
         // draw vertical line with time info on it
         ob.vertLineGenerator = d3.line()
@@ -210,7 +210,7 @@ export let gantBase = (data, buildingReferences) => {
                 ob.verticalMouseLine.remove()
             }
             // use d3 event to get mouse positions
-            let xpos = d3.event.pageX - ob.maxText - svgContainerPad.left
+            let xpos = d3.event.pageX - ob.maxTextWidth - svgContainerPad.left
             const ypos = d3.event.pageY - svgContainerPad.top
             ob.verticalMouseLine = ob.datagroup.append("path")
                 // don't forget to subtract whatever padding has been applied to the container of the svg
@@ -324,7 +324,7 @@ export let gantBase = (data, buildingReferences) => {
         // make a copy while the data is still for the global view
         ob.brushableXScale = ob.xscale.copy()
         // make the final range larger so it covers the entire bottom of page
-        ob.brushableXScale.range([0, ob.brushableDimensions.innerwidth - ob.brushableDimensions.margin * 2 - ob.maxText])
+        ob.brushableXScale.range([0, ob.brushableDimensions.innerwidth - ob.brushableDimensions.margin * 2 - ob.maxTextWidth])
         // make all the same rectangles but with different ydims
         ob.brushableYScale = d3.scaleBand()
             .domain(d3.range(ob.buildings.length + 1))
@@ -332,8 +332,8 @@ export let gantBase = (data, buildingReferences) => {
             .round(true)
         // make a label axis for bottom chart
         ob.brushXAxis = d3.axisTop(ob.brushableXScale).tickPadding(0)
-        ob.brushXAxisG = ob.brushSvg.append("g").attr("class", "brushAxis").attr("transform", `translate(${ob.maxText},${ob.brushableDimensions.margin})`).call(ob.brushXAxis)
-        ob.blocksG = ob.brushSvg.append("g").attr("transform", `translate(${ob.maxText},0)`)
+        ob.brushXAxisG = ob.brushSvg.append("g").attr("class", "brushAxis").attr("transform", `translate(${ob.maxTextWidth},${ob.brushableDimensions.margin})`).call(ob.brushXAxis)
+        ob.blocksG = ob.brushSvg.append("g").attr("transform", `translate(${ob.maxTextWidth},0)`)
         // split this by device 
         for (let device in ob.devices) {
             let deviceData = ob.devices[device]
