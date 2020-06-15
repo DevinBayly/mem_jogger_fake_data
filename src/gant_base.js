@@ -385,6 +385,7 @@ export let gantBase = (data, buildingReferences) => {
                 .attr("id","brushCursorLine")
                 .attr("stroke", "black")
                 .attr("d", line)
+        ob.cursorLine.lower()
 
         // brush steps
         // create a brush
@@ -409,7 +410,7 @@ export let gantBase = (data, buildingReferences) => {
             // calculate y below and above the mouse
             // little formula to get the lines above and below using the banded scale
             // get pos of firstline
-            ob.cursorLine.attr("transform",`translate(0,${ypos - 10})`)
+            ob.cursorLine.attr("transform",`translate(0,${ypos })`)
         })
 }
 ob.makeLegend = () => {
