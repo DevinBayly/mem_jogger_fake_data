@@ -70,9 +70,13 @@ export let gantBase = (data, buildingReferences) => {
         buildingReferences.map(e => {
             ob.buildingNumNameMap[e.Alpha] = e.Name
         })
+        ob.uniqueDevices = []
         for (let entry of ob.data) {
             let wapID = ob.calcWapID(entry)
 
+            if (ob.uniqueDevices.indexOf(entry["EndPointMatchedProfile"]) == -1) {
+                ob.uniqueDevices.push(entry["EndPointMatchedProfile"])
+            }
             if (ob.buildings.indexOf(wapID) == -1) {
                 ob.buildings.push(wapID)
                 ob.buildingOccurences[wapID] = 0
@@ -114,10 +118,10 @@ export let gantBase = (data, buildingReferences) => {
         // use this for calculating the Xscale
         ob.times = []
         ob.devices = {}
+        for (let device of ob.uniqueDevices) {
+            ob.devices[device] = []
+        }
         for (let entry of ob.mutableData) {
-            if (ob.devices[entry["EndPointMatchedProfile"]] == undefined) {
-                ob.devices[entry["EndPointMatchedProfile"]] = []
-            }
             ob.devices[entry["EndPointMatchedProfile"]].push(entry)
             ob.times.push(d3.isoParse(entry._time))
         }
@@ -233,6 +237,8 @@ export let gantBase = (data, buildingReferences) => {
                 .attr("d", ob.lineGenerator)
 
         }
+        // do first actual draw of data
+        ob.reRun()
     }
     ob.setupBottom = () => {
 
@@ -251,11 +257,12 @@ export let gantBase = (data, buildingReferences) => {
         // set topgraph height so we can see all the data even with the bottom graph fixed to the screen
     }
     ob.reRun = () =>{
+        // update the xscales
      // split this by device 
         for (let device in ob.devices) {
             let deviceData = ob.devices[device]
             console.log("device", device, "data", deviceData)
-            ob.occupancyBlocks = ob.datagroup.selectAll(".dataElement").data(deviceData, function (d) {
+            ob.occupancyBlocks = ob.datagroup.selectAll(`.dataElement${device}`).data(deviceData, function (d) {
                 return d._time + d.EndPointMatchedProfile + d.apRoomNumber
             })
             ob.occupancyBlocks.join(
@@ -263,30 +270,14 @@ export let gantBase = (data, buildingReferences) => {
                     .attr("x", (d) => {
                         return -30
                     })
-                    .attr("class","dataElement")
+                    .attr("class",`dataElement${device}`)
                     .attr("y", d => {
                         let wapID = ob.calcWapID(d)
                         let i = ob.buildings.indexOf(wapID)
                         return ob.yscale(i)
                     })
                     .attr("width", (d, i) => {
-                        // TODO figure out how to convey the lack of confidence about certain end times
-                        // !! doc this
-                        if (i + 1 == deviceData.length) {
-                            let time_end = d3.isoParse(deviceData[i]._time)
-                            time_end = time_end.setSeconds(time_end.getSeconds() + 5 * 60)
-                            return ob.xscale(time_end) - ob.xscale(d3.isoParse(deviceData[i]._time))
-                        }
-                        // investigate whether the next device data point is outside of a reasonable time connection window. seems like greater than 2 hours is pretty obvious.
-                        let t2 = d3.isoParse(deviceData[i + 1]._time)
-                        let t1 = d3.isoParse(deviceData[i]._time)
-                        // dif is normall in ms so convert by  /(1000*60*60) would be hours
-                        let dif = t2 - t1
-                        if (dif / (1000 * 60 * 60) > 4) {
-                            return 5
-                        } else {
-                            return ob.xscale(t2) - ob.xscale(t1)
-                        }
+                        return 5
                     })
                     .attr("height", ob.yscale.bandwidth())
                     .attr("fill", ob.deviceScheme(device))
@@ -294,24 +285,7 @@ export let gantBase = (data, buildingReferences) => {
                     .call(enter => enter.transition().attr("x", d => ob.xscale(d3.isoParse(d._time)))),
                 update => update.call(update => update.transition()
                     .attr("width", (d, i) => {
-                        console.log("updating width")
-                        // TODO figure out how to convey the lack of confidence about certain end times
-                        // !! doc this
-                        if (i + 1 == deviceData.length) {
-                            let time_end = d3.isoParse(deviceData[i]._time)
-                            time_end = time_end.setSeconds(time_end.getSeconds() + 5 * 60)
-                            return ob.xscale(time_end) - ob.xscale(d3.isoParse(deviceData[i]._time))
-                        }
-                        // investigate whether the next device data point is outside of a reasonable time connection window. seems like greater than 2 hours is pretty obvious.
-                        let t2 = d3.isoParse(deviceData[i + 1]._time)
-                        let t1 = d3.isoParse(deviceData[i]._time)
-                        // dif is normall in ms so convert by  /(1000*60*60) would be hours
-                        let dif = t2 - t1
-                        if (dif / (1000 * 60 * 60) > 4) {
-                            return 5
-                        } else {
-                            return ob.xscale(t2) - ob.xscale(t1)
-                        }
+                        return 5
                     })
                     .attr("x",d=>ob.xscale(d3.isoParse(d._time)))
                 ),
