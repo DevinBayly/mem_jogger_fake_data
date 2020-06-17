@@ -2,7 +2,7 @@
   export let name;
   import { onMount } from "svelte";
   import * as d3 from "d3";
-  onMount(() => {
+  onMount(async () => {
     console.log("loaded");
     /*
     let mymap = L.map("mapid").setView([32.231481, -110.951838], 18);
@@ -14,12 +14,19 @@
       })
       .addTo(mymap);
       */
-    let mymap = L.map("mapid").setView([32.231481, -110.951838], 17);
+    let paulData = await fetch("paulFebruaryTokenized.csv").then(res =>
+      res.text()
+    );
+    console.log(paulData);
+    let dsv = d3.dsvFormat(",");
+    paulData = dsv.parse(paulData);
+    let layer = new L.StamenTileLayer("toner");
+    let mymap = L.map("mapid").setView(
+      [32.235649302713874, -110.95145375967088],
+      16
+    );
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(mymap);
+    mymap.addLayer(layer);
     // get bounds
     console.log(
       mymap.getBounds(),
@@ -34,8 +41,8 @@
     console.log("origin is", mymap.getPixelOrigin());
     // create an svg
     let svg = d3.select(mymap.getPanes().overlayPane).append("svg");
-    svg.attr("height", height);
-    svg.attr("width", width);
+    svg.attr("height",bounds.max.y - bounds.min.y)
+    svg.attr("width",bounds.max.x - bounds.min.x)
     let g = svg.append("g").attr("class", "leaflet-zoom-hide");
     // create the geotransform
     let projectPoint = function(x, y) {
@@ -50,29 +57,73 @@
     // NOTE that geojson points are going to have the x first in the coordinates
     let applyLatLngToLayer = function(d) {
       // do some comparison of building number to geojson of buildings to get coords
-      let y = d[0];
-      let x = d[1];
+      let y = d[1];
+      let x = d[0];
       return mymap.latLngToLayerPoint(new L.LatLng(y, x));
     };
     // create a point for the student union, i think this has been ordered y,x by lat lng
-    let dataPoint = [
-      [32.23261578999814, -110.95262080058234],
-      [32.225102, -110.95129]
-    ];
+    let allData = await fetch("buildings.geojson").then(res => res.json());
+    // create a map that is building number to coordinates
+    let numToCoords = {};
+    for (let e of allData.features) {
+      numToCoords[e.properties["BuildingPoints.SpaceNum"]] =
+        e.geometry.coordinates;
+    }
+    console.log(numToCoords);
+    console.log(paulData);
+    let buildingPoints = [];
+    for (let connection of paulData) {
+      let coords = numToCoords[connection.apBuildingNumber];
+      if (coords != undefined) {
+        buildingPoints.push({tstamp:connection._time,coords:coords});
+      } else {
+        console.log(
+          "prob with ",
+          connection,
+          "building",
+          connection.apBuildingNumber
+        );
+      }
+    }
+    console.log(buildingPoints);
+    console.log();
+    let redraw = function() {
+      console.log("redrawing");
+      let circleRad = 5;
 
-    // make a circle and append it to the svg, and then transform it with the results of the applylatlng
-    let circle = g
-      .selectAll("circle")
-      .data(dataPoint)
-      .enter()
-      .append("circle")
-      .attr("r", 20)
-      .attr("class", "testpoint")
-      .attr(
-        "transform",
-        d => `translate(${applyLatLngToLayer(d).x},${applyLatLngToLayer(d).y})`
-      )
-      .attr("fill", "red");
+      // make a circle and append it to the svg, and then transform it with the results of the applylatlng
+      let circle = g
+        .selectAll(".testPoints")
+        .data(buildingPoints,d=> d.tstamp )
+        .join(
+          enter =>
+            enter
+              .append("circle")
+              .attr("r", circleRad)
+              .attr("class", "testPoints")
+              .attr(
+                "transform",
+                d =>
+                  `translate(${applyLatLngToLayer(d.coords).x},${
+                    applyLatLngToLayer(d.coords).y
+                  })`
+              )
+              .attr("fill", "red"),
+          update =>
+            update.attr(
+              "transform",
+              d =>
+                `translate(${applyLatLngToLayer(d.coords).x},${
+                  applyLatLngToLayer(d.coords).y
+                })`
+            ),
+          exit => exit
+        );
+    };
+    redraw();
+    // connect redraw to the map events
+    mymap.on("zoomend", redraw);
+    mymap.on("moveend", redraw);
   });
 </script>
 
