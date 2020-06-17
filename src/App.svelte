@@ -89,6 +89,12 @@
     console.log();
     let redraw = function() {
       console.log("redrawing");
+      // occasionally when zooming and panning the svg's container move, so we have to set svg to be relative and move it left and right
+      let newPlace = svg.node().getBoundingClientRect()
+      svg.style("left",(-newPlace.left) + "px")
+      svg.style("top",(-newPlace.top) + "px")
+      // now update the g that is containing the circles
+      g.attr("transform",`translate(${newPlace.left},${newPlace.top})`)
       let circleRad = 5;
 
       // make a circle and append it to the svg, and then transform it with the results of the applylatlng
