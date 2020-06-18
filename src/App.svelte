@@ -41,8 +41,8 @@
     console.log("origin is", mymap.getPixelOrigin());
     // create an svg
     let svg = d3.select(mymap.getPanes().overlayPane).append("svg");
-    svg.attr("height",bounds.max.y - bounds.min.y)
-    svg.attr("width",bounds.max.x - bounds.min.x)
+    svg.attr("height", bounds.max.y - bounds.min.y);
+    svg.attr("width", bounds.max.x - bounds.min.x);
     let g = svg.append("g").attr("class", "leaflet-zoom-hide");
     // create the geotransform
     let projectPoint = function(x, y) {
@@ -75,7 +75,7 @@
     for (let connection of paulData) {
       let coords = numToCoords[connection.apBuildingNumber];
       if (coords != undefined) {
-        buildingPoints.push({tstamp:connection._time,coords:coords});
+        buildingPoints.push({ tstamp: connection._time, coords: coords });
       } else {
         console.log(
           "prob with ",
@@ -90,17 +90,12 @@
     let redraw = function() {
       console.log("redrawing");
       // occasionally when zooming and panning the svg's container move, so we have to set svg to be relative and move it left and right
-      let newPlace = svg.node().getBoundingClientRect()
-      svg.style("left",(-newPlace.left) + "px")
-      svg.style("top",(-newPlace.top) + "px")
-      // now update the g that is containing the circles
-      g.attr("transform",`translate(${newPlace.left},${newPlace.top})`)
       let circleRad = 5;
 
       // make a circle and append it to the svg, and then transform it with the results of the applylatlng
       let circle = g
         .selectAll(".testPoints")
-        .data(buildingPoints,d=> d.tstamp )
+        .data(buildingPoints, d => d.tstamp)
         .join(
           enter =>
             enter
@@ -125,6 +120,12 @@
             ),
           exit => exit
         );
+        // get the pixel coordinates of the top left corner, 
+        let newPlace = svg.node().getBoundingClientRect();
+        svg.style("left", -newPlace.left + "px");
+        svg.style("top", -newPlace.top + "px");
+        // now update the g that is containing the circles
+        g.attr("transform", `translate(${newPlace.left},${newPlace.top})`);
     };
     redraw();
     // connect redraw to the map events
@@ -155,6 +156,9 @@
   }
   #mapid {
     height: 100vh;
+  }
+  svg {
+    position: absolute;
   }
 </style>
 
