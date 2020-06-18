@@ -4,7 +4,6 @@
   import * as d3 from "d3";
   onMount(async () => {
     console.log("loaded");
-    /*
     let mymap = L.map("mapid").setView([32.231481, -110.951838], 18);
     L.esri.basemapLayer("Gray").addTo(mymap);
     var subtleUA = L.esri
@@ -13,20 +12,12 @@
           "https://services.maps.arizona.edu/pdc/rest/services/SubtleCanvasTiles/MapServer"
       })
       .addTo(mymap);
-      */
     let paulData = await fetch("paulFebruaryTokenized.csv").then(res =>
       res.text()
     );
     console.log(paulData);
     let dsv = d3.dsvFormat(",");
     paulData = dsv.parse(paulData);
-    let layer = new L.StamenTileLayer("toner");
-    let mymap = L.map("mapid").setView(
-      [32.235649302713874, -110.95145375967088],
-      16
-    );
-
-    mymap.addLayer(layer);
     // get bounds
     console.log(
       mymap.getBounds(),
