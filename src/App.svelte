@@ -13,24 +13,40 @@
       })
       .addTo(mymap);
     // what's bizarre is that we get such wrong values for layerPointToLatLngs, but the feature layer is drawn in the correct spot
-    let roomFeatures = L.esri.featureLayer({url:"https://services.maps.arizona.edu/pdc/rest/services/Interior/MapServer/16"}).addTo(mymap)
-    roomFeatures.setStyle({opacity:0,fill:false})
-    let boundsAndRooms =[]
-    roomFeatures.on("load",()=> {
-      // 
+    let roomFeatures = L.esri
+      .featureLayer({
+        url:
+          "https://services.maps.arizona.edu/pdc/rest/services/Interior/MapServer/16"
+      })
+      .addTo(mymap);
+    roomFeatures.setStyle({ opacity: 0, fill: false });
+    let boundsAndRooms = [];
+    roomFeatures.on("load", () => {
+      //
+      let uid = 0;
       for (let room in roomFeatures._layers) {
-        let layerData = roomFeatures._layers[room]
-        let bound = layerData._bounds
-        let mid = {lat:bound._southWest.lat + (bound._northEast.lat - bound._southWest.lat)/2,lng:bound._northEast.lng + (bound._southWest.lng  - bound._northEast.lng)/2}
-        boundsAndRooms.push({roomID:layerData.feature.properties["ROOMEXT.RM_ID"],
-        building:layerData.feature.properties["ROOMEXT.BldgName"],
-        point:mid})
+        let layerData = roomFeatures._layers[room];
+        let bound = layerData._bounds;
+        let mid = {
+          lat:
+            bound._southWest.lat +
+            (bound._northEast.lat - bound._southWest.lat) / 2,
+          lng:
+            bound._northEast.lng +
+            (bound._southWest.lng - bound._northEast.lng) / 2
+        };
+        boundsAndRooms.push({
+          uid,
+          roomID: layerData.feature.properties["ROOMEXT.RM_ID"],
+          building: layerData.feature.properties["ROOMEXT.BldgName"],
+          point: mid
+        });
+        uid += 1;
       }
-    console.log("rooms and bounds",boundsAndRooms)
-    })
+      console.log("rooms and bounds", boundsAndRooms);
+    });
 
-
-    let roomData = await fetch("rooms.geojson").then(res=> res.json())
+    let roomData = await fetch("rooms.geojson").then(res => res.json());
     let paulData = await fetch("paulFebruaryTokenized.csv").then(res =>
       res.text()
     );
@@ -65,6 +81,9 @@
     let d3path = d3.geoPath().projection(transform);
     // define apply latlng to layer that takes in geopoints and produces screenspace x,y for drawing on svg
     // NOTE that geojson points are going to have the x first in the coordinates
+    let roomLatLng = function(d) {
+      return mymap.latLngToLayerPoint(new L.LatLng(d.lat, d.lng));
+    };
     let applyLatLngToLayer = function(d) {
       // do some comparison of building number to geojson of buildings to get coords
       let y = d[1];
@@ -130,12 +149,28 @@
             ),
           exit => exit
         );
-        // get the pixel coordinates of the top left corner, 
-        let newPlace = svg.node().getBoundingClientRect();
-        svg.style("left", -newPlace.left + "px");
-        svg.style("top", -newPlace.top + "px");
-        // now update the g that is containing the circles
-        g.attr("transform", `translate(${newPlace.left},${newPlace.top})`);
+      if (boundsAndRooms.length > 0) {
+        let blueCircles = g
+          .selectAll(".roomPoints")
+          .data(boundsAndRooms, d => d.uid)
+          .join(enter =>
+            enter
+              .append("circle")
+              .attr("r", 3)
+              .attr("fill", "blue")
+              .attr("class", ".roomPoints")
+              .attr(
+                "transform",
+                d => `translate(${roomLatLng(d.point).x},${roomLatLng(d.point).y})`
+              )
+          );
+      }
+      // get the pixel coordinates of the top left corner,
+      let newPlace = svg.node().getBoundingClientRect();
+      svg.style("left", -newPlace.left + "px");
+      svg.style("top", -newPlace.top + "px");
+      // now update the g that is containing the circles
+      g.attr("transform", `translate(${newPlace.left},${newPlace.top})`);
     };
     redraw();
     // connect redraw to the map events
