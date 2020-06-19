@@ -12,6 +12,25 @@
           "https://services.maps.arizona.edu/pdc/rest/services/SubtleCanvasTiles/MapServer"
       })
       .addTo(mymap);
+    // what's bizarre is that we get such wrong values for layerPointToLatLngs, but the feature layer is drawn in the correct spot
+    let roomFeatures = L.esri.featureLayer({url:"https://services.maps.arizona.edu/pdc/rest/services/Interior/MapServer/16"}).addTo(mymap)
+    roomFeatures.setStyle({opacity:0,fill:false})
+    let boundsAndRooms =[]
+    roomFeatures.on("load",()=> {
+      // 
+      for (let room in roomFeatures._layers) {
+        let layerData = roomFeatures._layers[room]
+        let bound = layerData._bounds
+        let mid = {lat:bound._southWest.lat + (bound._northEast.lat - bound._southWest.lat)/2,lng:bound._northEast.lng + (bound._southWest.lng  - bound._northEast.lng)/2}
+        boundsAndRooms.push({roomID:layerData.feature.properties["ROOMEXT.RM_ID"],
+        building:layerData.feature.properties["ROOMEXT.BldgName"],
+        point:mid})
+      }
+    console.log("rooms and bounds",boundsAndRooms)
+    })
+
+
+    let roomData = await fetch("rooms.geojson").then(res=> res.json())
     let paulData = await fetch("paulFebruaryTokenized.csv").then(res =>
       res.text()
     );
