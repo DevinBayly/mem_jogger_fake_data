@@ -12,36 +12,50 @@
           "https://services.maps.arizona.edu/pdc/rest/services/SubtleCanvasTiles/MapServer"
       })
       .addTo(mymap);
-    // what's bizarre is that we get such wrong values for layerPointToLatLngs, but the feature layer is drawn in the correct spot
-    let roomFeatures = L.esri
-      .featureLayer({
-        url:
-          "https://services.maps.arizona.edu/pdc/rest/services/Interior/MapServer/16"
-      })
-      .addTo(mymap);
-    roomFeatures.setStyle({ opacity: 0, fill: false });
-    let boundsAndRooms = {};
-    let buildingPoints = [];
-
     let roomData = await fetch("rooms.geojson").then(res => res.json());
+    let roomMap = {};
+    for (let r of roomData.features) {
+      let roomNum = r.attributes["ROOMEXT.RM_ID"];
+      let buildingNum = r.attributes["ROOMEXT.BldgAlpha"];
+      let key = `${roomNum},${buildingNum}`;
+      roomMap[key] = r.geometry;
+    }
+    console.log("the room map is", roomMap);
+    // this  is the magic line for converting the polygon data into useful values
+    /*
+      let point = new L.Point(centerL20[0],centerL20[1])
+      let pointLatLng = L.Projection.SphericalMercator.unproject(point)
+      */
+
     let paulData = await fetch("paulFebruaryTokenized.csv").then(res =>
       res.text()
     );
-    console.log(paulData);
     let dsv = d3.dsvFormat(",");
     paulData = dsv.parse(paulData);
+    // compare Paul's data to the roomMap
+    let paulRooms = [];
+    for (let e of paulData) {
+      let ekey = `0${e.apRoomNumber},${e.apBuildingNumber}`;
+      if (roomMap[ekey] != undefined) {
+        // make into a poly line and get the centroid
+        // TODO ask Naveed if there's any examples of shapes where we have to use more than the first entry of rings?
+        console.log(e)
+        let ringLats = roomMap[ekey].rings[0].map(pair =>
+          L.Projection.SphericalMercator.unproject(new L.Point(pair[0], pair[1]))
+        );
+        let roomCenter = L.polyline(ringLats,{fill:false,opacity:0})
+          .addTo(mymap)
+          .getCenter();
+        paulRooms.push({ tstamp: e._time, coords: roomCenter });
+      }
+    }
     // get bounds
-    console.log(
-      mymap.getBounds(),
-      "those are lat lngs",
-      mymap.getPixelBounds(),
-      "these are pixel bounds"
-    );
+    console.log("paul's rooms",paulRooms)
+
     // this is the width the svg should be to cover the full map
     let bounds = mymap.getPixelBounds();
     let width = bounds.max.x - bounds.min.x;
     let height = bounds.max.y - bounds.min.y;
-    console.log("origin is", mymap.getPixelOrigin());
     // create an svg
     let svg = d3.select(mymap.getPanes().overlayPane).append("svg");
     svg.attr("height", bounds.max.y - bounds.min.y);
@@ -58,25 +72,11 @@
     let d3path = d3.geoPath().projection(transform);
     // define apply latlng to layer that takes in geopoints and produces screenspace x,y for drawing on svg
     // NOTE that geojson points are going to have the x first in the coordinates
-    let roomLatLng = function(d) {
-      return mymap.latLngToLayerPoint(new L.LatLng(d.lat, d.lng));
-    };
     let applyLatLngToLayer = function(d) {
+      // d is a lat lng calculated from the getCenter() method of a polyline
       // do some comparison of building number to geojson of buildings to get coords
-      let y = d[1];
-      let x = d[0];
-      return mymap.latLngToLayerPoint(new L.LatLng(y, x));
+      return mymap.latLngToLayerPoint(d);
     };
-    // create a point for the student union, i think this has been ordered y,x by lat lng
-    let allData = await fetch("buildings.geojson").then(res => res.json());
-    // create a map that is building number to coordinates
-    let numToCoords = {};
-    for (let e of allData.features) {
-      numToCoords[e.properties["BuildingPoints.SpaceNum"]] =
-        e.geometry.coordinates;
-    }
-    console.log(numToCoords);
-    console.log(paulData);
     let redraw = function() {
       console.log("redrawing");
       // occasionally when zooming and panning the svg's container move, so we have to set svg to be relative and move it left and right
@@ -85,7 +85,7 @@
       // make a circle and append it to the svg, and then transform it with the results of the applylatlng
       let circle = g
         .selectAll(".testPoints")
-        .data(buildingPoints, d => d.tstamp)
+        .data(paulRooms, d => d.tstamp)
         .join(
           enter =>
             enter
@@ -110,7 +110,6 @@
             ),
           exit => exit
         );
-
       // get the pixel coordinates of the top left corner,
       let newPlace = svg.node().getBoundingClientRect();
       svg.style("left", -newPlace.left + "px");
@@ -118,46 +117,11 @@
       // now update the g that is containing the circles
       g.attr("transform", `translate(${newPlace.left},${newPlace.top})`);
     };
+    redraw();
     // connect redraw to the map events
     mymap.on("zoomend", redraw);
     mymap.on("moveend", redraw);
-
-    roomFeatures.on("load", () => {
-      //
-      for (let room in roomFeatures._layers) {
-        let layerData = roomFeatures._layers[room];
-        let bound = layerData._bounds;
-        let mid = [
-          bound._southWest.lat +
-            (bound._northEast.lat - bound._southWest.lat) / 2,
-          bound._northEast.lng +
-            (bound._southWest.lng - bound._northEast.lng) / 2
-        ];
-        boundsAndRooms[
-          layerData.feature.properties["ROOMEXT.RM_ID"] +
-            "," +
-            layerData.feature.properties["ROOMEXT.BldgAlpha"]
-        ] = mid;
-      }
-      console.log("rooms and bounds", boundsAndRooms);
-      // now draw the points for the first time, and calculate the places the data should show up
-
-    let testData = [{ apBuildingNumber:"73",_time:"now",apRoomNumber:"130" },{ apBuildingNumber:"73",_time:"now1",apRoomNumber:"150" },{ apBuildingNumber:"73",_time:"now2",apRoomNumber:"116" }]
-     for (let connection of testData) {
-        let buildingnum = connection.apBuildingNumber;
-        let roomNum = connection.apRoomNumber.padStart(4, "0");
-        let key = `${roomNum},${buildingnum}`;
-        buildingPoints.push({
-          tstamp: connection._time,
-          coords: boundsAndRooms[key]
-        });
-      }
-      console.log(buildingPoints);
-      console.log();
-      redraw();
-    });
   });
-
 </script>
 
 <style>
