@@ -20,31 +20,8 @@
       })
       .addTo(mymap);
     roomFeatures.setStyle({ opacity: 0, fill: false });
-    let boundsAndRooms = [];
-    roomFeatures.on("load", () => {
-      //
-      let uid = 0;
-      for (let room in roomFeatures._layers) {
-        let layerData = roomFeatures._layers[room];
-        let bound = layerData._bounds;
-        let mid = {
-          lat:
-            bound._southWest.lat +
-            (bound._northEast.lat - bound._southWest.lat) / 2,
-          lng:
-            bound._northEast.lng +
-            (bound._southWest.lng - bound._northEast.lng) / 2
-        };
-        boundsAndRooms.push({
-          uid,
-          roomID: layerData.feature.properties["ROOMEXT.RM_ID"],
-          building: layerData.feature.properties["ROOMEXT.BldgName"],
-          point: mid
-        });
-        uid += 1;
-      }
-      console.log("rooms and bounds", boundsAndRooms);
-    });
+    let boundsAndRooms = {};
+    let buildingPoints = [];
 
     let roomData = await fetch("rooms.geojson").then(res => res.json());
     let paulData = await fetch("paulFebruaryTokenized.csv").then(res =>
@@ -100,22 +77,6 @@
     }
     console.log(numToCoords);
     console.log(paulData);
-    let buildingPoints = [];
-    for (let connection of paulData) {
-      let coords = numToCoords[connection.apBuildingNumber];
-      if (coords != undefined) {
-        buildingPoints.push({ tstamp: connection._time, coords: coords });
-      } else {
-        console.log(
-          "prob with ",
-          connection,
-          "building",
-          connection.apBuildingNumber
-        );
-      }
-    }
-    console.log(buildingPoints);
-    console.log();
     let redraw = function() {
       console.log("redrawing");
       // occasionally when zooming and panning the svg's container move, so we have to set svg to be relative and move it left and right
@@ -149,22 +110,7 @@
             ),
           exit => exit
         );
-      if (boundsAndRooms.length > 0) {
-        let blueCircles = g
-          .selectAll(".roomPoints")
-          .data(boundsAndRooms, d => d.uid)
-          .join(enter =>
-            enter
-              .append("circle")
-              .attr("r", 3)
-              .attr("fill", "blue")
-              .attr("class", ".roomPoints")
-              .attr(
-                "transform",
-                d => `translate(${roomLatLng(d.point).x},${roomLatLng(d.point).y})`
-              )
-          );
-      }
+
       // get the pixel coordinates of the top left corner,
       let newPlace = svg.node().getBoundingClientRect();
       svg.style("left", -newPlace.left + "px");
@@ -172,11 +118,46 @@
       // now update the g that is containing the circles
       g.attr("transform", `translate(${newPlace.left},${newPlace.top})`);
     };
-    redraw();
     // connect redraw to the map events
     mymap.on("zoomend", redraw);
     mymap.on("moveend", redraw);
+
+    roomFeatures.on("load", () => {
+      //
+      for (let room in roomFeatures._layers) {
+        let layerData = roomFeatures._layers[room];
+        let bound = layerData._bounds;
+        let mid = [
+          bound._southWest.lat +
+            (bound._northEast.lat - bound._southWest.lat) / 2,
+          bound._northEast.lng +
+            (bound._southWest.lng - bound._northEast.lng) / 2
+        ];
+        boundsAndRooms[
+          layerData.feature.properties["ROOMEXT.RM_ID"] +
+            "," +
+            layerData.feature.properties["ROOMEXT.BldgAlpha"]
+        ] = mid;
+      }
+      console.log("rooms and bounds", boundsAndRooms);
+      // now draw the points for the first time, and calculate the places the data should show up
+
+    let testData = [{ apBuildingNumber:"73",_time:"now",apRoomNumber:"130" },{ apBuildingNumber:"73",_time:"now1",apRoomNumber:"150" },{ apBuildingNumber:"73",_time:"now2",apRoomNumber:"116" }]
+     for (let connection of testData) {
+        let buildingnum = connection.apBuildingNumber;
+        let roomNum = connection.apRoomNumber.padStart(4, "0");
+        let key = `${roomNum},${buildingnum}`;
+        buildingPoints.push({
+          tstamp: connection._time,
+          coords: boundsAndRooms[key]
+        });
+      }
+      console.log(buildingPoints);
+      console.log();
+      redraw();
+    });
   });
+
 </script>
 
 <style>
