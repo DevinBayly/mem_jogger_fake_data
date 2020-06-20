@@ -12,13 +12,31 @@
           "https://services.maps.arizona.edu/pdc/rest/services/SubtleCanvasTiles/MapServer"
       })
       .addTo(mymap);
-    let roomData = await fetch("rooms.geojson").then(res => res.json());
     let roomMap = {};
-    for (let r of roomData.features) {
-      let roomNum = r.attributes["ROOMEXT.RM_ID"];
-      let buildingNum = r.attributes["ROOMEXT.BldgAlpha"];
-      let key = `${roomNum},${buildingNum}`;
-      roomMap[key] = r.geometry;
+    // iterate over the files
+    let files = [
+      "rooms16.geojson",
+      "rooms17.geojson",
+      "rooms18.geojson",
+      "rooms19.geojson",
+      "rooms20.geojson",
+      "rooms21.geojson",
+      "rooms22.geojson",
+      "rooms23.geojson",
+      "rooms24.geojson",
+      "rooms25.geojson",
+      "rooms26.geojson",
+      "rooms27.geojson"
+    ];
+    for (let roomFile of files) {
+      console.log("loading ", roomFile);
+      let roomData = await fetch(roomFile).then(res => res.json());
+      for (let r of roomData.features) {
+        let roomNum = r.attributes["ROOMEXT.RM_ID"];
+        let buildingNum = r.attributes["ROOMEXT.BldgAlpha"];
+        let key = `${roomNum},${buildingNum}`;
+        roomMap[key] = r.geometry;
+      }
     }
     console.log("the room map is", roomMap);
     // this  is the magic line for converting the polygon data into useful values
@@ -32,25 +50,47 @@
     );
     let dsv = d3.dsvFormat(",");
     paulData = dsv.parse(paulData);
+    // Naveed's formula for calculating a centroid
+    // TODO make proper attribution for this code
+    var getCentroid = function(arr) {
+      return arr.reduce(
+        function(x, y) {
+          return [x[0] + y[0] / arr.length, x[1] + y[1] / arr.length];
+        },
+        [0, 0]
+      );
+    };
     // compare Paul's data to the roomMap
     let paulRooms = [];
     for (let e of paulData) {
-      let ekey = `0${e.apRoomNumber},${e.apBuildingNumber}`;
+      let ekey;
+      // strip out the number part of the room number from the letters, but keep track of what's there after the numbers so we can add it back
+      let justNumbers = e.apRoomNumber.match(/(\d+)(.*)/);
+      if (justNumbers) {
+        ekey = `${justNumbers[1].padStart(4, "0")}${justNumbers[2]},${
+          e.apBuildingNumber
+        }`;
+      } else {
+        ekey = `${e.apRoomNumber.padStart(4, "0")},${e.apBuildingNumber}`;
+      }
+      console.log(e.apBuildingNumber, e.apRoomNumber);
       if (roomMap[ekey] != undefined) {
+        console.log("hit");
         // make into a poly line and get the centroid
         // TODO ask Naveed if there's any examples of shapes where we have to use more than the first entry of rings?
-        console.log(e)
-        let ringLats = roomMap[ekey].rings[0].map(pair =>
-          L.Projection.SphericalMercator.unproject(new L.Point(pair[0], pair[1]))
-        );
-        let roomCenter = L.polyline(ringLats,{fill:false,opacity:0})
+        let centerMercator = getCentroid(roomMap[ekey].rings[0]);
+        /*
+        let roomCenter = L.polyline(ringLats, { fill: false })
           .addTo(mymap)
           .getCenter();
-        paulRooms.push({ tstamp: e._time, coords: roomCenter });
+          */
+        let pMerc = new L.Point(centerMercator[0], centerMercator[1]);
+        let pLatLng = L.Projection.SphericalMercator.unproject(pMerc);
+        paulRooms.push({ tstamp: e._time, coords: pLatLng });
       }
     }
     // get bounds
-    console.log("paul's rooms",paulRooms)
+    console.log("paul's rooms", paulRooms);
 
     // this is the width the svg should be to cover the full map
     let bounds = mymap.getPixelBounds();
