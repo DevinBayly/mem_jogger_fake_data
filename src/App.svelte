@@ -2,55 +2,29 @@
   export let name;
   import { onMount } from "svelte";
   import CB from "./columnBlock.svelte";
+  import DaySelector from "./daySelector.svelte"
   import * as d3 from "d3";
+
   onMount(async () => {
     console.log("loaded");
+    
     let paulData = await fetch("paulFebruaryTokenized.csv").then(res =>
       res.text()
     );
     let dsv = d3.dsvFormat(",");
     paulData = dsv.parse(paulData);
     console.log(paulData);
-    let mockData = [
-      {
-        _time: "2020-02-03T16:45:47.875+0000",
-        userhash:
-          "ad3876e02437086654943faf80000b2f1d20ac82d9d9ea3dbee1d898e3505478",
-        Called_Station_ID: "73-ODSE-cia1:UAWiFi",
-        EndPointMatchedProfile: "Apple-iPhone",
-        macHash:
-          "621371628f25f04b2bd0d919a9e55e4df2408768006e9ef65e47a03ea6e191af",
-        apBuildingNumber: "73",
-        apRoomNumber: "ODSE",
-        apDescription: "cia1",
-        ISEPolicySetName: "UAWiFi - Default",
-        psrsvd_gc: "1",
-        psrsvd_v: "1"
-      },
-      {
-        _time: "2020-02-03T16:45:52.950+0000",
-        userhash:
-          "ad3876e02437086654943faf80000b2f1d20ac82d9d9ea3dbee1d898e3505478",
-        Called_Station_ID: "73-ODSE-cia1:UAWiFi",
-        EndPointMatchedProfile: "Apple-Device",
-        macHash:
-          "3d87c410523f0cb71cbde446790dafb0e9ba56d4c6cb57e9b74b5d8d9b34824f",
-        apBuildingNumber: "73",
-        apRoomNumber: "ODSE",
-        apDescription: "cia1",
-        ISEPolicySetName: "UAWiFi - Default",
-        psrsvd_gc: "1",
-        psrsvd_v: "1"
-      }
-    ];
+    
+    let mockData = paulData
     // loop through the data, and assign durationss, and make the columnBlocks
     let props = [];
     let allTimes = [];
+    let id = 0
     for (let d of mockData) {
       let startTime = d3.isoParse(d._time);
       allTimes.push(startTime);
       let duration = new Date(startTime.getTime());
-      duration = duration.setSeconds(duration.getSeconds() + 5 * 60 * 1000);
+      duration.setSeconds(duration.getSeconds() + 5 );
       // this will set the size of the graphic at the bottom of each block
       let dataDims = {
         height: 100,
@@ -59,15 +33,19 @@
       };
       // likely still need the conversion between numbers and names of places
       props.push({
+        id,
         startTime,
         duration,
         buildingName: d.apBuildingNumber,
         room: d.apRoomNumber,
         dataDims
       });
+      id+=1
     }
-    let timeDomain = [d3.min(allTimes), d3.max(allTimes)];
-    let target = document.querySelector("#Rcolumn");
+    let lastTime = new Date(d3.max(allTimes).getTime())
+    lastTime.setSeconds(lastTime.getSeconds() + 5)
+    let timeDomain = [d3.min(allTimes), lastTime];
+    let target = document.querySelector("#blockHolder");
 
     // assign data to the blocks
     for (let prop of props) {
@@ -79,6 +57,13 @@
         }
       });
     }
+    new DaySelector({
+      target:document.querySelector("#daySelector"),
+      props:{
+        axisData:{domain:timeDomain}
+      }
+
+    })
   });
 </script>
 
@@ -108,10 +93,27 @@
   svg {
     position: absolute;
   }
+  #rightSide {
+    display:flex;
+    justify-content: right;
+    height:100%;
+  }
+  #Rcolumn {
+    width:400px;
+    border:2px solid black;
+    display:flex;
+    flex-direction: column;
+  }
+  #blockHolder {
+    overflow:scroll;
+  }
 </style>
-
+<div id="rightSide">
 <div id="Rcolumn">
   <!-- include the holder of columnBlocks -->
   <div id="blockHolder" />
   <!-- leave space at the bottom for the day selector -->
+  <div id="daySelector">
+  </div>
+</div>
 </div>
