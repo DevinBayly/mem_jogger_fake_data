@@ -98,8 +98,6 @@
     let height = bounds.max.y - bounds.min.y;
     // create an svg
     let svg = d3.select(mymap.getPanes().overlayPane).append("svg");
-    svg.attr("height", bounds.max.y - bounds.min.y);
-    svg.attr("width", bounds.max.x - bounds.min.x);
     let g = svg.append("g").attr("class", "leaflet-zoom-hide");
     // create the geotransform
     let projectPoint = function(x, y) {
@@ -117,7 +115,35 @@
       // do some comparison of building number to geojson of buildings to get coords
       return mymap.latLngToLayerPoint(d);
     };
+    // calculate the nw corner of a bounding box on the points
+    let bbox = {x:{},y:{}}
+    for(let i = 0 ; i < paulRooms.length;i++) {
+      let d=paulRooms[i].coords
+      if (i == 0) {
+        // set minmax off the bat
+        bbox.x.min = bbox.x.max = d.lng
+        bbox.y.min = bbox.y.max = d.lat
+        continue
+      }
+      if (d.lat > bbox.y.max) {
+        bbox.y.max = d.lat
+      }
+      if (d.lat < bbox.y.min) {
+        bbox.y.min = d.lat
+      }
+      if (d.lng > bbox.x.max) {
+        bbox.x.max = d.lng
+      }
+      if (d.lng < bbox.x.min) {
+        bbox.x.min = d.lng
+      }
+    }
+    // the northwest corner is the max.y and the min.x, and the south east corner is the min.y and the max.x
+    console.log("boundsbox is",bbox)
+    let bboxNWLatLng = new L.LatLng(bbox.y.max,bbox.x.min)
+    let bboxSELatLng = new L.LatLng(bbox.y.min,bbox.x.max)
     let redraw = function() {
+      // need a function to calculate the bounds of the points
       console.log("redrawing");
       // occasionally when zooming and panning the svg's container move, so we have to set svg to be relative and move it left and right
       let circleRad = 5;
@@ -150,12 +176,17 @@
             ),
           exit => exit
         );
-      // get the pixel coordinates of the top left corner,
-      let newPlace = svg.node().getBoundingClientRect();
-      svg.style("left", -newPlace.left + "px");
-      svg.style("top", -newPlace.top + "px");
+      // the width is the diff nw and se bbox points 
+      let screenNW = applyLatLngToLayer(bboxNWLatLng)
+      let screenSE = applyLatLngToLayer(bboxSELatLng)
+      svg.attr("width",screenSE.x -screenNW.x)
+      svg.attr("height",screenSE.y -screenNW.y)
+      // get the pixel coordinates of the top left corner of bbox
+      let newPlace = 
+      svg.style("left", screenNW.x + "px");
+      svg.style("top", screenNW.y + "px");
       // now update the g that is containing the circles
-      g.attr("transform", `translate(${newPlace.left},${newPlace.top})`);
+      g.attr("transform", `translate(${-screenNW.x},${-screenNW.y})`);
     };
     redraw();
     // connect redraw to the map events
