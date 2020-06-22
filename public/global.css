@@ -63,39 +63,3 @@ button:not(:disabled):active {
 button:focus {
 	border-color: #666;
 }
-#background {
-	opacity:0;
-}
-.b-name {
-	fill:black;
-	font-weight:bold;
-	text-anchor:middle;
-	font-family:Arial, Helvetica, sans-serif;
-	font-size:12px;
-}
-.horizontalline {
-	stroke:black;
-}
-.vertmouseline {
-	stroke:red;
-}
-#tooltipHolder {
-	width:200px;
-	position:absolute;
-	border:black 1px solid;
-	border-radius:6px;
-	background:white;
-}
-#topgraph{
- width:100%;
- overflow:scroll;
-}
-#bottomgraph {
-	position:fixed;
-	bottom:0;
-	background:white;
-}
-
-#brushCursorLine {
-	opacity:.5;
-}

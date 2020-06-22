@@ -1,0 +1,2256 @@
+{
+ "displayFieldName": "Level_11.DocName",
+ "fieldAliases": {
+  "Level_11.OBJECTID": "OBJECTID",
+  "Level_11.Handle": "Handle",
+  "Level_11.DocName": "DocName",
+  "Level_11.Shape_Length": "Shape_Length",
+  "Level_11.Shape_Area": "Shape_Area",
+  "Level_11.Join_Key": "Join_Key",
+  "ROOMEXT.OBJECTID": "OBJECTID",
+  "ROOMEXT.dwgname": "dwgname",
+  "ROOMEXT.ehandle": "ehandle",
+  "ROOMEXT.Join_Key": "Join_Key",
+  "ROOMEXT.bl_id": "bl_id",
+  "ROOMEXT.fl_id": "fl_id",
+  "ROOMEXT.RM_ID": "RM_ID",
+  "ROOMEXT.RoomName": "RoomName",
+  "ROOMEXT.BldgAlpha": "BldgAlpha",
+  "ROOMEXT.BldgName": "BldgName",
+  "ROOMEXT.CollegeID": "CollegeID",
+  "ROOMEXT.CollegeName": "CollegeName",
+  "ROOMEXT.DeptID": "DeptID",
+  "ROOMEXT.DeptName": "DeptName",
+  "ROOMEXT.TypeID": "TypeID",
+  "ROOMEXT.RoomType": "RoomType",
+  "ROOMEXT.CatID": "CatID",
+  "ROOMEXT.RoomCategory": "RoomCategory",
+  "ROOMEXT.rm_use": "rm_use",
+  "ROOMEXT.RoomUse": "RoomUse",
+  "ROOMEXT.area": "area",
+  "ROOMEXT.ROOM_CLASSIFICATION": "ROOM_CLASSIFICATION",
+  "ROOMEXT.restricted": "restricted",
+  "ROOMEXT.EmpCount": "EmpCount",
+  "ROOMEXT.date_inv": "date_inv",
+  "ROOMEXT.capacity": "capacity",
+  "ROOMEXT.rm_key": "rm_key",
+  "ROOMEXT.roomKey": "roomKey"
+ },
+ "geometryType": "esriGeometryPolygon",
+ "spatialReference": {
+  "wkid": 102100,
+  "latestWkid": 3857
+ },
+ "fields": [
+  {
+   "name": "Level_11.OBJECTID",
+   "type": "esriFieldTypeOID",
+   "alias": "OBJECTID"
+  },
+  {
+   "name": "Level_11.Handle",
+   "type": "esriFieldTypeString",
+   "alias": "Handle",
+   "length": 16
+  },
+  {
+   "name": "Level_11.DocName",
+   "type": "esriFieldTypeString",
+   "alias": "DocName",
+   "length": 255
+  },
+  {
+   "name": "Level_11.Shape_Length",
+   "type": "esriFieldTypeDouble",
+   "alias": "Shape_Length"
+  },
+  {
+   "name": "Level_11.Shape_Area",
+   "type": "esriFieldTypeDouble",
+   "alias": "Shape_Area"
+  },
+  {
+   "name": "Level_11.Join_Key",
+   "type": "esriFieldTypeString",
+   "alias": "Join_Key",
+   "length": 255
+  },
+  {
+   "name": "ROOMEXT.OBJECTID",
+   "type": "esriFieldTypeInteger",
+   "alias": "OBJECTID"
+  },
+  {
+   "name": "ROOMEXT.dwgname",
+   "type": "esriFieldTypeString",
+   "alias": "dwgname",
+   "length": 132
+  },
+  {
+   "name": "ROOMEXT.ehandle",
+   "type": "esriFieldTypeString",
+   "alias": "ehandle",
+   "length": 64
+  },
+  {
+   "name": "ROOMEXT.Join_Key",
+   "type": "esriFieldTypeString",
+   "alias": "Join_Key",
+   "length": 197
+  },
+  {
+   "name": "ROOMEXT.bl_id",
+   "type": "esriFieldTypeString",
+   "alias": "bl_id",
+   "length": 8
+  },
+  {
+   "name": "ROOMEXT.fl_id",
+   "type": "esriFieldTypeString",
+   "alias": "fl_id",
+   "length": 4
+  },
+  {
+   "name": "ROOMEXT.RM_ID",
+   "type": "esriFieldTypeString",
+   "alias": "RM_ID",
+   "length": 8
+  },
+  {
+   "name": "ROOMEXT.RoomName",
+   "type": "esriFieldTypeString",
+   "alias": "RoomName",
+   "length": 16
+  },
+  {
+   "name": "ROOMEXT.BldgAlpha",
+   "type": "esriFieldTypeString",
+   "alias": "BldgAlpha",
+   "length": 8
+  },
+  {
+   "name": "ROOMEXT.BldgName",
+   "type": "esriFieldTypeString",
+   "alias": "BldgName",
+   "length": 70
+  },
+  {
+   "name": "ROOMEXT.CollegeID",
+   "type": "esriFieldTypeString",
+   "alias": "CollegeID",
+   "length": 16
+  },
+  {
+   "name": "ROOMEXT.CollegeName",
+   "type": "esriFieldTypeString",
+   "alias": "CollegeName",
+   "length": 40
+  },
+  {
+   "name": "ROOMEXT.DeptID",
+   "type": "esriFieldTypeString",
+   "alias": "DeptID",
+   "length": 16
+  },
+  {
+   "name": "ROOMEXT.DeptName",
+   "type": "esriFieldTypeString",
+   "alias": "DeptName",
+   "length": 40
+  },
+  {
+   "name": "ROOMEXT.TypeID",
+   "type": "esriFieldTypeString",
+   "alias": "TypeID",
+   "length": 10
+  },
+  {
+   "name": "ROOMEXT.RoomType",
+   "type": "esriFieldTypeString",
+   "alias": "RoomType",
+   "length": 96
+  },
+  {
+   "name": "ROOMEXT.CatID",
+   "type": "esriFieldTypeString",
+   "alias": "CatID",
+   "length": 12
+  },
+  {
+   "name": "ROOMEXT.RoomCategory",
+   "type": "esriFieldTypeString",
+   "alias": "RoomCategory",
+   "length": 96
+  },
+  {
+   "name": "ROOMEXT.rm_use",
+   "type": "esriFieldTypeString",
+   "alias": "rm_use",
+   "length": 16
+  },
+  {
+   "name": "ROOMEXT.RoomUse",
+   "type": "esriFieldTypeString",
+   "alias": "RoomUse",
+   "length": 35
+  },
+  {
+   "name": "ROOMEXT.area",
+   "type": "esriFieldTypeDouble",
+   "alias": "area"
+  },
+  {
+   "name": "ROOMEXT.ROOM_CLASSIFICATION",
+   "type": "esriFieldTypeString",
+   "alias": "ROOM_CLASSIFICATION",
+   "length": 100
+  },
+  {
+   "name": "ROOMEXT.restricted",
+   "type": "esriFieldTypeString",
+   "alias": "restricted",
+   "length": 1
+  },
+  {
+   "name": "ROOMEXT.EmpCount",
+   "type": "esriFieldTypeInteger",
+   "alias": "EmpCount"
+  },
+  {
+   "name": "ROOMEXT.date_inv",
+   "type": "esriFieldTypeString",
+   "alias": "date_inv",
+   "length": 10
+  },
+  {
+   "name": "ROOMEXT.capacity",
+   "type": "esriFieldTypeInteger",
+   "alias": "capacity"
+  },
+  {
+   "name": "ROOMEXT.rm_key",
+   "type": "esriFieldTypeInteger",
+   "alias": "rm_key"
+  },
+  {
+   "name": "ROOMEXT.roomKey",
+   "type": "esriFieldTypeString",
+   "alias": "roomKey",
+   "length": 17
+  }
+ ],
+ "features": [
+  {
+   "attributes": {
+    "Level_11.OBJECTID": 1,
+    "Level_11.Handle": "8BFBE",
+    "Level_11.DocName": "83-12+84-12.dwg",
+    "Level_11.Shape_Length": 20.737295240522116,
+    "Level_11.Shape_Area": 16.46305648489497,
+    "Level_11.Join_Key": "83-12+84-12.dwg+8BFBE",
+    "ROOMEXT.OBJECTID": 28321,
+    "ROOMEXT.dwgname": "83-12+84-12.dwg",
+    "ROOMEXT.ehandle": "8BFBE",
+    "ROOMEXT.Join_Key": "83-12+84-12.dwg+8BFBE",
+    "ROOMEXT.bl_id": "0084.00",
+    "ROOMEXT.fl_id": "11",
+    "ROOMEXT.RM_ID": "1102",
+    "ROOMEXT.RoomName": "",
+    "ROOMEXT.BldgAlpha": "84",
+    "ROOMEXT.BldgName": "Arizona Residence Hall",
+    "ROOMEXT.CollegeID": "BUGN",
+    "ROOMEXT.CollegeName": "Business Affairs General",
+    "ROOMEXT.DeptID": "9956",
+    "ROOMEXT.DeptName": "Unassignable Space",
+    "ROOMEXT.TypeID": "030.00",
+    "ROOMEXT.RoomType": "Mechanical Area",
+    "ROOMEXT.CatID": "030",
+    "ROOMEXT.RoomCategory": "Mechanical Area",
+    "ROOMEXT.rm_use": "084",
+    "ROOMEXT.RoomUse": "Physical Plant",
+    "ROOMEXT.area": 203,
+    "ROOMEXT.ROOM_CLASSIFICATION": "None",
+    "ROOMEXT.restricted": "",
+    "ROOMEXT.EmpCount": null,
+    "ROOMEXT.date_inv": "1988-01-01",
+    "ROOMEXT.capacity": 0,
+    "ROOMEXT.rm_key": 28333,
+    "ROOMEXT.roomKey": "84+1102"
+   },
+   "geometry": {
+    "rings": [
+     [
+      [
+       -12351715.2783,
+       3793375.7531000003
+      ],
+      [
+       -12351718.307399999,
+       3793375.7779000029
+      ],
+      [
+       -12351718.259199999,
+       3793381.6863999963
+      ],
+      [
+       -12351717.5463,
+       3793381.6805000007
+      ],
+      [
+       -12351717.537700001,
+       3793382.754900001
+      ],
+      [
+       -12351716.824900001,
+       3793382.7488999963
+      ],
+      [
+       -12351716.838,
+       3793381.137500003
+      ],
+      [
+       -12351715.590700001,
+       3793381.1272
+      ],
+      [
+       -12351715.601,
+       3793379.8738999963
+      ],
+      [
+       -12351715.9573,
+       3793379.8769000024
+      ],
+      [
+       -12351715.967599999,
+       3793378.6235999987
+      ],
+      [
+       -12351715.254900001,
+       3793378.6177000031
+      ],
+      [
+       -12351715.2783,
+       3793375.7531000003
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "Level_11.OBJECTID": 2,
+    "Level_11.Handle": "8BFBF",
+    "Level_11.DocName": "83-12+84-12.dwg",
+    "Level_11.Shape_Length": 23.935906596893986,
+    "Level_11.Shape_Area": 35.797227545207491,
+    "Level_11.Join_Key": "83-12+84-12.dwg+8BFBF",
+    "ROOMEXT.OBJECTID": 28320,
+    "ROOMEXT.dwgname": "83-12+84-12.dwg",
+    "ROOMEXT.ehandle": "8BFBF",
+    "ROOMEXT.Join_Key": "83-12+84-12.dwg+8BFBF",
+    "ROOMEXT.bl_id": "0084.00",
+    "ROOMEXT.fl_id": "11",
+    "ROOMEXT.RM_ID": "1100",
+    "ROOMEXT.RoomName": "",
+    "ROOMEXT.BldgAlpha": "84",
+    "ROOMEXT.BldgName": "Arizona Residence Hall",
+    "ROOMEXT.CollegeID": "BUGN",
+    "ROOMEXT.CollegeName": "Business Affairs General",
+    "ROOMEXT.DeptID": "9956",
+    "ROOMEXT.DeptName": "Unassignable Space",
+    "ROOMEXT.TypeID": "030.00",
+    "ROOMEXT.RoomType": "Mechanical Area",
+    "ROOMEXT.CatID": "030",
+    "ROOMEXT.RoomCategory": "Mechanical Area",
+    "ROOMEXT.rm_use": "084",
+    "ROOMEXT.RoomUse": "Physical Plant",
+    "ROOMEXT.area": 245,
+    "ROOMEXT.ROOM_CLASSIFICATION": "None",
+    "ROOMEXT.restricted": "",
+    "ROOMEXT.EmpCount": null,
+    "ROOMEXT.date_inv": "1973-12-01",
+    "ROOMEXT.capacity": 0,
+    "ROOMEXT.rm_key": 28332,
+    "ROOMEXT.roomKey": "84+1100"
+   },
+   "geometry": {
+    "rings": [
+     [
+      [
+       -12351709.4202,
+       3793373.0188999996
+      ],
+      [
+       -12351715.3003,
+       3793373.067400001
+      ],
+      [
+       -12351715.250500001,
+       3793379.1547999978
+      ],
+      [
+       -12351709.3704,
+       3793379.1063999981
+      ],
+      [
+       -12351709.4202,
+       3793373.0188999996
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "Level_11.OBJECTID": 3,
+    "Level_11.Handle": "8BFC1",
+    "Level_11.DocName": "83-12+84-12.dwg",
+    "Level_11.Shape_Length": 29.660400384627454,
+    "Level_11.Shape_Area": 48.367848086712669,
+    "Level_11.Join_Key": "83-12+84-12.dwg+8BFC1",
+    "ROOMEXT.OBJECTID": 28323,
+    "ROOMEXT.dwgname": "83-12+84-12.dwg",
+    "ROOMEXT.ehandle": "8BFC1",
+    "ROOMEXT.Join_Key": "83-12+84-12.dwg+8BFC1",
+    "ROOMEXT.bl_id": "0083.00",
+    "ROOMEXT.fl_id": "11",
+    "ROOMEXT.RM_ID": "1101S",
+    "ROOMEXT.RoomName": "",
+    "ROOMEXT.BldgAlpha": "83",
+    "ROOMEXT.BldgName": "Sonora Residence Hall",
+    "ROOMEXT.CollegeID": "BUGN",
+    "ROOMEXT.CollegeName": "Business Affairs General",
+    "ROOMEXT.DeptID": "9956",
+    "ROOMEXT.DeptName": "Unassignable Space",
+    "ROOMEXT.TypeID": "030.00",
+    "ROOMEXT.RoomType": "Mechanical Area",
+    "ROOMEXT.CatID": "030",
+    "ROOMEXT.RoomCategory": "Mechanical Area",
+    "ROOMEXT.rm_use": "084",
+    "ROOMEXT.RoomUse": "Physical Plant",
+    "ROOMEXT.area": 489,
+    "ROOMEXT.ROOM_CLASSIFICATION": "None",
+    "ROOMEXT.restricted": "",
+    "ROOMEXT.EmpCount": null,
+    "ROOMEXT.date_inv": "1988-01-01",
+    "ROOMEXT.capacity": 0,
+    "ROOMEXT.rm_key": 28335,
+    "ROOMEXT.roomKey": "83+1101S"
+   },
+   "geometry": {
+    "rings": [
+     [
+      [
+       -12351713.713,
+       3793349.2399000004
+      ],
+      [
+       -12351713.714499999,
+       3793349.060800001
+      ],
+      [
+       -12351717.278099999,
+       3793349.0903000012
+      ],
+      [
+       -12351717.2094,
+       3793357.5053000003
+      ],
+      [
+       -12351710.7947,
+       3793357.4523999989
+      ],
+      [
+       -12351710.8475,
+       3793351.0067000017
+      ],
+      [
+       -12351713.6984,
+       3793351.0302999988
+      ],
+      [
+       -12351713.713,
+       3793349.2399000004
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "Level_11.OBJECTID": 5,
+    "Level_11.Handle": "7B485",
+    "Level_11.DocName": "77-11.dwg",
+    "Level_11.Shape_Length": 36.44392891639643,
+    "Level_11.Shape_Area": 80.67147778035806,
+    "Level_11.Join_Key": "77-11.dwg+7B485",
+    "ROOMEXT.OBJECTID": 27191,
+    "ROOMEXT.dwgname": "77-11.dwg",
+    "ROOMEXT.ehandle": "7B485",
+    "ROOMEXT.Join_Key": "77-11.dwg+7B485",
+    "ROOMEXT.bl_id": "0077.00",
+    "ROOMEXT.fl_id": "11",
+    "ROOMEXT.RM_ID": "1114",
+    "ROOMEXT.RoomName": "",
+    "ROOMEXT.BldgAlpha": "77",
+    "ROOMEXT.BldgName": "Gould-Simpson",
+    "ROOMEXT.CollegeID": "SCNC",
+    "ROOMEXT.CollegeName": "College of Science",
+    "ROOMEXT.DeptID": "0469",
+    "ROOMEXT.DeptName": "Hydrology & Atmospheric Sci",
+    "ROOMEXT.TypeID": "250.00",
+    "ROOMEXT.RoomType": "Research/ Nonclass Lab",
+    "ROOMEXT.CatID": "250",
+    "ROOMEXT.RoomCategory": "Research/ Nonclass Lab",
+    "ROOMEXT.rm_use": "030",
+    "ROOMEXT.RoomUse": "Research Laboratory",
+    "ROOMEXT.area": 684,
+    "ROOMEXT.ROOM_CLASSIFICATION": "None",
+    "ROOMEXT.restricted": "",
+    "ROOMEXT.EmpCount": null,
+    "ROOMEXT.date_inv": "2020-04-03",
+    "ROOMEXT.capacity": 1,
+    "ROOMEXT.rm_key": 27203,
+    "ROOMEXT.roomKey": "77+1114"
+   },
+   "geometry": {
+    "rings": [
+     [
+      [
+       -12351489.519000001,
+       3793499.7035999969
+      ],
+      [
+       -12351489.5307,
+       3793490.3920999989
+      ],
+      [
+       -12351490.044,
+       3793490.3928000033
+      ],
+      [
+       -12351498.441100001,
+       3793490.4033999965
+      ],
+      [
+       -12351498.4299,
+       3793499.3567000031
+      ],
+      [
+       -12351492.0144,
+       3793499.3486000001
+      ],
+      [
+       -12351492.014,
+       3793499.7067999989
+      ],
+      [
+       -12351489.519000001,
+       3793499.7035999969
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "Level_11.OBJECTID": 6,
+    "Level_11.Handle": "7B486",
+    "Level_11.DocName": "77-11.dwg",
+    "Level_11.Shape_Length": 26.78672124701669,
+    "Level_11.Shape_Area": 34.847580578451058,
+    "Level_11.Join_Key": "77-11.dwg+7B486",
+    "ROOMEXT.OBJECTID": 27187,
+    "ROOMEXT.dwgname": "77-11.dwg",
+    "ROOMEXT.ehandle": "7B486",
+    "ROOMEXT.Join_Key": "77-11.dwg+7B486",
+    "ROOMEXT.bl_id": "0077.00",
+    "ROOMEXT.fl_id": "11",
+    "ROOMEXT.RM_ID": "1100W",
+    "ROOMEXT.RoomName": "",
+    "ROOMEXT.BldgAlpha": "77",
+    "ROOMEXT.BldgName": "Gould-Simpson",
+    "ROOMEXT.CollegeID": "BUGN",
+    "ROOMEXT.CollegeName": "Business Affairs General",
+    "ROOMEXT.DeptID": "9956",
+    "ROOMEXT.DeptName": "Unassignable Space",
+    "ROOMEXT.TypeID": "020.00",
+    "ROOMEXT.RoomType": "Circulation Area",
+    "ROOMEXT.CatID": "020",
+    "ROOMEXT.RoomCategory": "Circulation Area",
+    "ROOMEXT.rm_use": "062",
+    "ROOMEXT.RoomUse": "Circulation",
+    "ROOMEXT.area": 318,
+    "ROOMEXT.ROOM_CLASSIFICATION": "None",
+    "ROOMEXT.restricted": "",
+    "ROOMEXT.EmpCount": null,
+    "ROOMEXT.date_inv": "1986-05-01",
+    "ROOMEXT.capacity": 0,
+    "ROOMEXT.rm_key": 27199,
+    "ROOMEXT.roomKey": "77+1100W"
+   },
+   "geometry": {
+    "rings": [
+     [
+      [
+       -12351485.4157,
+       3793503.2797999978
+      ],
+      [
+       -12351485.423,
+       3793497.5495999977
+      ],
+      [
+       -12351488.9871,
+       3793497.5539999977
+      ],
+      [
+       -12351488.9844,
+       3793499.7028999999
+      ],
+      [
+       -12351492.7268,
+       3793499.7075999975
+      ],
+      [
+       -12351492.726300001,
+       3793500.0658000037
+      ],
+      [
+       -12351493.082800001,
+       3793500.066200003
+      ],
+      [
+       -12351493.0791,
+       3793502.9312999994
+      ],
+      [
+       -12351492.7226,
+       3793502.9307999983
+      ],
+      [
+       -12351492.7223,
+       3793503.2889999971
+      ],
+      [
+       -12351485.4157,
+       3793503.2797999978
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "Level_11.OBJECTID": 7,
+    "Level_11.Handle": "7B487",
+    "Level_11.DocName": "77-11.dwg",
+    "Level_11.Shape_Length": 46.534534604080278,
+    "Level_11.Shape_Area": 45.118017098045733,
+    "Level_11.Join_Key": "77-11.dwg+7B487",
+    "ROOMEXT.OBJECTID": 27188,
+    "ROOMEXT.dwgname": "77-11.dwg",
+    "ROOMEXT.ehandle": "7B487",
+    "ROOMEXT.Join_Key": "77-11.dwg+7B487",
+    "ROOMEXT.bl_id": "0077.00",
+    "ROOMEXT.fl_id": "11",
+    "ROOMEXT.RM_ID": "1100W1",
+    "ROOMEXT.RoomName": "",
+    "ROOMEXT.BldgAlpha": "77",
+    "ROOMEXT.BldgName": "Gould-Simpson",
+    "ROOMEXT.CollegeID": "BUGN",
+    "ROOMEXT.CollegeName": "Business Affairs General",
+    "ROOMEXT.DeptID": "9956",
+    "ROOMEXT.DeptName": "Unassignable Space",
+    "ROOMEXT.TypeID": "020.00",
+    "ROOMEXT.RoomType": "Circulation Area",
+    "ROOMEXT.CatID": "020",
+    "ROOMEXT.RoomCategory": "Circulation Area",
+    "ROOMEXT.rm_use": "062",
+    "ROOMEXT.RoomUse": "Circulation",
+    "ROOMEXT.area": 322,
+    "ROOMEXT.ROOM_CLASSIFICATION": "None",
+    "ROOMEXT.restricted": "",
+    "ROOMEXT.EmpCount": null,
+    "ROOMEXT.date_inv": "1986-05-01",
+    "ROOMEXT.capacity": 0,
+    "ROOMEXT.rm_key": 27200,
+    "ROOMEXT.roomKey": "77+1100W1"
+   },
+   "geometry": {
+    "rings": [
+     [
+      [
+       -12351483.2699,
+       3793511.3351000026
+      ],
+      [
+       -12351483.2706,
+       3793508.6491999999
+      ],
+      [
+       -12351483.293400001,
+       3793490.3841999993
+      ],
+      [
+       -12351485.4319,
+       3793490.3869000003
+      ],
+      [
+       -12351485.405400001,
+       3793511.5169999972
+      ],
+      [
+       -12351483.623300001,
+       3793511.514700003
+      ],
+      [
+       -12351483.623599999,
+       3793511.3355000019
+      ],
+      [
+       -12351483.2699,
+       3793511.3351000026
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "Level_11.OBJECTID": 8,
+    "Level_11.Handle": "7B488",
+    "Level_11.DocName": "77-11.dwg",
+    "Level_11.Shape_Length": 50.818338863925355,
+    "Level_11.Shape_Area": 75.252525567474279,
+    "Level_11.Join_Key": "77-11.dwg+7B488",
+    "ROOMEXT.OBJECTID": 27179,
+    "ROOMEXT.dwgname": "77-11.dwg",
+    "ROOMEXT.ehandle": "7B488",
+    "ROOMEXT.Join_Key": "77-11.dwg+7B488",
+    "ROOMEXT.bl_id": "0077.00",
+    "ROOMEXT.fl_id": "11",
+    "ROOMEXT.RM_ID": "1100E1",
+    "ROOMEXT.RoomName": "",
+    "ROOMEXT.BldgAlpha": "77",
+    "ROOMEXT.BldgName": "Gould-Simpson",
+    "ROOMEXT.CollegeID": "BUGN",
+    "ROOMEXT.CollegeName": "Business Affairs General",
+    "ROOMEXT.DeptID": "9956",
+    "ROOMEXT.DeptName": "Unassignable Space",
+    "ROOMEXT.TypeID": "030.00",
+    "ROOMEXT.RoomType": "Mechanical Area",
+    "ROOMEXT.CatID": "030",
+    "ROOMEXT.RoomCategory": "Mechanical Area",
+    "ROOMEXT.rm_use": "084",
+    "ROOMEXT.RoomUse": "Physical Plant",
+    "ROOMEXT.area": 446,
+    "ROOMEXT.ROOM_CLASSIFICATION": "None",
+    "ROOMEXT.restricted": "",
+    "ROOMEXT.EmpCount": null,
+    "ROOMEXT.date_inv": "1986-05-01",
+    "ROOMEXT.capacity": 0,
+    "ROOMEXT.rm_key": 27191,
+    "ROOMEXT.roomKey": "77+1100E1"
+   },
+   "geometry": {
+    "rings": [
+     [
+      [
+       -12351433.9299,
+       3793490.3215999976
+      ],
+      [
+       -12351433.9069,
+       3793508.5864999965
+      ],
+      [
+       -12351433.908199999,
+       3793511.0935000032
+      ],
+      [
+       -12351433.369100001,
+       3793511.0927999988
+      ],
+      [
+       -12351433.3686,
+       3793511.4509000033
+      ],
+      [
+       -12351431.2302,
+       3793511.4482000023
+      ],
+      [
+       -12351431.241900001,
+       3793502.1366999969
+      ],
+      [
+       -12351429.638,
+       3793502.1345999986
+      ],
+      [
+       -12351429.652899999,
+       3793490.316200003
+      ],
+      [
+       -12351433.9299,
+       3793490.3215999976
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "Level_11.OBJECTID": 9,
+    "Level_11.Handle": "7B489",
+    "Level_11.DocName": "77-11.dwg",
+    "Level_11.Shape_Length": 108.03688360586173,
+    "Level_11.Shape_Area": 140.02255308322938,
+    "Level_11.Join_Key": "77-11.dwg+7B489",
+    "ROOMEXT.OBJECTID": 27180,
+    "ROOMEXT.dwgname": "77-11.dwg",
+    "ROOMEXT.ehandle": "7B489",
+    "ROOMEXT.Join_Key": "77-11.dwg+7B489",
+    "ROOMEXT.bl_id": "0077.00",
+    "ROOMEXT.fl_id": "11",
+    "ROOMEXT.RM_ID": "1100M",
+    "ROOMEXT.RoomName": "",
+    "ROOMEXT.BldgAlpha": "77",
+    "ROOMEXT.BldgName": "Gould-Simpson",
+    "ROOMEXT.CollegeID": "BUGN",
+    "ROOMEXT.CollegeName": "Business Affairs General",
+    "ROOMEXT.DeptID": "9956",
+    "ROOMEXT.DeptName": "Unassignable Space",
+    "ROOMEXT.TypeID": "030.00",
+    "ROOMEXT.RoomType": "Mechanical Area",
+    "ROOMEXT.CatID": "030",
+    "ROOMEXT.RoomCategory": "Mechanical Area",
+    "ROOMEXT.rm_use": "084",
+    "ROOMEXT.RoomUse": "Physical Plant",
+    "ROOMEXT.area": 1058,
+    "ROOMEXT.ROOM_CLASSIFICATION": "None",
+    "ROOMEXT.restricted": "",
+    "ROOMEXT.EmpCount": null,
+    "ROOMEXT.date_inv": "1986-05-01",
+    "ROOMEXT.capacity": 0,
+    "ROOMEXT.rm_key": 27192,
+    "ROOMEXT.roomKey": "77+1100M"
+   },
+   "geometry": {
+    "rings": [
+     [
+      [
+       -12351433.908199999,
+       3793511.0935000032
+      ],
+      [
+       -12351433.9069,
+       3793508.5864999965
+      ],
+      [
+       -12351483.2706,
+       3793508.6491999999
+      ],
+      [
+       -12351483.2699,
+       3793511.3351000026
+      ],
+      [
+       -12351482.910700001,
+       3793511.3346000016
+      ],
+      [
+       -12351482.910599999,
+       3793511.5137000009
+      ],
+      [
+       -12351476.495000001,
+       3793511.5055999979
+      ],
+      [
+       -12351476.495200001,
+       3793511.3266000003
+      ],
+      [
+       -12351475.782499999,
+       3793511.3255999982
+      ],
+      [
+       -12351475.782200001,
+       3793511.5046999976
+      ],
+      [
+       -12351469.366700001,
+       3793511.4966000021
+      ],
+      [
+       -12351469.366999999,
+       3793511.3175000027
+      ],
+      [
+       -12351468.654100001,
+       3793511.3165000007
+      ],
+      [
+       -12351468.653900001,
+       3793511.4957000017
+      ],
+      [
+       -12351462.238400001,
+       3793511.487499997
+      ],
+      [
+       -12351462.2389,
+       3793511.1292999983
+      ],
+      [
+       -12351461.526000001,
+       3793511.1286000013
+      ],
+      [
+       -12351461.5255,
+       3793511.4865999967
+      ],
+      [
+       -12351455.109999999,
+       3793511.4783999994
+      ],
+      [
+       -12351455.1105,
+       3793511.1203000024
+      ],
+      [
+       -12351454.397700001,
+       3793511.1194999963
+      ],
+      [
+       -12351454.3972,
+       3793511.4774999991
+      ],
+      [
+       -12351447.981800001,
+       3793511.4694000036
+      ],
+      [
+       -12351447.9822,
+       3793511.1112999991
+      ],
+      [
+       -12351447.269400001,
+       3793511.1103999987
+      ],
+      [
+       -12351447.2688,
+       3793511.4685999975
+      ],
+      [
+       -12351440.853500001,
+       3793511.4604000002
+      ],
+      [
+       -12351440.853799999,
+       3793511.1023000032
+      ],
+      [
+       -12351440.141100001,
+       3793511.1014000028
+      ],
+      [
+       -12351440.1406,
+       3793511.4594999999
+      ],
+      [
+       -12351434.081500001,
+       3793511.4518000036
+      ],
+      [
+       -12351434.082,
+       3793511.0935999975
+      ],
+      [
+       -12351433.908199999,
+       3793511.0935000032
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "Level_11.OBJECTID": 10,
+    "Level_11.Handle": "7B48A",
+    "Level_11.DocName": "77-11.dwg",
+    "Level_11.Shape_Length": 27.865012565849543,
+    "Level_11.Shape_Area": 24.871742072947537,
+    "Level_11.Join_Key": "77-11.dwg+7B48A",
+    "ROOMEXT.OBJECTID": 27189,
+    "ROOMEXT.dwgname": "77-11.dwg",
+    "ROOMEXT.ehandle": "7B48A",
+    "ROOMEXT.Join_Key": "77-11.dwg+7B48A",
+    "ROOMEXT.bl_id": "0077.00",
+    "ROOMEXT.fl_id": "11",
+    "ROOMEXT.RM_ID": "1102",
+    "ROOMEXT.RoomName": "",
+    "ROOMEXT.BldgAlpha": "77",
+    "ROOMEXT.BldgName": "Gould-Simpson",
+    "ROOMEXT.CollegeID": "BUGN",
+    "ROOMEXT.CollegeName": "Business Affairs General",
+    "ROOMEXT.DeptID": "9956",
+    "ROOMEXT.DeptName": "Unassignable Space",
+    "ROOMEXT.TypeID": "030.00",
+    "ROOMEXT.RoomType": "Mechanical Area",
+    "ROOMEXT.CatID": "030",
+    "ROOMEXT.RoomCategory": "Mechanical Area",
+    "ROOMEXT.rm_use": "084",
+    "ROOMEXT.RoomUse": "Physical Plant",
+    "ROOMEXT.area": 278,
+    "ROOMEXT.ROOM_CLASSIFICATION": "None",
+    "ROOMEXT.restricted": "",
+    "ROOMEXT.EmpCount": null,
+    "ROOMEXT.date_inv": "1986-05-01",
+    "ROOMEXT.capacity": 0,
+    "ROOMEXT.rm_key": 27201,
+    "ROOMEXT.roomKey": "77+1102"
+   },
+   "geometry": {
+    "rings": [
+     [
+      [
+       -12351418.390000001,
+       3793518.7736999989
+      ],
+      [
+       -12351418.3926,
+       3793516.6248999983
+      ],
+      [
+       -12351430.688999999,
+       3793516.6403999999
+      ],
+      [
+       -12351430.6887,
+       3793516.8553000018
+      ],
+      [
+       -12351429.0825,
+       3793518.7871999964
+      ],
+      [
+       -12351418.390000001,
+       3793518.7736999989
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "Level_11.OBJECTID": 11,
+    "Level_11.Handle": "7B48E",
+    "Level_11.DocName": "77-11.dwg",
+    "Level_11.Shape_Length": 49.115688192164271,
+    "Level_11.Shape_Area": 117.62540792769998,
+    "Level_11.Join_Key": "77-11.dwg+7B48E",
+    "ROOMEXT.OBJECTID": 27190,
+    "ROOMEXT.dwgname": "77-11.dwg",
+    "ROOMEXT.ehandle": "7B48E",
+    "ROOMEXT.Join_Key": "77-11.dwg+7B48E",
+    "ROOMEXT.bl_id": "0077.00",
+    "ROOMEXT.fl_id": "11",
+    "ROOMEXT.RM_ID": "1110",
+    "ROOMEXT.RoomName": "",
+    "ROOMEXT.BldgAlpha": "77",
+    "ROOMEXT.BldgName": "Gould-Simpson",
+    "ROOMEXT.CollegeID": "BUGN",
+    "ROOMEXT.CollegeName": "Business Affairs General",
+    "ROOMEXT.DeptID": "9956",
+    "ROOMEXT.DeptName": "Unassignable Space",
+    "ROOMEXT.TypeID": "030.00",
+    "ROOMEXT.RoomType": "Mechanical Area",
+    "ROOMEXT.CatID": "030",
+    "ROOMEXT.RoomCategory": "Mechanical Area",
+    "ROOMEXT.rm_use": "084",
+    "ROOMEXT.RoomUse": "Physical Plant",
+    "ROOMEXT.area": 939,
+    "ROOMEXT.ROOM_CLASSIFICATION": "None",
+    "ROOMEXT.restricted": "",
+    "ROOMEXT.EmpCount": null,
+    "ROOMEXT.date_inv": "1986-05-01",
+    "ROOMEXT.capacity": 0,
+    "ROOMEXT.rm_key": 27202,
+    "ROOMEXT.roomKey": "77+1110"
+   },
+   "geometry": {
+    "rings": [
+     [
+      [
+       -12351492.0056,
+       3793506.3321999982
+      ],
+      [
+       -12351498.4211,
+       3793506.3404000029
+      ],
+      [
+       -12351498.415100001,
+       3793511.1752000004
+      ],
+      [
+       -12351496.2739,
+       3793513.3214000016
+      ],
+      [
+       -12351491.9969,
+       3793513.3158999979
+      ],
+      [
+       -12351491.9935,
+       3793516.0018000007
+      ],
+      [
+       -12351485.934500001,
+       3793515.9943000004
+      ],
+      [
+       -12351485.944699999,
+       3793507.757100001
+      ],
+      [
+       -12351485.4101,
+       3793507.7564999983
+      ],
+      [
+       -12351485.4133,
+       3793505.249499999
+      ],
+      [
+       -12351485.947900001,
+       3793505.2502000034
+      ],
+      [
+       -12351485.9498,
+       3793503.8176999986
+      ],
+      [
+       -12351492.0088,
+       3793503.8253000006
+      ],
+      [
+       -12351492.0056,
+       3793506.3321999982
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "Level_11.OBJECTID": 12,
+    "Level_11.Handle": "7B51E",
+    "Level_11.DocName": "77-11.dwg",
+    "Level_11.Shape_Length": 20.090253768540336,
+    "Level_11.Shape_Area": 19.859331239088064,
+    "Level_11.Join_Key": "77-11.dwg+7B51E",
+    "ROOMEXT.OBJECTID": 27186,
+    "ROOMEXT.dwgname": "77-11.dwg",
+    "ROOMEXT.ehandle": "7B51E",
+    "ROOMEXT.Join_Key": "77-11.dwg+7B51E",
+    "ROOMEXT.bl_id": "0077.00",
+    "ROOMEXT.fl_id": "11",
+    "ROOMEXT.RM_ID": "1100SW",
+    "ROOMEXT.RoomName": "",
+    "ROOMEXT.BldgAlpha": "77",
+    "ROOMEXT.BldgName": "Gould-Simpson",
+    "ROOMEXT.CollegeID": "BUGN",
+    "ROOMEXT.CollegeName": "Business Affairs General",
+    "ROOMEXT.DeptID": "9956",
+    "ROOMEXT.DeptName": "Unassignable Space",
+    "ROOMEXT.TypeID": "020.00",
+    "ROOMEXT.RoomType": "Circulation Area",
+    "ROOMEXT.CatID": "020",
+    "ROOMEXT.RoomCategory": "Circulation Area",
+    "ROOMEXT.rm_use": "062",
+    "ROOMEXT.RoomUse": "Circulation",
+    "ROOMEXT.area": 133,
+    "ROOMEXT.ROOM_CLASSIFICATION": "None",
+    "ROOMEXT.restricted": "",
+    "ROOMEXT.EmpCount": null,
+    "ROOMEXT.date_inv": "1986-05-01",
+    "ROOMEXT.capacity": 0,
+    "ROOMEXT.rm_key": 27198,
+    "ROOMEXT.roomKey": "77+1100SW"
+   },
+   "geometry": {
+    "rings": [
+     [
+      [
+       -12351488.987599999,
+       3793497.1960000023
+      ],
+      [
+       -12351487.3838,
+       3793497.1939999983
+      ],
+      [
+       -12351487.441,
+       3793497.552199997
+      ],
+      [
+       -12351486.313900001,
+       3793497.5507000014
+      ],
+      [
+       -12351486.1358,
+       3793497.550499998
+      ],
+      [
+       -12351486.1447,
+       3793490.3879000023
+      ],
+      [
+       -12351488.996100001,
+       3793490.3915000036
+      ],
+      [
+       -12351488.987599999,
+       3793497.1960000023
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "Level_11.OBJECTID": 13,
+    "Level_11.Handle": "7B521",
+    "Level_11.DocName": "77-11.dwg",
+    "Level_11.Shape_Length": 26.762542159296668,
+    "Level_11.Shape_Area": 26.059717679465535,
+    "Level_11.Join_Key": "77-11.dwg+7B521",
+    "ROOMEXT.OBJECTID": 27181,
+    "ROOMEXT.dwgname": "77-11.dwg",
+    "ROOMEXT.ehandle": "7B521",
+    "ROOMEXT.Join_Key": "77-11.dwg+7B521",
+    "ROOMEXT.bl_id": "0077.00",
+    "ROOMEXT.fl_id": "11",
+    "ROOMEXT.RM_ID": "1100NE",
+    "ROOMEXT.RoomName": "",
+    "ROOMEXT.BldgAlpha": "77",
+    "ROOMEXT.BldgName": "Gould-Simpson",
+    "ROOMEXT.CollegeID": "BUGN",
+    "ROOMEXT.CollegeName": "Business Affairs General",
+    "ROOMEXT.DeptID": "9956",
+    "ROOMEXT.DeptName": "Unassignable Space",
+    "ROOMEXT.TypeID": "020.00",
+    "ROOMEXT.RoomType": "Circulation Area",
+    "ROOMEXT.CatID": "020",
+    "ROOMEXT.RoomCategory": "Circulation Area",
+    "ROOMEXT.rm_use": "062",
+    "ROOMEXT.RoomUse": "Circulation",
+    "ROOMEXT.area": 209,
+    "ROOMEXT.ROOM_CLASSIFICATION": "None",
+    "ROOMEXT.restricted": "",
+    "ROOMEXT.EmpCount": null,
+    "ROOMEXT.date_inv": "1986-05-01",
+    "ROOMEXT.capacity": 0,
+    "ROOMEXT.rm_key": 27193,
+    "ROOMEXT.roomKey": "77+1100NE"
+   },
+   "geometry": {
+    "rings": [
+     [
+      [
+       -12351419.0032,
+       3793529.8765999973
+      ],
+      [
+       -12351420.679,
+       3793528.0507000014
+      ],
+      [
+       -12351425.3522,
+       3793522.9611999989
+      ],
+      [
+       -12351426.4257,
+       3793523.9641999975
+      ],
+      [
+       -12351427.750599999,
+       3793522.5656000003
+      ],
+      [
+       -12351428.7916,
+       3793523.5384000018
+      ],
+      [
+       -12351422.900600001,
+       3793529.8816
+      ],
+      [
+       -12351419.0032,
+       3793529.8765999973
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "Level_11.OBJECTID": 14,
+    "Level_11.Handle": "173B5",
+    "Level_11.DocName": "3006-11.dwg",
+    "Level_11.Shape_Length": 24.7197536280405,
+    "Level_11.Shape_Area": 34.458300249836448,
+    "Level_11.Join_Key": "3006-11.dwg+173B5",
+    "ROOMEXT.OBJECTID": 39884,
+    "ROOMEXT.dwgname": "3006-11.dwg",
+    "ROOMEXT.ehandle": "173B5",
+    "ROOMEXT.Join_Key": "3006-11.dwg+173B5",
+    "ROOMEXT.bl_id": "3006.00",
+    "ROOMEXT.fl_id": "11",
+    "ROOMEXT.RM_ID": "E1192",
+    "ROOMEXT.RoomName": "",
+    "ROOMEXT.BldgAlpha": "3006",
+    "ROOMEXT.BldgName": "Biomedical Sciences Partnership Building - Phoenix",
+    "ROOMEXT.CollegeID": "BUGN",
+    "ROOMEXT.CollegeName": "Business Affairs General",
+    "ROOMEXT.DeptID": "9956",
+    "ROOMEXT.DeptName": "Unassignable Space",
+    "ROOMEXT.TypeID": "030.00",
+    "ROOMEXT.RoomType": "Mechanical Area",
+    "ROOMEXT.CatID": "030",
+    "ROOMEXT.RoomCategory": "Mechanical Area",
+    "ROOMEXT.rm_use": "084",
+    "ROOMEXT.RoomUse": "Physical Plant",
+    "ROOMEXT.area": 254,
+    "ROOMEXT.ROOM_CLASSIFICATION": "None",
+    "ROOMEXT.restricted": "",
+    "ROOMEXT.EmpCount": null,
+    "ROOMEXT.date_inv": "2017-05-08",
+    "ROOMEXT.capacity": 0,
+    "ROOMEXT.rm_key": 39897,
+    "ROOMEXT.roomKey": "3006+E1192"
+   },
+   "geometry": {
+    "rings": [
+     [
+      [
+       -12475080.5384,
+       3955634.9675000012
+      ],
+      [
+       -12475080.538699999,
+       3955634.9672999978
+      ],
+      [
+       -12475080.5386,
+       3955635.128899999
+      ],
+      [
+       -12475080.5997,
+       3955635.128899999
+      ],
+      [
+       -12475080.5997,
+       3955635.1308000013
+      ],
+      [
+       -12475081.6165,
+       3955635.1318999976
+      ],
+      [
+       -12475081.6165,
+       3955635.129900001
+      ],
+      [
+       -12475081.6109,
+       3955640.7008000016
+      ],
+      [
+       -12475081.655000001,
+       3955640.6969999969
+      ],
+      [
+       -12475081.6548,
+       3955640.7588
+      ],
+      [
+       -12475075.376,
+       3955641.3043000028
+      ],
+      [
+       -12475075.376,
+       3955641.2424999997
+      ],
+      [
+       -12475075.3971,
+       3955641.2408000007
+      ],
+      [
+       -12475075.4023,
+       3955636.0451000035
+      ],
+      [
+       -12475078.2169,
+       3955636.0480000004
+      ],
+      [
+       -12475078.217799999,
+       3955635.1284999996
+      ],
+      [
+       -12475078.271499999,
+       3955635.1284999996
+      ],
+      [
+       -12475078.271499999,
+       3955635.1265999973
+      ],
+      [
+       -12475078.332699999,
+       3955635.1265999973
+      ],
+      [
+       -12475078.332699999,
+       3955634.9653000012
+      ],
+      [
+       -12475080.5384,
+       3955634.9675000012
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "Level_11.OBJECTID": 15,
+    "Level_11.Handle": "173B6",
+    "Level_11.DocName": "3006-11.dwg",
+    "Level_11.Shape_Length": 40.285170729346767,
+    "Level_11.Shape_Area": 89.227635417536774,
+    "Level_11.Join_Key": "3006-11.dwg+173B6",
+    "ROOMEXT.OBJECTID": 39885,
+    "ROOMEXT.dwgname": "3006-11.dwg",
+    "ROOMEXT.ehandle": "173B6",
+    "ROOMEXT.Join_Key": "3006-11.dwg+173B6",
+    "ROOMEXT.bl_id": "3006.00",
+    "ROOMEXT.fl_id": "11",
+    "ROOMEXT.RM_ID": "E1194",
+    "ROOMEXT.RoomName": "",
+    "ROOMEXT.BldgAlpha": "3006",
+    "ROOMEXT.BldgName": "Biomedical Sciences Partnership Building - Phoenix",
+    "ROOMEXT.CollegeID": "BUGN",
+    "ROOMEXT.CollegeName": "Business Affairs General",
+    "ROOMEXT.DeptID": "9956",
+    "ROOMEXT.DeptName": "Unassignable Space",
+    "ROOMEXT.TypeID": "030.00",
+    "ROOMEXT.RoomType": "Mechanical Area",
+    "ROOMEXT.CatID": "030",
+    "ROOMEXT.RoomCategory": "Mechanical Area",
+    "ROOMEXT.rm_use": "084",
+    "ROOMEXT.RoomUse": "Physical Plant",
+    "ROOMEXT.area": 657,
+    "ROOMEXT.ROOM_CLASSIFICATION": "None",
+    "ROOMEXT.restricted": "",
+    "ROOMEXT.EmpCount": null,
+    "ROOMEXT.date_inv": "2017-05-08",
+    "ROOMEXT.capacity": 0,
+    "ROOMEXT.rm_key": 39898,
+    "ROOMEXT.roomKey": "3006+E1194"
+   },
+   "geometry": {
+    "rings": [
+     [
+      [
+       -12475071.673599999,
+       3955634.9583000019
+      ],
+      [
+       -12475071.6734,
+       3955635.1198000014
+      ],
+      [
+       -12475071.7347,
+       3955635.1199999973
+      ],
+      [
+       -12475071.7347,
+       3955635.1218999997
+      ],
+      [
+       -12475075.238600001,
+       3955635.1253999993
+      ],
+      [
+       -12475075.2325,
+       3955641.2547999993
+      ],
+      [
+       -12475069.567299999,
+       3955641.7470000014
+      ],
+      [
+       -12475061.9911,
+       3955642.4054000005
+      ],
+      [
+       -12475061.998399999,
+       3955635.1099999994
+      ],
+      [
+       -12475065.770399999,
+       3955635.1138999984
+      ],
+      [
+       -12475065.770399999,
+       3955635.1158000007
+      ],
+      [
+       -12475069.406399999,
+       3955635.1194999963
+      ],
+      [
+       -12475069.406399999,
+       3955635.1176000014
+      ],
+      [
+       -12475069.467700001,
+       3955635.1176000014
+      ],
+      [
+       -12475069.467700001,
+       3955634.9562999979
+      ],
+      [
+       -12475071.6734,
+       3955634.9585999995
+      ],
+      [
+       -12475071.673599999,
+       3955634.9583000019
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "Level_11.OBJECTID": 16,
+    "Level_11.Handle": "173B7",
+    "Level_11.DocName": "3006-11.dwg",
+    "Level_11.Shape_Length": 28.674413412172484,
+    "Level_11.Shape_Area": 37.846427278611195,
+    "Level_11.Join_Key": "3006-11.dwg+173B7",
+    "ROOMEXT.OBJECTID": 39888,
+    "ROOMEXT.dwgname": "3006-11.dwg",
+    "ROOMEXT.ehandle": "173B7",
+    "ROOMEXT.Join_Key": "3006-11.dwg+173B7",
+    "ROOMEXT.bl_id": "3006.00",
+    "ROOMEXT.fl_id": "11",
+    "ROOMEXT.RM_ID": "E1100NE",
+    "ROOMEXT.RoomName": "",
+    "ROOMEXT.BldgAlpha": "3006",
+    "ROOMEXT.BldgName": "Biomedical Sciences Partnership Building - Phoenix",
+    "ROOMEXT.CollegeID": "BUGN",
+    "ROOMEXT.CollegeName": "Business Affairs General",
+    "ROOMEXT.DeptID": "9956",
+    "ROOMEXT.DeptName": "Unassignable Space",
+    "ROOMEXT.TypeID": "020.00",
+    "ROOMEXT.RoomType": "Circulation Area",
+    "ROOMEXT.CatID": "020",
+    "ROOMEXT.RoomCategory": "Circulation Area",
+    "ROOMEXT.rm_use": "062",
+    "ROOMEXT.RoomUse": "Circulation",
+    "ROOMEXT.area": 279,
+    "ROOMEXT.ROOM_CLASSIFICATION": "None",
+    "ROOMEXT.restricted": "",
+    "ROOMEXT.EmpCount": null,
+    "ROOMEXT.date_inv": "2017-05-08",
+    "ROOMEXT.capacity": 0,
+    "ROOMEXT.rm_key": 39901,
+    "ROOMEXT.roomKey": "3006+E1100NE"
+   },
+   "geometry": {
+    "rings": [
+     [
+      [
+       -12475065.7707,
+       3955634.8022999987
+      ],
+      [
+       -12475065.7707,
+       3955634.8637999967
+      ],
+      [
+       -12475065.5715,
+       3955634.8636000007
+      ],
+      [
+       -12475065.5715,
+       3955634.9135999978
+      ],
+      [
+       -12475062.0177,
+       3955634.9108999968
+      ],
+      [
+       -12475062.0284,
+       3955624.3262000009
+      ],
+      [
+       -12475065.582,
+       3955624.3295999989
+      ],
+      [
+       -12475065.572700001,
+       3955633.6941
+      ],
+      [
+       -12475065.7718,
+       3955633.6943000033
+      ],
+      [
+       -12475065.7707,
+       3955634.8022999987
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "Level_11.OBJECTID": 17,
+    "Level_11.Handle": "173B8",
+    "Level_11.DocName": "3006-11.dwg",
+    "Level_11.Shape_Length": 22.412812414109659,
+    "Level_11.Shape_Area": 24.027035455356643,
+    "Level_11.Join_Key": "3006-11.dwg+173B8",
+    "ROOMEXT.OBJECTID": 39886,
+    "ROOMEXT.dwgname": "3006-11.dwg",
+    "ROOMEXT.ehandle": "173B8",
+    "ROOMEXT.Join_Key": "3006-11.dwg+173B8",
+    "ROOMEXT.bl_id": "3006.00",
+    "ROOMEXT.fl_id": "11",
+    "ROOMEXT.RM_ID": "E1195",
+    "ROOMEXT.RoomName": "",
+    "ROOMEXT.BldgAlpha": "3006",
+    "ROOMEXT.BldgName": "Biomedical Sciences Partnership Building - Phoenix",
+    "ROOMEXT.CollegeID": "BUGN",
+    "ROOMEXT.CollegeName": "Business Affairs General",
+    "ROOMEXT.DeptID": "9956",
+    "ROOMEXT.DeptName": "Unassignable Space",
+    "ROOMEXT.TypeID": "030.00",
+    "ROOMEXT.RoomType": "Mechanical Area",
+    "ROOMEXT.CatID": "030",
+    "ROOMEXT.RoomCategory": "Mechanical Area",
+    "ROOMEXT.rm_use": "084",
+    "ROOMEXT.RoomUse": "Physical Plant",
+    "ROOMEXT.area": 177,
+    "ROOMEXT.ROOM_CLASSIFICATION": "None",
+    "ROOMEXT.restricted": "",
+    "ROOMEXT.EmpCount": null,
+    "ROOMEXT.date_inv": "2017-05-08",
+    "ROOMEXT.capacity": 0,
+    "ROOMEXT.rm_key": 39899,
+    "ROOMEXT.roomKey": "3006+E1195"
+   },
+   "geometry": {
+    "rings": [
+     [
+      [
+       -12475072.7544,
+       3955628.3553000018
+      ],
+      [
+       -12475072.750500001,
+       3955632.1218999997
+      ],
+      [
+       -12475069.5186,
+       3955632.1186999977
+      ],
+      [
+       -12475069.5186,
+       3955632.1206
+      ],
+      [
+       -12475069.4573,
+       3955632.1204999983
+      ],
+      [
+       -12475069.4572,
+       3955632.2986999974
+      ],
+      [
+       -12475067.251499999,
+       3955632.2964000031
+      ],
+      [
+       -12475067.251600001,
+       3955632.1182999983
+      ],
+      [
+       -12475067.190299999,
+       3955632.1182999983
+      ],
+      [
+       -12475067.190299999,
+       3955632.1163000017
+      ],
+      [
+       -12475065.735100001,
+       3955632.1147999987
+      ],
+      [
+       -12475065.7367,
+       3955630.4681999981
+      ],
+      [
+       -12475065.7368,
+       3955630.4874000028
+      ],
+      [
+       -12475067.142099999,
+       3955630.4888999984
+      ],
+      [
+       -12475067.144299999,
+       3955628.3476999998
+      ],
+      [
+       -12475067.1634,
+       3955628.3478000015
+      ],
+      [
+       -12475067.1634,
+       3955628.3496999964
+      ],
+      [
+       -12475067.6536,
+       3955628.3502999991
+      ],
+      [
+       -12475067.6537,
+       3955628.1867000014
+      ],
+      [
+       -12475067.6538,
+       3955628.1559000015
+      ],
+      [
+       -12475068.7566,
+       3955628.1570999995
+      ],
+      [
+       -12475068.7564,
+       3955628.3801999986
+      ],
+      [
+       -12475068.848299999,
+       3955628.3803000003
+      ],
+      [
+       -12475068.8484,
+       3955628.3514000028
+      ],
+      [
+       -12475072.7544,
+       3955628.3553000018
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "Level_11.OBJECTID": 18,
+    "Level_11.Handle": "173B9",
+    "Level_11.DocName": "3006-11.dwg",
+    "Level_11.Shape_Length": 37.730027156747504,
+    "Level_11.Shape_Area": 42.770339471515804,
+    "Level_11.Join_Key": "3006-11.dwg+173B9",
+    "ROOMEXT.OBJECTID": 39887,
+    "ROOMEXT.dwgname": "3006-11.dwg",
+    "ROOMEXT.ehandle": "173B9",
+    "ROOMEXT.Join_Key": "3006-11.dwg+173B9",
+    "ROOMEXT.bl_id": "3006.00",
+    "ROOMEXT.fl_id": "11",
+    "ROOMEXT.RM_ID": "E1100N",
+    "ROOMEXT.RoomName": "",
+    "ROOMEXT.BldgAlpha": "3006",
+    "ROOMEXT.BldgName": "Biomedical Sciences Partnership Building - Phoenix",
+    "ROOMEXT.CollegeID": "BUGN",
+    "ROOMEXT.CollegeName": "Business Affairs General",
+    "ROOMEXT.DeptID": "9956",
+    "ROOMEXT.DeptName": "Unassignable Space",
+    "ROOMEXT.TypeID": "020.00",
+    "ROOMEXT.RoomType": "Circulation Area",
+    "ROOMEXT.CatID": "020",
+    "ROOMEXT.RoomCategory": "Circulation Area",
+    "ROOMEXT.rm_use": "062",
+    "ROOMEXT.RoomUse": "Circulation",
+    "ROOMEXT.area": 315,
+    "ROOMEXT.ROOM_CLASSIFICATION": "None",
+    "ROOMEXT.restricted": "",
+    "ROOMEXT.EmpCount": null,
+    "ROOMEXT.date_inv": "2017-05-08",
+    "ROOMEXT.capacity": 0,
+    "ROOMEXT.rm_key": 39900,
+    "ROOMEXT.roomKey": "3006+E1100N"
+   },
+   "geometry": {
+    "rings": [
+     [
+      [
+       -12475081.8906,
+       3955634.7858999968
+      ],
+      [
+       -12475081.6417,
+       3955634.7855999991
+      ],
+      [
+       -12475081.6415,
+       3955634.9682999998
+      ],
+      [
+       -12475080.942699999,
+       3955634.9676999971
+      ],
+      [
+       -12475080.942699999,
+       3955634.9657000005
+      ],
+      [
+       -12475080.6,
+       3955634.9654000029
+      ],
+      [
+       -12475080.5998,
+       3955634.9676000029
+      ],
+      [
+       -12475078.271400001,
+       3955634.9650999978
+      ],
+      [
+       -12475078.271600001,
+       3955634.9629999995
+      ],
+      [
+       -12475077.889600001,
+       3955634.9627000019
+      ],
+      [
+       -12475077.889899999,
+       3955634.9649000019
+      ],
+      [
+       -12475075.5615,
+       3955634.9623999968
+      ],
+      [
+       -12475075.5615,
+       3955634.9601999968
+      ],
+      [
+       -12475071.7349,
+       3955634.9563999996
+      ],
+      [
+       -12475071.7346,
+       3955634.9584999979
+      ],
+      [
+       -12475069.406300001,
+       3955634.9562000036
+      ],
+      [
+       -12475069.4066,
+       3955634.9540999979
+      ],
+      [
+       -12475065.770500001,
+       3955634.9504000023
+      ],
+      [
+       -12475065.7732,
+       3955632.2802999988
+      ],
+      [
+       -12475067.190099999,
+       3955632.2817000002
+      ],
+      [
+       -12475067.190299999,
+       3955632.2964000031
+      ],
+      [
+       -12475069.5185,
+       3955632.2986999974
+      ],
+      [
+       -12475069.5184,
+       3955632.2841999978
+      ],
+      [
+       -12475072.750399999,
+       3955632.2873999998
+      ],
+      [
+       -12475072.750399999,
+       3955632.316200003
+      ],
+      [
+       -12475077.8971,
+       3955632.3214000016
+      ],
+      [
+       -12475077.8971,
+       3955632.2925999984
+      ],
+      [
+       -12475078.8257,
+       3955632.2934999987
+      ],
+      [
+       -12475078.8257,
+       3955632.2915999964
+      ],
+      [
+       -12475078.8871,
+       3955632.2915999964
+      ],
+      [
+       -12475080.541299999,
+       3955632.2933000028
+      ],
+      [
+       -12475080.602600001,
+       3955632.2933999971
+      ],
+      [
+       -12475080.602600001,
+       3955632.2952999994
+      ],
+      [
+       -12475080.9454,
+       3955632.2956999987
+      ],
+      [
+       -12475080.9454,
+       3955632.2937000021
+      ],
+      [
+       -12475081.6633,
+       3955632.2945000008
+      ],
+      [
+       -12475081.6632,
+       3955632.5080000013
+      ],
+      [
+       -12475081.644000001,
+       3955632.5078999996
+      ],
+      [
+       -12475081.6439,
+       3955632.5694999993
+      ],
+      [
+       -12475081.7886,
+       3955632.5697000027
+      ],
+      [
+       -12475081.8926,
+       3955632.569600001
+      ],
+      [
+       -12475081.8903,
+       3955634.7855999991
+      ],
+      [
+       -12475081.8906,
+       3955634.7858999968
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "Level_11.OBJECTID": 19,
+    "Level_11.Handle": "173BA",
+    "Level_11.DocName": "3006-11.dwg",
+    "Level_11.Shape_Length": 16.691912660385004,
+    "Level_11.Shape_Area": 15.467693887247652,
+    "Level_11.Join_Key": "3006-11.dwg+173BA",
+    "ROOMEXT.OBJECTID": 39882,
+    "ROOMEXT.dwgname": "3006-11.dwg",
+    "ROOMEXT.ehandle": "173BA",
+    "ROOMEXT.Join_Key": "3006-11.dwg+173BA",
+    "ROOMEXT.bl_id": "3006.00",
+    "ROOMEXT.fl_id": "11",
+    "ROOMEXT.RM_ID": "E1190",
+    "ROOMEXT.RoomName": "",
+    "ROOMEXT.BldgAlpha": "3006",
+    "ROOMEXT.BldgName": "Biomedical Sciences Partnership Building - Phoenix",
+    "ROOMEXT.CollegeID": "BUGN",
+    "ROOMEXT.CollegeName": "Business Affairs General",
+    "ROOMEXT.DeptID": "9956",
+    "ROOMEXT.DeptName": "Unassignable Space",
+    "ROOMEXT.TypeID": "020.00",
+    "ROOMEXT.RoomType": "Circulation Area",
+    "ROOMEXT.CatID": "020",
+    "ROOMEXT.RoomCategory": "Circulation Area",
+    "ROOMEXT.rm_use": "062",
+    "ROOMEXT.RoomUse": "Circulation",
+    "ROOMEXT.area": 114,
+    "ROOMEXT.ROOM_CLASSIFICATION": "None",
+    "ROOMEXT.restricted": "",
+    "ROOMEXT.EmpCount": null,
+    "ROOMEXT.date_inv": "2017-05-08",
+    "ROOMEXT.capacity": 0,
+    "ROOMEXT.rm_key": 39895,
+    "ROOMEXT.roomKey": "3006+E1190"
+   },
+   "geometry": {
+    "rings": [
+     [
+      [
+       -12475081.6194,
+       3955632.130900003
+      ],
+      [
+       -12475080.6028,
+       3955632.129900001
+      ],
+      [
+       -12475080.6028,
+       3955632.1318000033
+      ],
+      [
+       -12475080.5414,
+       3955632.1318000033
+      ],
+      [
+       -12475080.541299999,
+       3955632.2933000028
+      ],
+      [
+       -12475078.8871,
+       3955632.2915999964
+      ],
+      [
+       -12475078.8872,
+       3955632.1300000027
+      ],
+      [
+       -12475078.8259,
+       3955632.1300000027
+      ],
+      [
+       -12475078.826000001,
+       3955632.1281000003
+      ],
+      [
+       -12475077.897300001,
+       3955632.1270999983
+      ],
+      [
+       -12475077.898,
+       3955631.4597000033
+      ],
+      [
+       -12475077.917100001,
+       3955631.4596000016
+      ],
+      [
+       -12475077.917199999,
+       3955631.3980000019
+      ],
+      [
+       -12475077.4079,
+       3955631.3976000026
+      ],
+      [
+       -12475077.409600001,
+       3955629.7356000021
+      ],
+      [
+       -12475077.9188,
+       3955629.7360000014
+      ],
+      [
+       -12475077.9189,
+       3955629.6745999977
+      ],
+      [
+       -12475077.899700001,
+       3955629.6744000018
+      ],
+      [
+       -12475077.9011,
+       3955628.3605000004
+      ],
+      [
+       -12475078.7435,
+       3955628.3614000008
+      ],
+      [
+       -12475078.743700001,
+       3955628.1959000006
+      ],
+      [
+       -12475080.9494,
+       3955628.1982000023
+      ],
+      [
+       -12475080.949200001,
+       3955628.3637000024
+      ],
+      [
+       -12475081.623300001,
+       3955628.3643999994
+      ],
+      [
+       -12475081.6194,
+       3955632.130900003
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "Level_11.OBJECTID": 20,
+    "Level_11.Handle": "173BB",
+    "Level_11.DocName": "3006-11.dwg",
+    "Level_11.Shape_Length": 59.720405450465336,
+    "Level_11.Shape_Area": 128.10525808239635,
+    "Level_11.Join_Key": "3006-11.dwg+173BB",
+    "ROOMEXT.OBJECTID": 39883,
+    "ROOMEXT.dwgname": "3006-11.dwg",
+    "ROOMEXT.ehandle": "173BB",
+    "ROOMEXT.Join_Key": "3006-11.dwg+173BB",
+    "ROOMEXT.bl_id": "3006.00",
+    "ROOMEXT.fl_id": "11",
+    "ROOMEXT.RM_ID": "E1191",
+    "ROOMEXT.RoomName": "",
+    "ROOMEXT.BldgAlpha": "3006",
+    "ROOMEXT.BldgName": "Biomedical Sciences Partnership Building - Phoenix",
+    "ROOMEXT.CollegeID": "BUGN",
+    "ROOMEXT.CollegeName": "Business Affairs General",
+    "ROOMEXT.DeptID": "9956",
+    "ROOMEXT.DeptName": "Unassignable Space",
+    "ROOMEXT.TypeID": "030.00",
+    "ROOMEXT.RoomType": "Mechanical Area",
+    "ROOMEXT.CatID": "030",
+    "ROOMEXT.RoomCategory": "Mechanical Area",
+    "ROOMEXT.rm_use": "084",
+    "ROOMEXT.RoomUse": "Physical Plant",
+    "ROOMEXT.area": 943,
+    "ROOMEXT.ROOM_CLASSIFICATION": "None",
+    "ROOMEXT.restricted": "",
+    "ROOMEXT.EmpCount": null,
+    "ROOMEXT.date_inv": "2017-05-08",
+    "ROOMEXT.capacity": 0,
+    "ROOMEXT.rm_key": 39896,
+    "ROOMEXT.roomKey": "3006+E1191"
+   },
+   "geometry": {
+    "rings": [
+     [
+      [
+       -12475081.623399999,
+       3955628.1988999993
+      ],
+      [
+       -12475077.9012,
+       3955628.195100002
+      ],
+      [
+       -12475077.9013,
+       3955628.1662999988
+      ],
+      [
+       -12475072.7545,
+       3955628.1611000001
+      ],
+      [
+       -12475072.7545,
+       3955628.1899000034
+      ],
+      [
+       -12475068.8486,
+       3955628.185999997
+      ],
+      [
+       -12475068.8486,
+       3955628.1570999995
+      ],
+      [
+       -12475067.561799999,
+       3955628.1559000015
+      ],
+      [
+       -12475067.561799999,
+       3955628.184799999
+      ],
+      [
+       -12475067.1445,
+       3955628.1841999963
+      ],
+      [
+       -12475067.148400001,
+       3955624.2924000025
+      ],
+      [
+       -12475067.1675,
+       3955624.2927000001
+      ],
+      [
+       -12475067.1677,
+       3955624.1309999973
+      ],
+      [
+       -12475062.396299999,
+       3955624.126199998
+      ],
+      [
+       -12475062.397700001,
+       3955622.7458000034
+      ],
+      [
+       -12475081.634100001,
+       3955617.5047999993
+      ],
+      [
+       -12475081.631299999,
+       3955619.5212000012
+      ],
+      [
+       -12475079.4968,
+       3955619.5190000013
+      ],
+      [
+       -12475079.4933,
+       3955623.0412999988
+      ],
+      [
+       -12475081.628600001,
+       3955623.0433999971
+      ],
+      [
+       -12475081.623399999,
+       3955628.1988999993
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}
