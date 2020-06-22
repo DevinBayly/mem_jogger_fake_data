@@ -107,7 +107,6 @@ export let gantBase = (data, buildingReferences) => {
         ob.yscale = d3.scaleBand()
             .domain(d3.range(ob.buildings.length))
             .range([0, ob.dimensions.height - ob.dimensions.margin])
-            .round(true)
         // add 5minutes to the final time
         // !! doc this
         ob.redoSetup()
