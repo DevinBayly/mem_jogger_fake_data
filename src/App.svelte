@@ -179,14 +179,16 @@
       // the width is the diff nw and se bbox points 
       let screenNW = applyLatLngToLayer(bboxNWLatLng)
       let screenSE = applyLatLngToLayer(bboxSELatLng)
-      svg.attr("width",screenSE.x -screenNW.x)
-      svg.attr("height",screenSE.y -screenNW.y)
+      // make sure the circles don't get cut off, so we add a radius on all edges of SVG
+      svg.attr("width",screenSE.x -screenNW.x + 2*circleRad)
+      svg.attr("height",screenSE.y -screenNW.y + 2*circleRad)
       // get the pixel coordinates of the top left corner of bbox
-      let newPlace = 
-      svg.style("left", screenNW.x + "px");
-      svg.style("top", screenNW.y + "px");
+      // subtract some left so we don't cutt off the circles
+      svg.style("left", (screenNW.x - circleRad)+  "px");
+      svg.style("top", (screenNW.y -circleRad)+  "px");
       // now update the g that is containing the circles
-      g.attr("transform", `translate(${-screenNW.x},${-screenNW.y})`);
+      // add in the circle radius because points need to shift extra given the padded space
+      g.attr("transform", `translate(${-screenNW.x+ circleRad },${-screenNW.y + circleRad})`);
     };
     redraw();
     // connect redraw to the map events
