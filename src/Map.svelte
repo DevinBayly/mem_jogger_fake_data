@@ -1,9 +1,12 @@
 <script>
   export let name;
+  export let buildingJSON;
   import { onMount } from "svelte";
+  import { wifiData } from "./store.js";
   import * as d3 from "d3";
   onMount(async () => {
     console.log("loaded");
+    console.log("building Json is ", buildingJSON);
     let mymap = L.map("mapid").setView([32.231481, -110.951838], 18);
     L.esri.basemapLayer("Gray").addTo(mymap);
     var subtleUA = L.esri
@@ -12,85 +15,47 @@
           "https://services.maps.arizona.edu/pdc/rest/services/SubtleCanvasTiles/MapServer"
       })
       .addTo(mymap);
-    let roomMap = {};
-    // iterate over the files
-    let files = [
-      "rooms16.geojson",
-      "rooms17.geojson",
-      "rooms18.geojson",
-      "rooms19.geojson",
-      "rooms20.geojson",
-      "rooms21.geojson",
-      "rooms22.geojson",
-      "rooms23.geojson",
-      "rooms24.geojson",
-      "rooms25.geojson",
-      "rooms26.geojson",
-      "rooms27.geojson"
-    ];
-    for (let roomFile of files) {
-      console.log("loading ", roomFile);
-      let roomData = await fetch(roomFile).then(res => res.json());
-      for (let r of roomData.features) {
-        let roomNum = r.attributes["ROOMEXT.RM_ID"];
-        let buildingNum = r.attributes["ROOMEXT.BldgAlpha"];
-        let key = `${roomNum},${buildingNum}`;
-        roomMap[key] = r.geometry;
-      }
-    }
-    console.log("the room map is", roomMap);
     // this  is the magic line for converting the polygon data into useful values
     /*
       let point = new L.Point(centerL20[0],centerL20[1])
       let pointLatLng = L.Projection.SphericalMercator.unproject(point)
       */
-
-    let paulData = await fetch("paulFebruaryTokenized.csv").then(res =>
-      res.text()
-    );
-    let dsv = d3.dsvFormat(",");
-    paulData = dsv.parse(paulData);
-    // Naveed's formula for calculating a centroid
-    // TODO make proper attribution for this code
-    var getCentroid = function(arr) {
-      return arr.reduce(
-        function(x, y) {
-          return [x[0] + y[0] / arr.length, x[1] + y[1] / arr.length];
-        },
-        [0, 0]
+    // TODO think about preconfiguring the buildingJSON to be a map already just with coordinates and building numbers
+    let buildingMap = {};
+    for (let feature of buildingJSON.features) {
+      // recall that the coordinates are ordered x,y in geojson, so must put into conversion correctly
+      buildingMap[
+        feature.properties["Buildings.SpaceNumLetter"]
+      ] = new L.LatLng(
+        feature.geometry.coordinates[1],
+        feature.geometry.coordinates[0]
       );
-    };
-    // compare Paul's data to the roomMap
-    let paulRooms = [];
-    for (let e of paulData) {
-      let ekey;
-      // strip out the number part of the room number from the letters, but keep track of what's there after the numbers so we can add it back
-      let justNumbers = e.apRoomNumber.match(/(\d+)(.*)/);
-      if (justNumbers) {
-        ekey = `${justNumbers[1].padStart(4, "0")}${justNumbers[2]},${
-          e.apBuildingNumber
-        }`;
+    }
+
+    let userWifiData;
+    // subscribe to the store
+    let unsubscribeWifiData = wifiData.subscribe(data => {
+      userWifiData = data;
+    });
+    // now figure out which building coordinates are used in data, create a map between the building number and the coordinates
+    // holds object with coordinates and count for the radius sizing
+    let activeBuildings = {};
+    for (let connection of userWifiData) {
+      if (activeBuildings[connection.apBuildingNumber] == undefined) {
+        activeBuildings[connection.apBuildingNumber] = {
+          coords: buildingMap[connection.apBuildingNumber],
+          count: 1,
+          number: connection.apBuildingNumber
+        };
       } else {
-        ekey = `${e.apRoomNumber.padStart(4, "0")},${e.apBuildingNumber}`;
-      }
-      console.log(e.apBuildingNumber, e.apRoomNumber);
-      if (roomMap[ekey] != undefined) {
-        console.log("hit");
-        // make into a poly line and get the centroid
-        // TODO ask Naveed if there's any examples of shapes where we have to use more than the first entry of rings?
-        let centerMercator = getCentroid(roomMap[ekey].rings[0]);
-        /*
-        let roomCenter = L.polyline(ringLats, { fill: false })
-          .addTo(mymap)
-          .getCenter();
-          */
-        let pMerc = new L.Point(centerMercator[0], centerMercator[1]);
-        let pLatLng = L.Projection.SphericalMercator.unproject(pMerc);
-        paulRooms.push({ tstamp: e._time, coords: pLatLng });
+        activeBuildings[connection.apBuildingNumber].count += 1;
       }
     }
-    // get bounds
-    console.log("paul's rooms", paulRooms);
+    // convert active Buildings into an array for simplicity in D3
+    let graphData = [];
+    for (let building in activeBuildings) {
+      graphData.push(activeBuildings[building]);
+    }
 
     // this is the width the svg should be to cover the full map
     let bounds = mymap.getPixelBounds();
@@ -99,15 +64,6 @@
     // create an svg
     let svg = d3.select(mymap.getPanes().overlayPane).append("svg");
     let g = svg.append("g").attr("class", "leaflet-zoom-hide");
-    // create the geotransform
-    let projectPoint = function(x, y) {
-      let pt = mymap.latLngToLayerPoint(new L.LatLng(y, x));
-      this.stream.point(pt.x, pt.y);
-    };
-    let transform = d3.geoTransform({
-      point: projectPoint
-    });
-    let d3path = d3.geoPath().projection(transform);
     // define apply latlng to layer that takes in geopoints and produces screenspace x,y for drawing on svg
     // NOTE that geojson points are going to have the x first in the coordinates
     let applyLatLngToLayer = function(d) {
@@ -116,79 +72,96 @@
       return mymap.latLngToLayerPoint(d);
     };
     // calculate the nw corner of a bounding box on the points
-    let bbox = {x:{},y:{}}
-    for(let i = 0 ; i < paulRooms.length;i++) {
-      let d=paulRooms[i].coords
-      if (i == 0) {
-        // set minmax off the bat
-        bbox.x.min = bbox.x.max = d.lng
-        bbox.y.min = bbox.y.max = d.lat
+    let bbox = { x: {}, y: {} };
+    // calculate the bounding box on the circles that are being drawn, decide on a max radius, and use it
+    for (let i = 0; i < graphData.length; i++) {
+      let d = graphData[i].coords;
+      if (d== undefined) {
+        console.log("missing coords",d)
         continue
       }
+      if (i == 0) {
+        // set minmax off the bat
+        bbox.x.min = bbox.x.max = d.lng;
+        bbox.y.min = bbox.y.max = d.lat;
+        continue;
+      }
       if (d.lat > bbox.y.max) {
-        bbox.y.max = d.lat
+        bbox.y.max = d.lat;
       }
       if (d.lat < bbox.y.min) {
-        bbox.y.min = d.lat
+        bbox.y.min = d.lat;
       }
       if (d.lng > bbox.x.max) {
-        bbox.x.max = d.lng
+        bbox.x.max = d.lng;
       }
       if (d.lng < bbox.x.min) {
-        bbox.x.min = d.lng
+        bbox.x.min = d.lng;
       }
     }
     // the northwest corner is the max.y and the min.x, and the south east corner is the min.y and the max.x
-    console.log("boundsbox is",bbox)
-    let bboxNWLatLng = new L.LatLng(bbox.y.max,bbox.x.min)
-    let bboxSELatLng = new L.LatLng(bbox.y.min,bbox.x.max)
+    console.log("boundsbox is", bbox);
+    let bboxNWLatLng = new L.LatLng(bbox.y.max, bbox.x.min);
+    let bboxSELatLng = new L.LatLng(bbox.y.min, bbox.x.max);
+    let maxRadius = 20;
+    let circleScale = d3
+      .scaleLinear()
+      .domain([1, Math.max(...graphData.map(e => e.count))])
+      .range([5, maxRadius]);
     let redraw = function() {
       // need a function to calculate the bounds of the points
       console.log("redrawing");
       // occasionally when zooming and panning the svg's container move, so we have to set svg to be relative and move it left and right
-      let circleRad = 5;
 
       // make a circle and append it to the svg, and then transform it with the results of the applylatlng
       let circle = g
         .selectAll(".testPoints")
-        .data(paulRooms, d => d.tstamp)
+        .data(graphData, d => d.number)
         .join(
           enter =>
             enter
               .append("circle")
-              .attr("r", circleRad)
+              .attr("r", d => circleScale(d.count))
               .attr("class", "testPoints")
-              .attr(
-                "transform",
-                d =>
-                  `translate(${applyLatLngToLayer(d.coords).x},${
+              .attr("transform", d => {
+                if (d.coords == undefined) {
+                  console.log("missing coords on", d);
+                } else {
+                  return `translate(${applyLatLngToLayer(d.coords).x},${
                     applyLatLngToLayer(d.coords).y
-                  })`
-              )
-              .attr("fill", "red"),
+                  })`;
+                }
+              })
+              .attr("fill", "red")
+              .attr("opacity",.5),
           update =>
-            update.attr(
-              "transform",
-              d =>
-                `translate(${applyLatLngToLayer(d.coords).x},${
+            update.attr("transform", d => {
+              if (d.coords == undefined) {
+                console.log("missing coords on", d);
+              } else {
+                return `translate(${applyLatLngToLayer(d.coords).x},${
                   applyLatLngToLayer(d.coords).y
-                })`
-            ),
+                })`;
+              }
+            }),
           exit => exit
         );
-      // the width is the diff nw and se bbox points 
-      let screenNW = applyLatLngToLayer(bboxNWLatLng)
-      let screenSE = applyLatLngToLayer(bboxSELatLng)
+      // the width is the diff nw and se bbox points
+      let screenNW = applyLatLngToLayer(bboxNWLatLng);
+      let screenSE = applyLatLngToLayer(bboxSELatLng);
       // make sure the circles don't get cut off, so we add a radius on all edges of SVG
-      svg.attr("width",screenSE.x -screenNW.x + 2*circleRad)
-      svg.attr("height",screenSE.y -screenNW.y + 2*circleRad)
+      svg.attr("width", screenSE.x - screenNW.x + 2 * maxRadius);
+      svg.attr("height", screenSE.y - screenNW.y + 2 * maxRadius);
       // get the pixel coordinates of the top left corner of bbox
       // subtract some left so we don't cutt off the circles
-      svg.style("left", (screenNW.x - circleRad)+  "px");
-      svg.style("top", (screenNW.y -circleRad)+  "px");
+      svg.style("left", screenNW.x - maxRadius + "px");
+      svg.style("top", screenNW.y - maxRadius + "px");
       // now update the g that is containing the circles
       // add in the circle radius because points need to shift extra given the padded space
-      g.attr("transform", `translate(${-screenNW.x+ circleRad },${-screenNW.y + circleRad})`);
+      g.attr(
+        "transform",
+        `translate(${-screenNW.x + maxRadius},${-screenNW.y + maxRadius})`
+      );
     };
     redraw();
     // connect redraw to the map events
@@ -205,7 +178,7 @@
     margin: 0 auto;
   }
   #leafletHolder {
-    width:80%;
+    width: 80%;
   }
   h1 {
     color: #ff3e00;
