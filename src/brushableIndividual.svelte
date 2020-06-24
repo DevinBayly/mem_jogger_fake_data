@@ -1,7 +1,13 @@
 <script>
   import * as d3 from "d3";
   import { onMount } from "svelte";
-  import { wifiData, timeSelected, allDevices, daySelected } from "./store.js";
+  import {
+    wifiData,
+    timeSelected,
+    allDevices,
+    daySelected,
+    timeBounds
+  } from "./store.js";
   // make brushable dimensions element, set this from the view that can query size of other elements on screen
   export let dims;
   onMount(() => {
@@ -16,7 +22,9 @@
       brushXAxisG,
       blocksG,
       brush,
-      gbrush;
+      gbrush,
+      t1,
+      t2;
     let initialize = userData => {
       svg = d3
         .select("#brushableHolder")
@@ -65,18 +73,18 @@
       //define a brush event
       function brushEnd() {
         const ext = d3.brushSelection(this);
-        const t1 = xscale.invert(ext[0]);
-        const t2 = xscale.invert(ext[1]);
+        t1 = xscale.invert(ext[0]);
+        t2 = xscale.invert(ext[1]);
         // update data shown for the graph, but make it clear that this is not supposed to update the brushable area
-        let timeBoundedData =[]
-        for(let entry of userData) {
-          let etime = d3.isoParse(entry._time)
-          if (etime> t1 &&  etime < t2) {
-            timeBoundedData.push(entry)
+        let timeBoundedData = [];
+        for (let entry of userData) {
+          let etime = d3.isoParse(entry._time);
+          if (etime > t1 && etime < t2) {
+            timeBoundedData.push(entry);
           }
         }
         // update the map data
-        wifiData.set({type:"brushupdate",data:timeBoundedData})
+        wifiData.set({ type: "brushupdate", data: timeBoundedData });
       }
       // create a brush
       // define functions for start and brushed
@@ -84,6 +92,7 @@
       brush = d3
         .brushX()
         .on("end", brushEnd)
+        .on("brush", brushEnd)
         .extent([
           [0, 0],
           [dims.width - dims.margin, dims.height - dims.margin]
@@ -124,6 +133,17 @@
           // this is a brush based update
           console.log("brush updated the data");
         } else {
+          // see if we have brush and alter the data
+          if (t1 != undefined) {
+            let timeBoundedData = [];
+            for (let entry of data) {
+              let etime = d3.isoParse(entry._time);
+              if (etime > t1 && etime < t2) {
+                timeBoundedData.push(entry);
+              }
+            }
+            wifiData.set({type:"brush",data:timeBoundedData})
+          }
           redraw(data);
         }
       }
