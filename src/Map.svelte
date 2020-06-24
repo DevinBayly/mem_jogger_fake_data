@@ -101,6 +101,12 @@
     };
     let updateData = userData => {
       console.log("running data")
+      if (userData.length == 0) {
+        // just pick a graphData 
+        graphData =[] 
+        redraw()
+        return
+      }
       let activeBuildings = {};
       for (let connection of userData) {
         if (activeBuildings[connection.apBuildingNumber] == undefined) {
