@@ -69,6 +69,25 @@
       blocksG = svg
         .append("g")
         .attr("transform", `translate(${dims.margin},${dims.margin})`);
+      // include the vertical lines at the day intervals
+        let start = xscale.domain()[0]
+        let end = xscale.domain()[1]
+        let current = new Date(start.getTime())
+        for (let i = 0;;i++) {
+            let pathData =[[xscale(current),0],[xscale(current),yscale.range()[1]]]
+            let lineGenerator = d3.line()
+            .x(d=> d[0])
+            .y(d=> d[1])
+            blocksG.append("path")
+              .datum(pathData)
+              .attr("stroke","red")
+              .attr("d",lineGenerator)
+            current.setMinutes(current.getMinutes() + 60*24)
+            if (current > end) {
+                break
+            }
+
+        }
       // brush steps
       //define a brush event
       function brushEnd() {
