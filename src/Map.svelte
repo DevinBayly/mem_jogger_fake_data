@@ -178,7 +178,7 @@
     margin: 0 auto;
   }
   #leafletHolder {
-    width: 80%;
+    width: 100%;
   }
   h1 {
     color: #ff3e00;
@@ -193,7 +193,7 @@
     }
   }
   #mapid {
-    height: 98vh;
+    height: 80vh;
   }
   svg {
     position: absolute;

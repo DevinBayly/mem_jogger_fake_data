@@ -1,11 +1,17 @@
 <script>
 import Map from "./Map.svelte"
 import Brushable from "./brushableIndividual.svelte"
+import Selectors from "./dataSelectors.svelte"
 import {buildingJSON} from "./data.js"
 import {wifiData } from "./store.js"
 // setup the store with the data for this application
 
 console.log("wifi data is",wifiData)
+let dims ={
+  width:window.innerWidth*.8,
+  height:100,
+  margin:20
+}
 </script>
 
 <style>
@@ -13,11 +19,19 @@ console.log("wifi data is",wifiData)
   display:flex;
   flex-direction: column;
   height:100%;
-  width:99%;
+  width:100%;
+
+}
+#bottomViews {
+  display:flex;
 
 }
 </style>
 
 <div id="secondVisHolder">
 <Map buildingJSON={buildingJSON}></Map>
+<div id="bottomViews">
+<Brushable dims={dims}></Brushable>
+<Selectors></Selectors>
+</div>
 </div>

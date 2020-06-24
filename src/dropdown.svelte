@@ -24,6 +24,5 @@
 <style>
 </style>
 <div id="content">
-<h3>Date Selector</h3>
 <select name="" id="days"></select>
 </div>
