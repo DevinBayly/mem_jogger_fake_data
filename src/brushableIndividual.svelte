@@ -12,7 +12,7 @@
   export let dims;
   onMount(() => {
     // setup, and there may be reason to update some variables that are declared
-    let svg,
+    let userData,svg,
       times,
       buildings,
       devices,
@@ -25,7 +25,7 @@
       gbrush,
       t1,
       t2;
-    let initialize = userData => {
+    let initialize = () => {
       svg = d3
         .select("#brushableHolder")
         .append("svg")
@@ -124,14 +124,14 @@
       gbrush = blocksG.append("g").attr("class", "gBrush");
       gbrush.call(brush);
       // call the brush constructor with .call
-      redraw(userData);
+      redraw();
     };
 
-    let redraw = data => {
+    let redraw = () => {
       // make the small blocks
       blocksG
         .selectAll("rect")
-        .data(data, d => d._time)
+        .data(userData, d => d._time)
         .join(
           enter =>
             enter
@@ -149,7 +149,8 @@
     };
     let unsubscribe = wifiData.subscribe(data => {
       if (svg == undefined) {
-        initialize(data);
+        userData = data
+        initialize();
       } else {
         // do redraw
         if (data.type != undefined) {
@@ -167,7 +168,8 @@
             }
             wifiData.set({type:"brush",data:timeBoundedData})
           }
-          redraw(data);
+          userData = data
+          redraw();
         }
       }
       // connect redraw to this
