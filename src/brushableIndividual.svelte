@@ -4,9 +4,6 @@
   import { wifiData, timeSelected, allDevices, daySelected } from "./store.js";
   // make brushable dimensions element, set this from the view that can query size of other elements on screen
   export let dims;
-  let brushEnd = () => {
-    console.log("brushing now");
-  };
   onMount(() => {
     // setup, and there may be reason to update some variables that are declared
     let svg,
@@ -65,6 +62,22 @@
         .append("g")
         .attr("transform", `translate(${dims.margin},${dims.margin})`);
       // brush steps
+      //define a brush event
+      function brushEnd() {
+        const ext = d3.brushSelection(this);
+        const t1 = xscale.invert(ext[0]);
+        const t2 = xscale.invert(ext[1]);
+        // update data shown for the graph, but make it clear that this is not supposed to update the brushable area
+        let timeBoundedData =[]
+        for(let entry of userData) {
+          let etime = d3.isoParse(entry._time)
+          if (etime> t1 &&  etime < t2) {
+            timeBoundedData.push(entry)
+          }
+        }
+        // update the map data
+        wifiData.set({type:"brushupdate",data:timeBoundedData})
+      }
       // create a brush
       // define functions for start and brushed
       // extent is the possible canvas that can be brushed
@@ -107,7 +120,12 @@
         initialize(data);
       } else {
         // do redraw
-        redraw(data);
+        if (data.type != undefined) {
+          // this is a brush based update
+          console.log("brush updated the data");
+        } else {
+          redraw(data);
+        }
       }
       // connect redraw to this
     });
@@ -120,11 +138,8 @@
         // invert xscale and get the positions of day and day + 24 hours
         let dayX = xscale(day);
         let nextDayX = xscale(nextDay);
-        gbrush.call(brush.move,[dayX,nextDayX])
-        //gbrush.call(brush.move, [
-        //  [dayX, nextDayX],
-        //  [0, dims.height - dims.margin]
-        //]);
+        gbrush.call(brush.move, [dayX, nextDayX]);
+        // triggers the brushEnd event
       }
     });
   });

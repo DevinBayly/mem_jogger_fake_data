@@ -189,7 +189,12 @@
         initialize(data);
         once = true
       }
+      if(data.type != undefined) {
+        console.log("brush trigger data change",data.type)
+        updateData(data.data)
+      } else {
       updateData(data)
+      }
     });
   });
 </script>
