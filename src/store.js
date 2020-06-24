@@ -4,3 +4,5 @@ import {paulData} from "./data.js"
 export const wifiData = writable(paulData)
 export const timeSelected = writable(0)
 export const allDevices = writable({})
+// set default
+export const daySelected = writable(0)

@@ -1,7 +1,7 @@
 <script>
   import * as d3 from "d3";
   import { onMount } from "svelte";
-  import { wifiData, timeSelected, allDevices } from "./store.js";
+  import { wifiData, timeSelected, allDevices, daySelected } from "./store.js";
   // make brushable dimensions element, set this from the view that can query size of other elements on screen
   export let dims;
   let brushEnd = () => {
@@ -35,7 +35,7 @@
           buildings.push(entry.apBuildingNumber);
         }
         if (devices[entry["EndPointMatchedProfile"]] == undefined) {
-          devices[entry["EndPointMatchedProfile"]] = {checked:true} ;
+          devices[entry["EndPointMatchedProfile"]] = { checked: true };
         }
       }
       let last_time = new Date(d3.max(times).getTime());
@@ -100,6 +100,7 @@
           update => update,
           exit => exit.remove()
         );
+      gbrush.call(brush);
     };
     let unsubscribe = wifiData.subscribe(data => {
       if (svg == undefined) {
@@ -109,6 +110,22 @@
         redraw(data);
       }
       // connect redraw to this
+    });
+    let unsubDaySelected = daySelected.subscribe(day => {
+      // update the brush
+      if (day != 0) {
+        console.log("updating brush");
+        let nextDay = new Date(day.getTime());
+        nextDay.setMinutes(nextDay.getMinutes() + 60 * 24);
+        // invert xscale and get the positions of day and day + 24 hours
+        let dayX = xscale(day);
+        let nextDayX = xscale(nextDay);
+        gbrush.call(brush.move,[dayX,nextDayX])
+        //gbrush.call(brush.move, [
+        //  [dayX, nextDayX],
+        //  [0, dims.height - dims.margin]
+        //]);
+      }
     });
   });
 </script>
