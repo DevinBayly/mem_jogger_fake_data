@@ -31,83 +31,18 @@
         feature.geometry.coordinates[0]
       );
     }
+    console.log("building map is ",buildingMap)
 
-    let userWifiData;
     // subscribe to the store
-    let unsubscribeWifiData = wifiData.subscribe(data => {
-      userWifiData = data;
-    });
-    // now figure out which building coordinates are used in data, create a map between the building number and the coordinates
-    // holds object with coordinates and count for the radius sizing
-    let activeBuildings = {};
-    for (let connection of userWifiData) {
-      if (activeBuildings[connection.apBuildingNumber] == undefined) {
-        activeBuildings[connection.apBuildingNumber] = {
-          coords: buildingMap[connection.apBuildingNumber],
-          count: 1,
-          number: connection.apBuildingNumber
-        };
-      } else {
-        activeBuildings[connection.apBuildingNumber].count += 1;
-      }
-    }
-    // convert active Buildings into an array for simplicity in D3
-    let graphData = [];
-    for (let building in activeBuildings) {
-      graphData.push(activeBuildings[building]);
-    }
-
-    // this is the width the svg should be to cover the full map
-    let bounds = mymap.getPixelBounds();
-    let width = bounds.max.x - bounds.min.x;
-    let height = bounds.max.y - bounds.min.y;
-    // create an svg
-    let svg = d3.select(mymap.getPanes().overlayPane).append("svg");
-    let g = svg.append("g").attr("class", "leaflet-zoom-hide");
-    // define apply latlng to layer that takes in geopoints and produces screenspace x,y for drawing on svg
-    // NOTE that geojson points are going to have the x first in the coordinates
-    let applyLatLngToLayer = function(d) {
-      // d is a lat lng calculated from the getCenter() method of a polyline
-      // do some comparison of building number to geojson of buildings to get coords
-      return mymap.latLngToLayerPoint(d);
-    };
-    // calculate the nw corner of a bounding box on the points
-    let bbox = { x: {}, y: {} };
-    // calculate the bounding box on the circles that are being drawn, decide on a max radius, and use it
-    for (let i = 0; i < graphData.length; i++) {
-      let d = graphData[i].coords;
-      if (d== undefined) {
-        console.log("missing coords",d)
-        continue
-      }
-      if (i == 0) {
-        // set minmax off the bat
-        bbox.x.min = bbox.x.max = d.lng;
-        bbox.y.min = bbox.y.max = d.lat;
-        continue;
-      }
-      if (d.lat > bbox.y.max) {
-        bbox.y.max = d.lat;
-      }
-      if (d.lat < bbox.y.min) {
-        bbox.y.min = d.lat;
-      }
-      if (d.lng > bbox.x.max) {
-        bbox.x.max = d.lng;
-      }
-      if (d.lng < bbox.x.min) {
-        bbox.x.min = d.lng;
-      }
-    }
-    // the northwest corner is the max.y and the min.x, and the south east corner is the min.y and the max.x
-    console.log("boundsbox is", bbox);
-    let bboxNWLatLng = new L.LatLng(bbox.y.max, bbox.x.min);
-    let bboxSELatLng = new L.LatLng(bbox.y.min, bbox.x.max);
-    let maxRadius = 20;
-    let circleScale = d3
-      .scaleLinear()
-      .domain([1, Math.max(...graphData.map(e => e.count))])
-      .range([5, maxRadius]);
+    let once = false;
+    let graphData,
+      circleScale,
+      applyLatLngToLayer,
+      bboxNWLatLng,
+      bboxSELatLng,
+      svg,
+      maxRadius = 20,
+      g;
     let redraw = function() {
       // need a function to calculate the bounds of the points
       console.log("redrawing");
@@ -133,7 +68,7 @@
                 }
               })
               .attr("fill", "red")
-              .attr("opacity",.5),
+              .attr("opacity", 0.5),
           update =>
             update.attr("transform", d => {
               if (d.coords == undefined) {
@@ -143,8 +78,9 @@
                   applyLatLngToLayer(d.coords).y
                 })`;
               }
-            }),
-          exit => exit
+            })
+            .attr("r",d=> circleScale(d.count)),
+          exit => exit.remove()
         );
       // the width is the diff nw and se bbox points
       let screenNW = applyLatLngToLayer(bboxNWLatLng);
@@ -163,10 +99,92 @@
         `translate(${-screenNW.x + maxRadius},${-screenNW.y + maxRadius})`
       );
     };
-    redraw();
-    // connect redraw to the map events
-    mymap.on("zoomend", redraw);
-    mymap.on("moveend", redraw);
+    let updateData = userData => {
+      console.log("running data")
+      let activeBuildings = {};
+      for (let connection of userData) {
+        if (activeBuildings[connection.apBuildingNumber] == undefined) {
+          activeBuildings[connection.apBuildingNumber] = {
+            coords: buildingMap[connection.apBuildingNumber],
+            count: 1,
+            number: connection.apBuildingNumber
+          };
+        } else {
+          activeBuildings[connection.apBuildingNumber].count += 1;
+        }
+      }
+      // convert active Buildings into an array for simplicity in D3
+      graphData = [];
+      for (let building in activeBuildings) {
+        graphData.push(activeBuildings[building]);
+      }
+      console.log("graph data ",graphData)
+      // calculate the nw corner of a bounding box on the points
+      let bbox = { x: {}, y: {} };
+      // calculate the bounding box on the circles that are being drawn, decide on a max radius, and use it
+      for (let i = 0; i < graphData.length; i++) {
+        let d = graphData[i].coords;
+        if (d == undefined) {
+          console.log("missing coords", d);
+          continue;
+        }
+        if (i == 0) {
+          // set minmax off the bat
+          bbox.x.min = bbox.x.max = d.lng;
+          bbox.y.min = bbox.y.max = d.lat;
+          continue;
+        }
+        if (d.lat > bbox.y.max) {
+          bbox.y.max = d.lat;
+        }
+        if (d.lat < bbox.y.min) {
+          bbox.y.min = d.lat;
+        }
+        if (d.lng > bbox.x.max) {
+          bbox.x.max = d.lng;
+        }
+        if (d.lng < bbox.x.min) {
+          bbox.x.min = d.lng;
+        }
+      }
+      // the northwest corner is the max.y and the min.x, and the south east corner is the min.y and the max.x
+      console.log("boundsbox is", bbox);
+      bboxNWLatLng = new L.LatLng(bbox.y.max, bbox.x.min);
+      bboxSELatLng = new L.LatLng(bbox.y.min, bbox.x.max);
+      redraw()
+    }
+    let initialize = (userData) => {
+
+      // this is the width the svg should be to cover the full map
+      let bounds = mymap.getPixelBounds();
+      let width = bounds.max.x - bounds.min.x;
+      let height = bounds.max.y - bounds.min.y;
+      // create an svg
+      svg = d3.select(mymap.getPanes().overlayPane).append("svg");
+      g = svg.append("g").attr("class", "leaflet-zoom-hide");
+      // define apply latlng to layer that takes in geopoints and produces screenspace x,y for drawing on svg
+      // NOTE that geojson points are going to have the x first in the coordinates
+      applyLatLngToLayer = function(d) {
+        // d is a lat lng calculated from the getCenter() method of a polyline
+        // do some comparison of building number to geojson of buildings to get coords
+        return mymap.latLngToLayerPoint(d);
+      };
+      // connect redraw to the map events
+      mymap.on("zoomend", redraw);
+      mymap.on("moveend", redraw);
+      //establish the circle scale before the data gets changed at all
+      circleScale = d3
+        .scaleLinear()
+        .domain([1, userData.length])
+        .range([5, maxRadius]);
+    };
+    let unsubscribeWifiData = wifiData.subscribe(data => {
+      if (!once) {
+        initialize(data);
+        once = true
+      }
+      updateData(data)
+    });
   });
 </script>
 
