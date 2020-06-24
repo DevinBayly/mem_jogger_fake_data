@@ -71,6 +71,10 @@
         .attr("transform", `translate(${dims.margin},${dims.margin})`);
       // include the vertical lines at the day intervals
         let start = xscale.domain()[0]
+        // truncate start back to beginning of day
+        start.setHours(0)
+        start.setMinutes(0)
+        start.setSeconds(0)
         let end = xscale.domain()[1]
         let current = new Date(start.getTime())
         for (let i = 0;;i++) {
