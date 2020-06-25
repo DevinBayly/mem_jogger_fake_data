@@ -1,0 +1,126 @@
+<!DOCTYPE html><!--[if lte IE 9]><html lang="en" dir="ltr" class="lte-ie9 external-links ua-brand-icons sticky-footer"><![endif]-->
+<!--[if (gt IE 9)|(gt IEMobile 7)]><!--><html lang="en" dir="ltr" class="external-links ua-brand-icons sticky-footer"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="../../favicon.ico">
+  <title>SPA UA-CAP Test</title>
+
+  <!-- Latest icon font stylesheet -->
+  <link rel="stylesheet" href="https://cdn.uadigital.arizona.edu/lib/ua-brand-icons/latest/ua-brand-icons.css">
+
+  <!-- Compiled and minified UA Bootstrap CSS, icon font not included -->
+  <link rel="stylesheet" href="https://cdn.uadigital.arizona.edu/lib/ua-bootstrap/v1.0.0-beta.17/ua-bootstrap.min.css">
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://cdn.uadigital.arizona.edu/lib/ua-bootstrap/v1.0.0-beta.17/ua-bootstrap.min.js"></script>
+
+  <!-- AWS SDKs -->
+  <script src="js/aws-sdk.min.js"></script>
+  <script src="js/aws-cognito-sdk.js"></script>
+  <script src="js/amazon-cognito-auth.js"></script>
+
+  <!-- Application Javascript -->
+  <script src="js/app.js"></script>
+  
+
+  <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
+  <link rel="icon" href="img/favicon.png" type="image/x-icon">
+
+  <script type="text/javascript">
+    // Set your AWS environment specific variables here
+    // the signinRedirect must match exactly what you have set for the Cognito App Client
+    var auth = null;
+    var session = null;
+    window.onload = function authorize() {
+      auth = initCognitoSDK();
+      var curUrl = window.location.href;
+      auth.parseCognitoWebResponse(curUrl);
+      
+      // Calling getSession with either get the current session if there's an active one, or else
+      // redirect them to Shibboleth to log in.
+      auth.getSession();
+      appStart();
+    }
+  </script>
+
+</head>
+<body>
+  <header class="l-arizona-header bg-red" id="region_header_ua">
+    <section class="container l-container">
+      <div class="row"><a class="arizona-logo" href="http://www.arizona.edu" title="The University of Arizona homepage"><img class="arizona-line-logo" alt="The University of Arizona Wordmark Line Logo White" src="https://cdn.uadigital.arizona.edu/logos/v1.0.0/ua_wordmark_line_logo_white_rgb.min.svg"></a></div>
+    </section>
+  </header>
+
+  <div id="l_page">
+    <div id="header_site">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-6">
+            <div id="site_identifier"><a href="#"><img src="img/it-logo.svg"></a></div>
+          </div>
+      </div>
+      <!-- /.container-->
+    </div>
+    <!-- /#header_site-->
+
+    <div id="content_main">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-9 col-md-push-3" id="content">
+
+            <h1>SPA UA-CAP Test</h1>
+
+            <h2 id="userContainer">Not logged in...</h2>
+            
+            <pre id="responseContainer"></pre>
+
+  <br><br>
+  
+          </div>
+          <!-- /.col-md-9-->
+        </div>
+      </div>
+    </div>
+    <!-- /#content_main-->
+    
+    
+    <footer id="footer_site">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="text-center" id="footer_copyright">
+              Office of the CIO   |   The University of Arizona   |   Tucson, AZ USA 85721    <br>
+              © 2016 The Arizona Board of Regents on behalf of the University of Arizona
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /.container-->
+    </footer>
+  </div>
+  <!-- /#l_page--><footer role="contentinfo" class="bs-footer">
+  <div class="container text-center">
+    <hr>
+    <p><a href="http://getbootstrap.com" target="_blank">Twitter Bootstrap</a> originally designed and built by&nbsp;<a href="http://twitter.com/mdo" target="_blank">@mdo</a>&nbsp;and&nbsp;<a href="http://twitter.com/fat" target="_blank">@fat</a>.</p>
+    <p>The University of Arizona flavor built and maintained by the UA Digital group.</p>
+    <p>Code licensed under&nbsp;<a href="https://github.com/twbs/bootstrap/blob/master/LICENSE" target="_blank">MIT</a>, documentation under&nbsp;<a href="http://creativecommons.org/licenses/by/3.0/" target="_blank">CC BY 3.0</a>.</p>
+    <ul class="footer-links muted list-inline list-unstyled">
+      <li>Currently v1.0.0-beta.17</li>
+      <li>·</li>
+      <li><a href="https://bitbucket.org/uadigital/ua-bootstrap" target="_blank">Bitbucket</a></li>
+      <li>·</li>
+      <li><a href="https://jira.arizona.edu/browse/UADIGITAL-145?jql=component%20%3D%20%22UA%20Bootstrap%22%20AND%20project%20%3D%20UADIGITAL" target="_blank">Issues</a></li>
+      <li>·</li>
+      <li><a href="https://bitbucket.org/uadigital/ua-bootstrap/downloads/?tab=tags" target="_blank">Tagged Releases</a></li>
+    </ul>
+  </div>
+</footer>
+
+</body>
