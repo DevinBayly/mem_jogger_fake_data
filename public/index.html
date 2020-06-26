@@ -1,9 +1,4 @@
-
-
-
-
-
-	<!DOCTYPE html><!--[if lte IE 9]><html lang="en" dir="ltr" class="lte-ie9 external-links ua-brand-icons sticky-footer"><![endif]-->
+<!DOCTYPE html><!--[if lte IE 9]><html lang="en" dir="ltr" class="lte-ie9 external-links ua-brand-icons sticky-footer"><![endif]-->
 <!--[if (gt IE 9)|(gt IEMobile 7)]><!--><html lang="en" dir="ltr" class="external-links ua-brand-icons sticky-footer"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
@@ -19,6 +14,7 @@
 
   <!-- Compiled and minified UA Bootstrap CSS, icon font not included -->
   <link rel="stylesheet" href="https://cdn.uadigital.arizona.edu/lib/ua-bootstrap/v1.0.0-beta.17/ua-bootstrap.min.css">
+  <link rel="stylesheet" href="styles.css">
 
   <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -27,52 +23,22 @@
   <script src="https://cdn.uadigital.arizona.edu/lib/ua-bootstrap/v1.0.0-beta.17/ua-bootstrap.min.js"></script>
 
   <!-- AWS SDKs -->
-  <script src="js/aws-sdk.min.js"></script>
-  <script src="js/aws-cognito-sdk.js"></script>
-  <script src="js/amazon-cognito-auth.js"></script>
+  <script src="js/amazon-cognito-auth.min.js"></script>
 
-  <!-- Application Javascript -->
-  <script src="js/app.js"></script>
-  
-  <link rel='icon' type='image/png' href='/favicon.png'>
-  <link rel='stylesheet' href='/global.css'>
-  <link rel='stylesheet' href='/build/bundle.css'>
-
-  <script defer src='/build/bundle.js'></script>
-  <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
-  <link rel="icon" href="img/favicon.png" type="image/x-icon">
-
-  <script type="text/javascript">
-    // Set your AWS environment specific variables here
-    // the signinRedirect must match exactly what you have set for the Cognito App Client
-    var auth = null;
-    var session = null;
-    window.onload = function authorize() {
-      auth = initCognitoSDK();
-      var curUrl = window.location.href;
-      auth.parseCognitoWebResponse(curUrl);
-      
-      // Calling getSession with either get the current session if there's an active one, or else
-      // redirect them to Shibboleth to log in.
-      auth.getSession();
-      appStart();
-    }
-  </script>
 
 </head>
-<body>
-  <header class="l-arizona-header bg-red" id="region_header_ua">
+<header class="l-arizona-header bg-red" id="region_header_ua">
     <section class="container l-container">
       <div class="row"><a class="arizona-logo" href="http://www.arizona.edu" title="The University of Arizona homepage"><img class="arizona-line-logo" alt="The University of Arizona Wordmark Line Logo White" src="https://cdn.uadigital.arizona.edu/logos/v1.0.0/ua_wordmark_line_logo_white_rgb.min.svg"></a></div>
     </section>
   </header>
-
+  <body  onload="onLoad()">
   <div id="l_page">
     <div id="header_site">
       <div class="container">
         <div class="row">
           <div class="col-sm-6">
-            <div id="site_identifier"><a href="#"><img src="img/it-logo.svg"></a></div>
+            <div id="site_identifier"><a href="#"><img src="https://security.arizona.edu/sites/default/files/UA_UAInfoSec_Webheader-01.png"></a></div>
           </div>
       </div>
       <!-- /.container-->
@@ -86,50 +52,166 @@
 
             <h1>SPA UA-CAP Test</h1>
 
-            <h2 id="userContainer">Not logged in...</h2>
-            
-            <pre id="responseContainer"></pre>
-
-  <br><br>
-  
-          </div>
-          <!-- /.col-md-9-->
-        </div>
-      </div>
-    </div>
-    <!-- /#content_main-->
-    
-    
-    <footer id="footer_site">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="text-center" id="footer_copyright">
-              Office of the CIO   |   The University of Arizona   |   Tucson, AZ USA 85721    <br>
-              © 2016 The Arizona Board of Regents on behalf of the University of Arizona
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- /.container-->
-    </footer>
+  <div><br></div>
+  <div>
+      <h1 id="statusNotAuth" title="Status">
+          You are not signed in! Please sign in to continue.
+	  </h1>
+      <h1 id="statusAuth" title="Status">
+          You have successfully signed in! 
+	  </h1>
   </div>
-  <!-- /#l_page--><footer role="contentinfo" class="bs-footer">
-  <div class="container text-center">
-    <hr>
-    <p><a href="http://getbootstrap.com" target="_blank">Twitter Bootstrap</a> originally designed and built by&nbsp;<a href="http://twitter.com/mdo" target="_blank">@mdo</a>&nbsp;and&nbsp;<a href="http://twitter.com/fat" target="_blank">@fat</a>.</p>
-    <p>The University of Arizona flavor built and maintained by the UA Digital group.</p>
-    <p>Code licensed under&nbsp;<a href="https://github.com/twbs/bootstrap/blob/master/LICENSE" target="_blank">MIT</a>, documentation under&nbsp;<a href="http://creativecommons.org/licenses/by/3.0/" target="_blank">CC BY 3.0</a>.</p>
-    <ul class="footer-links muted list-inline list-unstyled">
-      <li>Currently v1.0.0-beta.17</li>
-      <li>·</li>
-      <li><a href="https://bitbucket.org/uadigital/ua-bootstrap" target="_blank">Bitbucket</a></li>
-      <li>·</li>
-      <li><a href="https://jira.arizona.edu/browse/UADIGITAL-145?jql=component%20%3D%20%22UA%20Bootstrap%22%20AND%20project%20%3D%20UADIGITAL" target="_blank">Issues</a></li>
-      <li>·</li>
-      <li><a href="https://bitbucket.org/uadigital/ua-bootstrap/downloads/?tab=tags" target="_blank">Tagged Releases</a></li>
-    </ul>
-  </div>
-</footer>
 
+	<div class="tabsWell">
+		<div id="startButtons">
+			<div class="button">
+				<a class="nav-tabs" id="signInButton" href="javascript:void(0)" title="Sign in">Sign In</a>
+			</div>
+		</div>
+		<div class="tab-content">
+			<div class="tab-pane" id="userdetails">
+				<p class="text-icon" title="Minimize" id="tabIcon" onclick="toggleTab('usertab');">_</p>
+				<br>
+				<h2 id="usertabtitle">Tokens</h2>
+				<div class="user-form" id="usertab">
+					<pre id="idtoken"> ... </pre>
+					<pre id="acctoken"> ... </pre>
+					<pre id="reftoken"> ... </pre>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+
+	// Operations when the web page is loaded.
+	function onLoad() {
+		var i, items, tabs;
+		items = document.getElementsByClassName("tab-pane");
+		for (i = 0; i < items.length; i++) {
+			items[i].style.display = 'none';
+		}
+		document.getElementById("statusNotAuth").style.display = 'block';
+		document.getElementById("statusAuth").style.display = 'none';
+		// Initiatlize CognitoAuth object
+		var auth = initCognitoSDK();
+		document.getElementById("signInButton").addEventListener("click", function() {
+			userButton(auth);
+		});
+		var curUrl = window.location.href;
+		auth.parseCognitoWebResponse(curUrl);
+	}
+
+  // Operation when tab is closed.
+	function closeTab(tabName) {
+	  document.getElementById(tabName).style.display = 'none';
+	}
+
+  // Operation when tab is opened.
+  function openTab(tabName) {
+		document.getElementById(tabName).style.display = 'block';
+	}
+
+  // Operations about toggle tab.
+	function toggleTab(tabName) {
+		if (document.getElementById("usertab").style.display == 'none') {
+			document.getElementById("usertab").style.display = 'block';
+			document.getElementById("tabIcon").innerHTML = '_';
+		} else {
+			document.getElementById("usertab").style.display = 'none';
+			document.getElementById("tabIcon").innerHTML = '+';
+		}
+	}
+
+  // Operations when showing message.
+	function showMessage(msgTitle, msgText, msgDetail) {
+		var msgTab = document.getElementById('message');
+		document.getElementById('messageTitle').innerHTML = msgTitle;
+		document.getElementById('messageText').innerHTML = msgText;
+		document.getElementById('messageDetail').innerHTML = msgDetail;
+		msgTab.style.display = "block";
+	}
+
+  // Perform user operations.
+	function userButton(auth) {
+		var state = document.getElementById('signInButton').innerHTML;
+		if (state === "Sign Out") {
+			document.getElementById("signInButton").innerHTML = "Sign In";
+			auth.signOut();
+			showSignedOut();
+		} else {
+			auth.getSession();
+		}
+	}
+
+	// Operations when signed in.
+  function showSignedIn(auth) {
+		document.getElementById("statusNotAuth").style.display = 'none';
+		document.getElementById("statusAuth").style.display = 'block';
+		document.getElementById("signInButton").innerHTML = "Sign Out";
+		if (auth) {
+			var idToken = auth.getIdToken().getJwtToken();
+			if (idToken) {
+				var payload = idToken.split('.')[1];
+				var tokenobj = JSON.parse(atob(payload));
+				var formatted = JSON.stringify(tokenobj, undefined, 2);
+				document.getElementById('idtoken').innerHTML = formatted;
+			}
+			var accToken = auth.getAccessToken().getJwtToken();
+			if (accToken) {
+				var payload = accToken.split('.')[1];
+				var tokenobj = JSON.parse(atob(payload));
+				var formatted = JSON.stringify(tokenobj, undefined, 2);
+				document.getElementById('acctoken').innerHTML = formatted;
+			}
+			var refToken = auth.getRefreshToken().getToken();
+			if (refToken) {
+				document.getElementById('reftoken').innerHTML = refToken.substring(1, 20);
+			}
+		}
+		openTab("userdetails");
+	}
+
+	// Operations when signed out.
+	function showSignedOut() {
+		document.getElementById("statusNotAuth").style.display = 'block';
+		document.getElementById("statusAuth").style.display = 'none';
+		document.getElementById('idtoken').innerHTML = " ... ";
+		document.getElementById('acctoken').innerHTML = " ... ";
+		document.getElementById('reftoken').innerHTML = " ... ";
+		closeTab("userdetails");
+	}
+
+  // Initialize a cognito auth object.
+	function initCognitoSDK() {
+		var authData = {
+			ClientId : '4bm64prfamvrt5s563cqirmq9', // Your client id here
+			AppWebDomain : 'uacap-timescape.auth.us-west-2.amazoncognito.com', // Exclude the "https://" part. 
+            TokenScopesArray: ['openid', 'profile', 'email', 'phone'],
+			RedirectUriSignIn : 'https://test.timescape.arizona.edu/index.html',
+			RedirectUriSignOut : 'https://test.timescape.arizona.edu/',
+            userPoolId: 'us-west-2_jKbmFSAtP'
+		};
+		var auth = new AmazonCognitoIdentity.CognitoAuth(authData);
+		// You can also set state parameter 
+		// auth.setState(<state parameter>);  
+        auth.userhandler = {
+        onSuccess: function(result) {
+			console.log('Sign in success', result);
+			console.log('user is ' + JSON.stringify(result.idToken.payload[7]));
+			cognitoUser = result.user;
+			console.log('username is ' + cognitoUser);
+			showSignedIn(result)
+        },
+        onFailure: function(error) {
+			console.error('Sign in error', error);
+			console.log(error);
+			showSignedOut()
+        }
+		};
+		// The default response_type is "token", uncomment the next line will make it be "code".
+		// auth.useCodeGrantFlow();
+		return auth;
+	}
+	</script>
 </body>
+</html>
