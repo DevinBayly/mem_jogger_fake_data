@@ -1,37 +1,34 @@
 <script>
-import Map from "./Map.svelte"
-import Brushable from "./brushableIndividual.svelte"
-import Selectors from "./dataSelectors.svelte"
-import {buildingJSON} from "./data.js"
-import {wifiData } from "./store.js"
-// setup the store with the data for this application
-
-console.log("wifi data is",wifiData)
-let dims ={
-  width:window.innerWidth*.8,
-  height:100,
-  margin:20
-}
+  import VisOp from "./VisOption.svelte"
+  // put in Teresa's signin code
+  // include the reachout to the lambda function
+  // introduce the page with the options
 </script>
 
 <style>
-#secondVisHolder {
-  display:flex;
-  flex-direction: column;
+#holder {
   height:100%;
-  width:100%;
-
 }
-#bottomViews {
+#title {
   display:flex;
-
+  justify-content: center;
+}
+#options {
+  display:flex;
+  height:100%;
 }
 </style>
 
-<div id="secondVisHolder">
-<Map buildingJSON={buildingJSON}></Map>
-<div id="bottomViews">
-<Brushable dims={dims}></Brushable>
-<Selectors></Selectors>
-</div>
+<div id="holder">
+  <div id="title">
+    <h3>Memory Jogger</h3>
+  </div>
+  <div id="options">
+  <div id="gantt-side">
+    <VisOp imgSrc="./gantt_background.png" title="Gantt Chart" summaryText="View your data from the last 2 weeks with particular attention to the 'when' you were in a location"></VisOp>
+  </div>
+  <div id="map-side">
+  <VisOp imgSrc="./map_background.png" title="Map Visualization" summaryText="Explore where you've been on campus for over 15 minutes at a time overlaid on this campus map"></VisOp>
+  </div>
+  </div>
 </div>
