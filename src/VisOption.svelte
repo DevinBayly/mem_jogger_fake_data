@@ -50,7 +50,7 @@
 
 
 <div id="optionHolder" bind:this={holder}>
-  <img bind:this={imgElement} src={imgSrc} alt="" id="background" />
+  <img bind:this={imgElement} src={imgSrc} alt="" id="backgroundimage" />
   <div id="content">
   <div id="title" class="text">
     <h3>{title}</h3>

@@ -46,6 +46,7 @@
       max-width: none;
     }
   }
+
 </style>
 
 <VidOverlay />
