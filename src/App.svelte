@@ -1,14 +1,16 @@
 <script>
   import VisOp from "./VisOption.svelte"
   import MapApplication from "./map_vis.svelte"
-  import 
+  import GanttApplication from "./gantt_vis.svelte"
   // put in Teresa's signin code
   // include the reachout to the lambda function
   // introduce the page with the options
   let holder
   let gantt= ()=> {
     holder.remove()
-
+    new GanttApplication({
+      target:document.body
+    })
     console.log("loading gantt")
   }
   let map = ()=> {

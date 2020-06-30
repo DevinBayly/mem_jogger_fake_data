@@ -2,6 +2,7 @@
 #leafletHolder.svelte-1ca1jba{width:100%}@media(min-width: 640px){}#mapid.svelte-1ca1jba{height:80vh}
 .svelte-1i33cp5.svelte-1i33cp5{z-index:5}#optionHolder.svelte-1i33cp5.svelte-1i33cp5{height:100%}#optionHolder.svelte-1i33cp5 img.svelte-1i33cp5{z-index:1}.text.svelte-1i33cp5.svelte-1i33cp5{background:#183055;color:white;box-shadow:0 7px 23px 0 rgba(32, 44, 62, 0.68);border-radius:10px;margin:5%}#title.svelte-1i33cp5.svelte-1i33cp5{padding:2%}#summary.svelte-1i33cp5.svelte-1i33cp5{text-align:center}#content.svelte-1i33cp5.svelte-1i33cp5{display:flex;flex-direction:column;justify-content:center;align-items:center;height:70%;width:80%;margin:0 auto}
 #checkBoxHolder.svelte-mol2y1{display:flex}
+@media(min-width: 640px){}
 #secondVisHolder.svelte-1bckz6h{display:flex;flex-direction:column;height:100%;width:100%}#bottomViews.svelte-1bckz6h{display:flex}
 #innerholder.svelte-f36oss{position:relative;top:-50%;left:-50%;background:white;border-radius:6px}#vidholder.svelte-f36oss{z-index:5000;position:absolute;top:25%;left:50%}#overlay.svelte-f36oss{position:fixed;top:0px;left:0px;height:100%;width:100%;background:rgba(100,100,100,.7)}video.svelte-f36oss{width:750px}
 
