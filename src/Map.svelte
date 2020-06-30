@@ -4,6 +4,7 @@
   import { onMount } from "svelte";
   import { wifiData } from "./store.js";
   import * as d3 from "d3";
+  import legend from "d3-svg-legend"
   onMount(async () => {
     console.log("loaded");
     console.log("building Json is ", buildingJSON);
@@ -183,6 +184,21 @@
         .scaleLinear()
         .domain([1, userData.length])
         .range([5, maxRadius]);
+      //legend setup
+      let legendSvg = d3.select("#legend")
+      let legendG = legendSvg.append("g").attr("transform","translate(20,20)")
+      let legendEle = legend.legendSize()
+      .scale(circleScale)
+      .shape("circle")
+      .labelOffset(20)
+      .shapePadding(10)
+      .orient("vertical")
+      legendG.call(legendEle)
+      d3.select("#legendHolder").style("width",legendG.node().getBoundingClientRect().width + "px")
+      legendSvg.attr("height",(legendG.node().getBoundingClientRect().height + 20 )+"px")
+      legendSvg.attr("width",(legendG.node().getBoundingClientRect().width + 20 )+"px")
+      // attempt to style the created legend correctly
+      d3.selectAll(".swatch").attr("fill","red").attr("opacity",.5)
     };
     let unsubscribeWifiData = wifiData.subscribe(data => {
       if (!once) {
@@ -224,11 +240,21 @@
   #mapid {
     height: 80vh;
   }
-  svg {
-    position: absolute;
+  #legendHolder {
+    position:absolute;
+    top:0px;
+    right:0px;
+    background:white;
+    border-radius:10px;
+    padding:10px;
+    z-index:5000;
   }
 </style>
 
 <div id="leafletHolder">
   <div id="mapid" />
 </div>
+<div id="legendHolder">
+<p>Number of Connections</p>
+<svg id="legend">
+</svg></div>
