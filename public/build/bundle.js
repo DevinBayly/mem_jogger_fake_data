@@ -615,23 +615,23 @@ var app = (function () {
     			t2 = space();
     			div2 = element("div");
     			create_component(visop1.$$.fragment);
-    			attr_dev(h3, "class", "svelte-c3dbnw");
-    			add_location(h3, file$1, 36, 4, 568);
+    			attr_dev(h3, "class", "svelte-1oav3k");
+    			add_location(h3, file$1, 37, 4, 584);
     			attr_dev(div0, "id", "title");
-    			attr_dev(div0, "class", "svelte-c3dbnw");
-    			add_location(div0, file$1, 35, 2, 547);
+    			attr_dev(div0, "class", "svelte-1oav3k");
+    			add_location(div0, file$1, 36, 2, 563);
     			attr_dev(div1, "id", "gantt-side");
-    			attr_dev(div1, "class", "svelte-c3dbnw");
-    			add_location(div1, file$1, 39, 2, 623);
+    			attr_dev(div1, "class", "svelte-1oav3k");
+    			add_location(div1, file$1, 40, 2, 639);
     			attr_dev(div2, "id", "map-side");
-    			attr_dev(div2, "class", "svelte-c3dbnw");
-    			add_location(div2, file$1, 42, 2, 858);
+    			attr_dev(div2, "class", "svelte-1oav3k");
+    			add_location(div2, file$1, 43, 2, 874);
     			attr_dev(div3, "id", "options");
-    			attr_dev(div3, "class", "svelte-c3dbnw");
-    			add_location(div3, file$1, 38, 2, 602);
+    			attr_dev(div3, "class", "svelte-1oav3k");
+    			add_location(div3, file$1, 39, 2, 618);
     			attr_dev(div4, "id", "holder");
-    			attr_dev(div4, "class", "svelte-c3dbnw");
-    			add_location(div4, file$1, 34, 0, 527);
+    			attr_dev(div4, "class", "svelte-1oav3k");
+    			add_location(div4, file$1, 35, 0, 543);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");

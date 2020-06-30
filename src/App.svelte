@@ -18,7 +18,7 @@
 }
 #holder {
   height:100%;
-    background:#183055;
+  background:#183055;
   color:white;
 }
 #title {
@@ -26,6 +26,7 @@
   justify-content: center;
 }
 #options {
+  cursor:pointer;
   display:flex;
   justify-content: center;
   height:100%;
