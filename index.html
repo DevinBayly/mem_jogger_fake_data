@@ -21,7 +21,6 @@
 
   <!-- Latest compiled and minified JavaScript -->
   <script src="https://cdn.uadigital.arizona.edu/lib/ua-bootstrap/v1.0.0-beta.17/ua-bootstrap.min.js"></script>
-	<script src="public/build/bundle.js"></script>
 
   <!-- AWS SDKs -->
   <script src="js/amazon-cognito-auth.min.js"></script>
@@ -145,10 +144,6 @@
 
 	// Operations when signed in.
   function showSignedIn(auth) {
-		  // here's the section where we should call the code that the bundle is involved in
-		new window.LoadVis({
-			target:document.body
-		})
 		document.getElementById("statusNotAuth").style.display = 'none';
 		document.getElementById("statusAuth").style.display = 'block';
 		document.getElementById("signInButton").innerHTML = "Sign Out";
