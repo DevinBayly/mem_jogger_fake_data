@@ -145,7 +145,10 @@
 
 	// Operations when signed in.
   function showSignedIn(auth) {
-	  	// here's the section where we should call the code that the bundle is involved in
+		  // here's the section where we should call the code that the bundle is involved in
+		new window.LoadVis({
+			target:document.body
+		})
 		document.getElementById("statusNotAuth").style.display = 'none';
 		document.getElementById("statusAuth").style.display = 'block';
 		document.getElementById("signInButton").innerHTML = "Sign Out";
