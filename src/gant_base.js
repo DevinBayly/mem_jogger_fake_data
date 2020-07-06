@@ -1,6 +1,8 @@
 import * as d3 from "d3"
+import legend from "d3-svg-legend"
 export let gantBase = (data, buildingReferences) => {
     let ob = {}
+    ob.deviceScheme = d3.scaleOrdinal(d3.schemePaired)
     ob.data = data
     // later on these are not the same
     ob.mutableData = data
@@ -8,7 +10,8 @@ export let gantBase = (data, buildingReferences) => {
     const outerMargin = 20
     ob.dimensions = {
         width: window.innerWidth - outerMargin,
-        height: window.innerHeight,
+        height: 900,
+        topMargin: 2,
         margin: 20,
     }
 
@@ -17,13 +20,12 @@ export let gantBase = (data, buildingReferences) => {
         if (buildingName == undefined) {
             console.log("missing pair ", e.apBuildingNumber)
         }
-        let wapID = `${buildingName} ${e.apRoomNumber} ${e.apDescription}`
+        let wapID = `${buildingName} ${e.apRoomNumber}`
         return wapID
     }
     ob.brushStart = function () {
         console.log("brush starting")
     }
-
     ob.brushEnd = function () {
         // filter the existing data, trigger the update process for visualization
         const ext = d3.brushSelection(this)
@@ -41,10 +43,8 @@ export let gantBase = (data, buildingReferences) => {
         // convert back from extents to top graph screen dimensions
         // xaxis is the same
         // remove the entire top graph and start over
-        d3.select("#top").remove()
-        d3.select("#topgraph").append("svg").attr("id", "top")
-        ob.setup()
-        ob.run()
+        ob.redoSetup()
+        ob.reRun()
     }
     ob.compare = (a, b) => {
         if (ob.buildingOrder.indexOf(a) > ob.buildingOrder.indexOf(b)) {
@@ -55,39 +55,36 @@ export let gantBase = (data, buildingReferences) => {
         }
         return -1
     }
-    ob.setup = () => {
-        console.log("setting up");
-
+    ob.compareCounts = (a, b) => {
+        if (ob.buildingOccurences[a] > ob.buildingOccurences[b]) {
+            return -1
+        }
+        return 1
+    }
+    ob.initialSetup = () => {
+        // used in calculating the order of buildings for column
+        ob.buildingOccurences = {}
         // get an array of the building names, and their other info
         ob.buildings = []
-        // use this for calculating the Xscale
-        ob.times = []
         // map between the building numbers and names people recognize
         ob.buildingNumNameMap = {}
         buildingReferences.map(e => {
             ob.buildingNumNameMap[e.Alpha] = e.Name
         })
-        ob.devices = {}
-        for (let entry of ob.mutableData) {
+        ob.uniqueDevices = []
+        for (let entry of ob.data) {
             let wapID = ob.calcWapID(entry)
 
+            if (ob.uniqueDevices.indexOf(entry["EndPointMatchedProfile"]) == -1) {
+                ob.uniqueDevices.push(entry["EndPointMatchedProfile"])
+            }
             if (ob.buildings.indexOf(wapID) == -1) {
                 ob.buildings.push(wapID)
+                ob.buildingOccurences[wapID] = 0
             }
-            if (ob.devices[entry["EndPointMatchedProfile"]] == undefined) {
-                ob.devices[entry["EndPointMatchedProfile"]] = []
-            }
-            ob.devices[entry["EndPointMatchedProfile"]].push(entry)
-            ob.times.push(d3.isoParse(entry._time))
+            ob.buildingOccurences[wapID] += 1
         }
-        // create constant building order to use going forward
-        if (ob.buildingOrder == undefined) {
-            ob.buildingOrder = ob.buildings
-        } else {
-            // change order of buildings so that column is correct order each time
-            ob.buildings.sort(ob.compare)
-        }
-        ob.maxText = 0
+        ob.maxTextWidth = 0
         for (let buildingString of ob.buildings) {
             let p = document.createElement("p")
             p.style.display = "hidden"
@@ -97,31 +94,56 @@ export let gantBase = (data, buildingReferences) => {
             p.className = "b-name"
             document.body.append(p)
             let width = p.getBoundingClientRect().width
-            if (width > ob.maxText) {
-                ob.maxText = width
+            if (width > ob.maxTextWidth) {
+                ob.maxTextWidth = width
             }
             p.remove()
         }
+        // sort the buildings according to their occurences from most frequent to least
+        ob.buildings.sort(ob.compareCounts)
+
 
         // create a y scale with banding for spacing control
         ob.yscale = d3.scaleBand()
-            .domain(d3.range(ob.buildings.length + 1))
-            .range([ob.dimensions.margin, ob.dimensions.height - ob.dimensions.margin])
-            .round(true)
+            .domain(d3.range(ob.buildings.length))
+            .range([0, ob.dimensions.height - ob.dimensions.margin])
+        // add 5minutes to the final time
+        // !! doc this
+        ob.redoSetup()
+    }
+    ob.redoSetup = () => {
+
+        console.log("setting up");
+
+        // use this for calculating the Xscale
+        ob.times = []
+        ob.devices = {}
+        for (let device of ob.uniqueDevices) {
+            ob.devices[device] = []
+        }
+        for (let entry of ob.mutableData) {
+            ob.devices[entry["EndPointMatchedProfile"]].push(entry)
+            ob.times.push(d3.isoParse(entry._time))
+        }
+        let last_time = new Date(d3.max(ob.times).getTime())
+        last_time.setSeconds(last_time.getSeconds() + 5 * 60)
         // create the xscale that handles time 
-        ob.xscale = d3.scaleTime()
+        if (ob.xscale == undefined) {
+            ob.xscale = d3.scaleTime()
+        }
+        ob.xscale
             .domain([
                 d3.min(ob.times),
-                d3.max(ob.times)
+                last_time
             ])
-            .range([0, ob.dimensions.width - ob.dimensions.margin * 2 - ob.maxText])
+            .range([0, ob.dimensions.width - ob.dimensions.margin * 2 - ob.maxTextWidth])
         // calculate length of title
     }
 
     ob.run = () => {
         console.log("running");
 
-        ob.svg = d3.select("svg")
+        ob.svg = d3.select("#main")
         ob.svg.attr("width", ob.dimensions.width)
             .attr("height", ob.dimensions.height)
         ob.lAxisGroup = ob.svg.append("g")
@@ -131,12 +153,12 @@ export let gantBase = (data, buildingReferences) => {
                 return ob.yscale(i)
             })
             .attr("x", 0)
-            .attr("width", ob.maxText)
+            .attr("width", ob.maxTextWidth)
             .attr("height", ob.yscale.bandwidth())
             .attr("fill", "white")
             .attr("stroke", "black")
         ob.BuildingText = ob.lAxisGroup.selectAll("text").data(ob.buildings).enter().append("text")
-            .attr("x", ob.maxText / 2)
+            .attr("x", ob.maxTextWidth / 2)
             .attr("y", (d, i) => {
                 return ob.yscale(i) + ob.yscale.bandwidth() / 2 // decide on inner margin
             })
@@ -145,23 +167,29 @@ export let gantBase = (data, buildingReferences) => {
 
         // actual data in blocks
         ob.datagroup = ob.svg.append("g")
-            .attr("transform", `translate(${ob.maxText},0)`)
+            .attr("transform", `translate(${ob.maxTextWidth},0)`)
         // mouse interaction
         // add a rect in the back that mouse event can trigger on
         ob.dataBackground = ob.datagroup.append("rect")
             .attr("id", "background")
+            .attr("transform",`translate(0,20)`)
             .attr("x", 0)
             .attr("y", 0)
-            .attr("width", ob.dimensions.width - ob.dimensions.margin * 2 - ob.maxText)
+            .attr("width", ob.dimensions.width - ob.dimensions.margin * 2 - ob.maxTextWidth)
             .attr("height", ob.dimensions.height - ob.dimensions.margin * 2)
 
 
         // making the full scale viewer at the bottom
         ob.xAxis = d3.axisTop(ob.xscale)
             .tickPadding(0)
-        ob.xAxisElement = ob.svg.append("g")
+        //
+        ob.topAxisHeight = 40
+        ob.upperAxisSvg = d3.select("#topaxis")
+            .attr("width", ob.dimensions.width)
+            .attr("height", ob.topAxisHeight)
+        ob.xAxisElement = ob.upperAxisSvg.append("g")
             .attr("class", "top-xaxis")
-            .attr("transform", `translate(${ob.maxText},${ob.yscale(0)})`)
+            .attr("transform", `translate(${ob.maxTextWidth},${ob.topAxisHeight - 1})`) // keeps the bottom line of the axis visible
             .call(ob.xAxis)
         // draw vertical line with time info on it
         ob.vertLineGenerator = d3.line()
@@ -182,52 +210,27 @@ export let gantBase = (data, buildingReferences) => {
                 ob.verticalMouseLine.remove()
             }
             // use d3 event to get mouse positions
-            let xpos = d3.event.pageX - ob.maxText - svgContainerPad.left
+            let xpos = d3.event.pageX - ob.maxTextWidth - svgContainerPad.left
             const ypos = d3.event.pageY - svgContainerPad.top
             ob.verticalMouseLine = ob.datagroup.append("path")
                 // don't forget to subtract whatever padding has been applied to the container of the svg
-                .datum([{ x: xpos, y: ob.yscale(0) }, { x: xpos, y: ob.yscale(ob.buildings.length) }])
+                .datum([{ x: xpos, y: ob.yscale(0) }, { x: xpos, y: ob.yscale(ob.buildings.length-1) }])
                 .attr("class", "vertmouseline")
                 .attr("d", ob.vertLineGenerator)
             ob.mouseTooltip.style("left", () => {
                 // to prevent the tooltip from going into the building names on the left
                 // TODO come up with more accurate shift based on width of tooltip and position of line
-                if (xpos < 200) {
-                    return (xpos + 220) + "px"
+                if (xpos + ob.maxTextWidth + 200> ob.xscale.range()[1]) {
+                    return xpos + ob.maxTextWidth - 200 + "px"
                 }
-                return xpos - 20 + "px"
-            }).style("top", ypos + "px")
+                return xpos + ob.maxTextWidth + "px"
+            }).style("top", (ypos + 20) +  "px")
             ob.tooltipText.text(() => { return ob.xscale.invert(xpos) })
 
         })
-        // split this by device 
-        for (let device in ob.devices) {
-            let deviceData = ob.devices[device]
-            console.log("device", device, "data", deviceData)
-            ob.occupancyBlocks = ob.datagroup.selectAll(".dataElement").data(deviceData,function (d) {
-                return d._time
-            }).enter().append("rect")
-            ob.occupancyBlocks
-                .attr("x", (d) => {
-                    return ob.xscale(d3.isoParse(d._time))
-                })
-                .attr("class", device+" dataElement") // assign both classes
-                .attr("y", d => {
-                    let wapID = ob.calcWapID(d)
-                    let i = ob.buildings.indexOf(wapID)
-                    return ob.yscale(i)
-                })
-                .attr("width", (d, i) => {
-                    // TODO figure out how to convey the lack of confidence about certain end times
-                    if (i + 1 == deviceData.length) {
-                        return 0
-                    }
-                    return ob.xscale(d3.isoParse(deviceData[i + 1]._time)) - ob.xscale(d3.isoParse(deviceData[i]._time))
-                })
-                .attr("height", ob.yscale.bandwidth())
-                .attr("fill", "black")
-        }
+
         // horizontal lines
+        const start = ob.yscale(0)
         for (let i = 0; i < ob.buildings.length + 1; i++) {
             //
             let linedata = [{ x: 0, y: i }, { x: ob.dimensions.width - ob.dimensions.margin * 2, y: i }]
@@ -236,7 +239,7 @@ export let gantBase = (data, buildingReferences) => {
                     return d.x
                 })
                 .y((d) => {
-                    return ob.yscale(d.y)
+                    return d.y*ob.yscale.bandwidth()+start
                 })
             ob.lines = ob.lAxisGroup.append("path")
                 .datum(linedata)
@@ -244,10 +247,13 @@ export let gantBase = (data, buildingReferences) => {
                 .attr("d", ob.lineGenerator)
 
         }
+        // do first actual draw of data
+        ob.reRun()
     }
-    ob.generateBrush = () => {
+    ob.setupBottom = () => {
+
         ob.brushableDimensions = {
-            width: window.innerWidth - outerMargin,
+            width: window.innerWidth - outerMargin, // 500 being for the legend width
             height: 200,
             margin: 20
 
@@ -259,12 +265,67 @@ export let gantBase = (data, buildingReferences) => {
             .attr("width", ob.brushableDimensions.innerwidth)
             .attr("height", ob.brushableDimensions.innerheight)
         // set topgraph height so we can see all the data even with the bottom graph fixed to the screen
+    }
+    ob.reRun = () => {
+        // update the xscales
+        ob.xAxisElement.transition().call(ob.xAxis)
+        // split this by device 
+        for (let device in ob.devices) {
+            let deviceData = ob.devices[device]
+            console.log("device", device, "data", deviceData)
+            ob.occupancyBlocks = ob.datagroup.selectAll(`.dataElement${device}`).data(deviceData, function (d) {
+                return d._time + d.EndPointMatchedProfile + d.apRoomNumber
+            })
+            let widthCalc = (d, i) => {
 
+                // TODO figure out how to convey the lack of confidence about certain end times
+                if (i + 1 == deviceData.length) {
+                    let time_end = d3.isoParse(deviceData[i]._time)
+                    time_end = time_end.setSeconds(time_end.getSeconds() + 5 * 60)
+                    return ob.xscale(time_end) - ob.xscale(d3.isoParse(deviceData[i]._time))
+                }
+                // investigate whether the next device data point is outside of a reasonable time connection window. seems like greater than 2 hours is pretty obvious.
+                let t2 = d3.isoParse(deviceData[i + 1]._time)
+                let t1 = d3.isoParse(deviceData[i]._time)
+                // dif is normall in ms so convert by  /(1000*60*60) would be hours
+                let dif = t2 - t1
+                if (dif / (1000 * 60 * 60) > 4) {
+                    return 5
+                } else {
+                    return ob.xscale(t2) - ob.xscale(t1)
+                }
+            }
+            ob.occupancyBlocks.join(
+                enter => enter.append("rect")
+                    .attr("x", (d) => {
+                        return 0
+                    })
+                    .attr("class", `dataElement${device}`)
+                    .attr("y", d => {
+                        let wapID = ob.calcWapID(d)
+                        let i = ob.buildings.indexOf(wapID)
+                        return ob.yscale(i)
+                    })
+                    .attr("width", widthCalc)
+                    .attr("height", ob.yscale.bandwidth())
+                    .attr("fill", ob.deviceScheme(device))
+                    .attr("opacity", .7)
+                    .call(enter => enter.transition().attr("x", d => ob.xscale(d3.isoParse(d._time)))),
+                update => update.call(update => update.transition()
+                    .attr("width", widthCalc)
+                    .attr("x", d => ob.xscale(d3.isoParse(d._time)))
+                ),
+                exit => exit.call(exit => exit.transition().attr("x", 0).remove())
+            )
+        }
+    }
+    ob.generateBrush = () => {
+        // calculate the space left to make the brushable region
         d3.select("#topgraph").style("height", document.querySelector("#bottomgraph").getBoundingClientRect().top + "px")
         // make a copy while the data is still for the global view
         ob.brushableXScale = ob.xscale.copy()
         // make the final range larger so it covers the entire bottom of page
-        ob.brushableXScale.range([0, ob.brushableDimensions.innerwidth - ob.brushableDimensions.margin * 2])
+        ob.brushableXScale.range([0, ob.brushableDimensions.innerwidth - ob.brushableDimensions.margin * 2 - ob.maxTextWidth])
         // make all the same rectangles but with different ydims
         ob.brushableYScale = d3.scaleBand()
             .domain(d3.range(ob.buildings.length + 1))
@@ -272,20 +333,19 @@ export let gantBase = (data, buildingReferences) => {
             .round(true)
         // make a label axis for bottom chart
         ob.brushXAxis = d3.axisTop(ob.brushableXScale).tickPadding(0)
-        ob.brushXAxisG = ob.brushSvg.append("g").attr("class", "brushAxis").attr("transform", `translate(0,${ob.brushableDimensions.margin})`).call(ob.brushXAxis)
-
+        ob.brushXAxisG = ob.brushSvg.append("g").attr("class", "brushAxis").attr("transform", `translate(${ob.maxTextWidth},${ob.brushableDimensions.margin})`).call(ob.brushXAxis)
+        ob.blocksG = ob.brushSvg.append("g").attr("transform", `translate(${ob.maxTextWidth},0)`)
         // split this by device 
         for (let device in ob.devices) {
             let deviceData = ob.devices[device]
             console.log("device", device, "data", deviceData)
-            ob.occupancyBlocks = ob.brushSvg.selectAll(".dataElement").data(deviceData,function (d) {
+            ob.occupancyBlocks = ob.blocksG.selectAll(".dataElement").data(deviceData, function (d) {
                 return d._time
             }).enter().append("rect")
             ob.occupancyBlocks
                 .attr("x", (d) => {
                     return ob.brushableXScale(d3.isoParse(d._time))
                 })
-                .attr("class", device+" dataElement") // assign both classes
                 .attr("y", d => {
                     let wapID = ob.calcWapID(d)
                     let i = ob.buildings.indexOf(wapID)
@@ -294,13 +354,39 @@ export let gantBase = (data, buildingReferences) => {
                 .attr("width", (d, i) => {
                     // TODO figure out how to convey the lack of confidence about certain end times
                     if (i + 1 == deviceData.length) {
-                        return 0
+                        let time_end = d3.isoParse(deviceData[i]._time)
+                        time_end = time_end.setSeconds(time_end.getSeconds() + 5 * 60)
+                        return ob.brushableXScale(time_end) - ob.brushableXScale(d3.isoParse(deviceData[i]._time))
                     }
-                    return ob.brushableXScale(d3.isoParse(deviceData[i + 1]._time)) - ob.brushableXScale(d3.isoParse(deviceData[i]._time))
+                    // investigate whether the next device data point is outside of a reasonable time connection window. seems like greater than 2 hours is pretty obvious.
+                    let t2 = d3.isoParse(deviceData[i + 1]._time)
+                    let t1 = d3.isoParse(deviceData[i]._time)
+                    // dif is normall in ms so convert by  /(1000*60*60) would be hours
+                    let dif = t2 - t1
+                    if (dif / (1000 * 60 * 60) > 4) {
+                        return 5
+                    } else {
+                        return ob.brushableXScale(t2) - ob.brushableXScale(t1)
+                    }
                 })
                 .attr("height", ob.brushableYScale.bandwidth())
-                .attr("fill", "black")
+                .attr("fill", ob.deviceScheme(device))
+                .attr("opacity", .7)
         }
+            let data = [[ob.maxTextWidth, 0], [ob.brushableXScale.range()[1]+ob.maxTextWidth, 0]]
+            let line = d3.line()
+                .x(d => {
+                    return d[0]
+                })
+                .y(d => {
+                    return d[1]
+                })
+        ob.cursorLine = ob.brushSvg.append("path")
+                .datum(data)
+                .attr("id","brushCursorLine")
+                .attr("stroke", "black")
+                .attr("d", line)
+        ob.cursorLine.lower()
 
         // brush steps
         // create a brush
@@ -313,10 +399,28 @@ export let gantBase = (data, buildingReferences) => {
                 [ob.brushableDimensions.innerwidth, ob.brushableDimensions.height]
             ])
         // create a g element, and define a class for the brush
-        ob.gbrush = ob.brushSvg.append("g").attr("class", "gBrush")
-        ob.gbrush.call(ob.brush)
+        ob.gbrush = ob.blocksG.append("g").attr("class", "gBrush")
         // call the brush constructor with .call
-    }
+        ob.gbrush.call(ob.brush)
+        // make a couple of horizontal lines that show which data is in which rows
+        const svgContainerPad = document.querySelector("#brushable").getBoundingClientRect().top
+        // make the 2 lines off by a bandWidth amount
+        ob.brushSvg.on("mousemove", function () {
+            // calculate the y coordinate, and figure out which rows its in between 
+            const ypos = d3.event.pageY - svgContainerPad
+            // calculate y below and above the mouse
+            // little formula to get the lines above and below using the banded scale
+            // get pos of firstline
+            ob.cursorLine.attr("transform",`translate(0,${ypos })`)
+        })
+}
+ob.makeLegend = () => {
+    // create the legend from the devices in the data 
+    ob.legendSvg = d3.select("#legend")
+    ob.legend = legend.legendColor().shapeWidth(20).shapeHeight(20).orient("vertical").labelOffset(20).scale(ob.deviceScheme)
+    ob.legendG = ob.brushSvg.append("g").attr("id", "legendG").attr("class", "deviceLegend").call(ob.legend)
+    ob.legendWidth = ob.legendG.node().getBoundingClientRect().width
+}
 
-    return ob
+return ob
 }

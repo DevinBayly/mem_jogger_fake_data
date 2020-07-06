@@ -5,8 +5,10 @@ let svg = document.querySelector("svg")
 export let data
 export let buildingData
 let gb = gantBase(data,buildingData)
-gb.setup()
+gb.initialSetup()
 gb.run()
+gb.setupBottom()
+gb.makeLegend()
 gb.generateBrush()
 
 </script>
