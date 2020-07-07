@@ -31,7 +31,6 @@
     </section>
   </header>
   <body  onload="onLoad()">
-	<div id="changed">Change here</div>
   <div id="l_page">
     <div id="header_site">
       <div class="container">
@@ -144,6 +143,9 @@
 
 	// Operations when signed in.
   function showSignedIn(auth) {
+	  	new window.LoadVis({
+			  target:document.body,
+		  })
 		document.getElementById("statusNotAuth").style.display = 'none';
 		document.getElementById("statusAuth").style.display = 'block';
 		document.getElementById("signInButton").innerHTML = "Sign Out";
