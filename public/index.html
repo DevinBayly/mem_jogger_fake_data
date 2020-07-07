@@ -31,6 +31,7 @@
     </section>
   </header>
   <body  onload="onLoad()">
+	<div id="removal">
   <div id="l_page">
     <div id="header_site">
       <div class="container">
@@ -59,26 +60,13 @@
           You have successfully signed in! 
 	  </h1>
   </div>
+	</div>
 
-	<div class="tabsWell">
 		<div id="startButtons">
 			<div class="button">
 				<a class="nav-tabs" id="signInButton" href="javascript:void(0)" title="Sign in">Sign In</a>
 			</div>
 		</div>
-		<div class="tab-content">
-			<div class="tab-pane" id="userdetails">
-				<p class="text-icon" title="Minimize" id="tabIcon" onclick="toggleTab('usertab');">_</p>
-				<br>
-				<h2 id="usertabtitle">Tokens</h2>
-				<div class="user-form" id="usertab">
-					<pre id="idtoken"> ... </pre>
-					<pre id="acctoken"> ... </pre>
-					<pre id="reftoken"> ... </pre>
-				</div>
-			</div>
-		</div>
-	</div>
 	<script>
 
 	// Operations when the web page is loaded.
@@ -143,9 +131,10 @@
 
 	// Operations when signed in.
   function showSignedIn(auth) {
+	  	document.querySelector("#removal").remove()
 	  	new window.LoadVis({
-			  target:document.body,
-		  })
+			target:document.body,
+		})
 		document.getElementById("statusNotAuth").style.display = 'none';
 		document.getElementById("statusAuth").style.display = 'block';
 		document.getElementById("signInButton").innerHTML = "Sign Out";
