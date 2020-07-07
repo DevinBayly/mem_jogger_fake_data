@@ -8,14 +8,6 @@
   <meta name="author" content="">
   <link rel="icon" href="../../favicon.ico">
   <title>SPA UA-CAP Test</title>
-	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
-		integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-		crossorigin="" />
-
-	<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-	<!-- Load Esri Leaflet from CDN -->
-	<script src="https://unpkg.com/esri-leaflet/dist/esri-leaflet.js"></script>
 
   <!-- Latest icon font stylesheet -->
   <link rel="stylesheet" href="https://cdn.uadigital.arizona.edu/lib/ua-brand-icons/latest/ua-brand-icons.css">
@@ -29,10 +21,10 @@
 
   <!-- Latest compiled and minified JavaScript -->
   <script src="https://cdn.uadigital.arizona.edu/lib/ua-bootstrap/v1.0.0-beta.17/ua-bootstrap.min.js"></script>
-	<script src="public/build/bundle.js"></script>
 
   <!-- AWS SDKs -->
   <script src="js/amazon-cognito-auth.min.js"></script>
+
 
 </head>
 <header class="l-arizona-header bg-red" id="region_header_ua">
@@ -41,7 +33,6 @@
     </section>
   </header>
   <body  onload="onLoad()">
-	<div id="changed">this is in the root</div>
   <div id="l_page">
     <div id="header_site">
       <div class="container">
@@ -154,10 +145,6 @@
 
 	// Operations when signed in.
   function showSignedIn(auth) {
-		  // here's the section where we should call the code that the bundle is involved in
-		new window.LoadVis({
-			target:document.body
-		})
 		document.getElementById("statusNotAuth").style.display = 'none';
 		document.getElementById("statusAuth").style.display = 'block';
 		document.getElementById("signInButton").innerHTML = "Sign Out";
