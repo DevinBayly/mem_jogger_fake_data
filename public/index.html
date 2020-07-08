@@ -29,17 +29,17 @@
 	<script src="js/amazon-cognito-auth.min.js"></script>
 	<script src='build/bundle.js'></script>
 </head>
-<header class="l-arizona-header bg-red" id="region_header_ua">
-	<section class="container l-container">
-		<div class="row"><a class="arizona-logo" href="http://www.arizona.edu"
-				title="The University of Arizona homepage"><img class="arizona-line-logo"
-					alt="The University of Arizona Wordmark Line Logo White"
-					src="https://cdn.uadigital.arizona.edu/logos/v1.0.0/ua_wordmark_line_logo_white_rgb.min.svg"></a>
-		</div>
-	</section>
-</header>
 
 <body onload="onLoad()">
+	<header class="l-arizona-header bg-red" id="region_header_ua">
+		<section class="container l-container">
+			<div class="row"><a class="arizona-logo" href="http://www.arizona.edu"
+					title="The University of Arizona homepage"><img class="arizona-line-logo"
+						alt="The University of Arizona Wordmark Line Logo White"
+						src="https://cdn.uadigital.arizona.edu/logos/v1.0.0/ua_wordmark_line_logo_white_rgb.min.svg"></a>
+			</div>
+		</section>
+	</header>
 	<div id="removal">
 		<div id="l_page">
 			<div id="header_site">
@@ -154,8 +154,10 @@
 			new window.LoadVis({
 				target: document.body,
 			})
+			/*
 			document.getElementById("statusNotAuth").style.display = 'none';
 			document.getElementById("statusAuth").style.display = 'block';
+			*/
 			document.getElementById("signInButton").innerHTML = "Sign Out";
 			if (auth) {
 				var idToken = auth.getIdToken().getJwtToken();
