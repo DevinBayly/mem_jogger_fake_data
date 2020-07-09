@@ -6,7 +6,6 @@ import {buildingJSON} from "./data.js"
 import {wifiData } from "./store.js"
 // setup the store with the data for this application
 
-console.log("wifi data is",wifiData)
 let dims ={
   width:window.innerWidth*.8,
   height:100,

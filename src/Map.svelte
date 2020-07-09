@@ -40,6 +40,9 @@
       circleScale,
       applyLatLngToLayer,
       bboxNWLatLng,
+      legendSvg,
+      legendG,
+      legendEle,
       bboxSELatLng,
       svg,
       maxRadius = 20,
@@ -57,7 +60,7 @@
           enter =>
             enter
               .append("circle")
-              .attr("r", d => circleScale(d.count))
+              .attr("r", d => circleScale(d.duration))
               .attr("class", "testPoints")
               .attr("transform", d => {
                 if (d.coords == undefined) {
@@ -80,7 +83,7 @@
                 })`;
               }
             })
-            .attr("r",d=> circleScale(d.count)),
+            .attr("r",d=> circleScale(d.duration)),
           exit => exit.remove()
         );
       // the width is the diff nw and se bbox points
@@ -101,6 +104,8 @@
       );
     };
     let updateData = userData => {
+      //
+      circleScale.domain([,])
       console.log("running data")
       if (userData.length == 0) {
         // just pick a graphData 
@@ -113,11 +118,11 @@
         if (activeBuildings[connection.apBuildingNumber] == undefined) {
           activeBuildings[connection.apBuildingNumber] = {
             coords: buildingMap[connection.apBuildingNumber],
-            count: 1,
+            duration: 1,
             number: connection.apBuildingNumber
           };
         } else {
-          activeBuildings[connection.apBuildingNumber].count += 1;
+          activeBuildings[connection.apBuildingNumber].duration += calculateTime(connection);
         }
       }
       // convert active Buildings into an array for simplicity in D3
@@ -125,6 +130,11 @@
       for (let building in activeBuildings) {
         graphData.push(activeBuildings[building]);
       }
+      //get only the durations and establish domain
+      let durations = graphData.map(e=> e.duration)
+      circleScale.domain([Math.min(...durations),Math.max(...durations)])
+      // update legend so values change
+      legendG.call(legendEle)
       console.log("graph data ",graphData)
       // calculate the nw corner of a bounding box on the points
       let bbox = { x: {}, y: {} };
@@ -160,6 +170,13 @@
       bboxSELatLng = new L.LatLng(bbox.y.min, bbox.x.max);
       redraw()
     }
+    // this function lets us figure out the amount of time (in minutes) for a duration
+    let calculateTime = (d)=> {
+      // calculate in ms the data in niceDuration
+      let parts = d.niceDuration.split(":").map(e=> parseInt(e))
+
+      return parts[0]*60 + parts[1] + (parts[2]/60)
+    }
     let initialize = (userData) => {
 
       // this is the width the svg should be to cover the full map
@@ -180,14 +197,15 @@
       mymap.on("zoomend", redraw);
       mymap.on("moveend", redraw);
       //establish the circle scale before the data gets changed at all
+      // decide circle scale is the sum of the amount of time spent in that location during the selected time
+      // separate by building 
       circleScale = d3
         .scaleLinear()
-        .domain([1, userData.length])
         .range([5, maxRadius]);
       //legend setup
-      let legendSvg = d3.select("#legend")
-      let legendG = legendSvg.append("g").attr("transform","translate(20,20)")
-      let legendEle = legend.legendSize()
+      legendSvg = d3.select("#legend")
+      legendG = legendSvg.append("g").attr("transform","translate(20,20)")
+      legendEle = legend.legendSize()
       .scale(circleScale)
       .shape("circle")
       .labelOffset(20)
@@ -255,6 +273,6 @@
   <div id="mapid" />
 </div>
 <div id="legendHolder">
-<p>Number of Connections</p>
+<p>Radius in minutes</p>
 <svg id="legend">
 </svg></div>
