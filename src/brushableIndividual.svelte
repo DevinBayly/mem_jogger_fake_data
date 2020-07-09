@@ -39,8 +39,8 @@
         if (buildings.indexOf(entry.apBuildingNumber) == -1) {
           buildings.push(entry.apBuildingNumber);
         }
-        if (devices[entry["EndPointMatchedProfile"]] == undefined) {
-          devices[entry["EndPointMatchedProfile"]] = { checked: true };
+        if (devices[entry["deviceType"]] == undefined) {
+          devices[entry["deviceType"]] = { checked: true };
         }
       }
       let last_time = new Date(d3.max(times).getTime());

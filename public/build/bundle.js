@@ -21832,17 +21832,17 @@ var app = (function () {
     			t2 = space();
     			svg = svg_element("svg");
     			attr_dev(div0, "id", "mapid");
-    			attr_dev(div0, "class", "svelte-1bvnkzk");
-    			add_location(div0, file$1, 283, 2, 9986);
+    			attr_dev(div0, "class", "svelte-1vd88gq");
+    			add_location(div0, file$1, 296, 2, 10046);
     			attr_dev(div1, "id", "leafletHolder");
-    			attr_dev(div1, "class", "svelte-1bvnkzk");
-    			add_location(div1, file$1, 282, 0, 9959);
-    			add_location(p, file$1, 286, 0, 10036);
+    			attr_dev(div1, "class", "svelte-1vd88gq");
+    			add_location(div1, file$1, 295, 0, 10019);
+    			add_location(p, file$1, 299, 2, 10098);
     			attr_dev(svg, "id", "legend");
-    			add_location(svg, file$1, 287, 0, 10061);
+    			add_location(svg, file$1, 300, 2, 10125);
     			attr_dev(div2, "id", "legendHolder");
-    			attr_dev(div2, "class", "svelte-1bvnkzk");
-    			add_location(div2, file$1, 285, 0, 10012);
+    			attr_dev(div2, "class", "svelte-1vd88gq");
+    			add_location(div2, file$1, 298, 0, 10072);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -21971,7 +21971,7 @@ var app = (function () {
     			console.log("running data");
 
     			if (userData.length == 0) {
-    				// just pick a graphData 
+    				// just pick a graphData
     				graphData = [];
 
     				redraw();
@@ -22000,24 +22000,13 @@ var app = (function () {
     			}
 
     			//get only the durations and establish domain
+    			// only update the domain once
     			let durations = graphData.map(e => e.duration);
 
     			circleScale.domain([Math.min(...durations), Math.max(...durations)]).range([5, 20]);
-    			legendG.call(legendEle);
+    			createLegend();
 
     			// force correct radius
-    			// calculate the values to parse, there's 5 icons, so we need initial, then 4 values that then get us to the end
-    			let step = (circleScale.domain()[1] - circleScale.domain()[0]) / 4;
-
-    			let values = [];
-
-    			for (let i = 0; i < 4; i++) {
-    				values.push(circleScale.domain()[0] + step * i);
-    			}
-
-    			values.push(circleScale.domain()[1]);
-    			selectAll(".swatch").attr("r", (d, i) => circleScale(values[i]));
-
     			// update legend so values change
     			console.log("graph data ", graphData);
 
@@ -22101,12 +22090,16 @@ var app = (function () {
 
     			//establish the circle scale before the data gets changed at all
     			// decide circle scale is the sum of the amount of time spent in that location during the selected time
-    			// separate by building 
+    			// separate by building
     			circleScale = linear$2().range([5, 20]);
+    		}; //legend setup
 
-    			//legend setup
+    		let createLegend = () => {
+    			if (legendG != undefined) {
+    				legendG.remove();
+    			}
+
     			legendSvg = select("#legend");
-
     			legendG = legendSvg.append("g").attr("transform", "translate(20,20)");
     			legendEle = index$4.legendSize().scale(circleScale).shape("circle").labelOffset(20).shapePadding(20).orient("vertical");
     			legendG.call(legendEle);
@@ -22116,6 +22109,10 @@ var app = (function () {
 
     			// attempt to style the created legend correctly
     			selectAll(".swatch").attr("fill", "red").attr("opacity", 0.5);
+
+    			if (circleScale.domain()[0] == circleScale.domain()[1]) {
+    				selectAll(".cell").data([1]).exit().remove();
+    			}
     		};
 
     		let unsubscribeWifiData = wifiData.subscribe(data => {
@@ -22222,7 +22219,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			attr_dev(div, "id", "brushableHolder");
-    			add_location(div, file$2, 192, 0, 6185);
+    			add_location(div, file$2, 192, 0, 6161);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -22282,8 +22279,8 @@ var app = (function () {
     					buildings.push(entry.apBuildingNumber);
     				}
 
-    				if (devices[entry["EndPointMatchedProfile"]] == undefined) {
-    					devices[entry["EndPointMatchedProfile"]] = { checked: true };
+    				if (devices[entry["deviceType"]] == undefined) {
+    					devices[entry["deviceType"]] = { checked: true };
     				}
     			}
 
@@ -22681,8 +22678,8 @@ var app = (function () {
     			t1 = text(/*Content*/ ctx[0]);
     			attr_dev(input, "type", "checkbox");
     			input.checked = true;
-    			add_location(input, file$4, 32, 2, 984);
-    			add_location(label, file$4, 31, 0, 974);
+    			add_location(input, file$4, 34, 2, 1114);
+    			add_location(label, file$4, 33, 0, 1104);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -22725,13 +22722,16 @@ var app = (function () {
     	let { Content } = $$props;
     	let devices;
 
+    	// deal with changes that have occured to the data format since original development
+    	let modifiedData = paulData.map(e => e.eventData);
+
     	let updateData = () => {
     		// reset the data,
     		// only include parts of the results that pertain to the devices that are selected
     		let updatedData = [];
 
-    		for (let entry of paulData) {
-    			if (devices[entry["EndPointMatchedProfile"]].checked) {
+    		for (let entry of modifiedData) {
+    			if (devices[entry["deviceType"]].checked) {
     				updatedData.push(entry);
     			}
     		}
@@ -22773,6 +22773,7 @@ var app = (function () {
     		allDevices,
     		paulData,
     		devices,
+    		modifiedData,
     		updateData,
     		updateDevices
     	});
@@ -22780,6 +22781,7 @@ var app = (function () {
     	$$self.$inject_state = $$props => {
     		if ("Content" in $$props) $$invalidate(0, Content = $$props.Content);
     		if ("devices" in $$props) devices = $$props.devices;
+    		if ("modifiedData" in $$props) modifiedData = $$props.modifiedData;
     		if ("updateData" in $$props) updateData = $$props.updateData;
     		if ("updateDevices" in $$props) $$invalidate(1, updateDevices = $$props.updateDevices);
     	};

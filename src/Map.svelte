@@ -4,7 +4,7 @@
   import { onMount } from "svelte";
   import { wifiData } from "./store.js";
   import * as d3 from "d3";
-  import legend from "d3-svg-legend"
+  import legend from "d3-svg-legend";
   onMount(async () => {
     console.log("loaded");
     console.log("building Json is ", buildingJSON);
@@ -32,7 +32,7 @@
         feature.geometry.coordinates[0]
       );
     }
-    console.log("building map is ",buildingMap)
+    console.log("building map is ", buildingMap);
 
     // subscribe to the store
     let once = false;
@@ -74,16 +74,17 @@
               .attr("fill", "red")
               .attr("opacity", 0.5),
           update =>
-            update.attr("transform", d => {
-              if (d.coords == undefined) {
-                console.log("missing coords on", d);
-              } else {
-                return `translate(${applyLatLngToLayer(d.coords).x},${
-                  applyLatLngToLayer(d.coords).y
-                })`;
-              }
-            })
-            .attr("r",d=> circleScale(d.duration)),
+            update
+              .attr("transform", d => {
+                if (d.coords == undefined) {
+                  console.log("missing coords on", d);
+                } else {
+                  return `translate(${applyLatLngToLayer(d.coords).x},${
+                    applyLatLngToLayer(d.coords).y
+                  })`;
+                }
+              })
+              .attr("r", d => circleScale(d.duration)),
           exit => exit.remove()
         );
       // the width is the diff nw and se bbox points
@@ -105,12 +106,12 @@
     };
     let updateData = userData => {
       //
-      console.log("running data")
+      console.log("running data");
       if (userData.length == 0) {
-        // just pick a graphData 
-        graphData =[] 
-        redraw()
-        return
+        // just pick a graphData
+        graphData = [];
+        redraw();
+        return;
       }
       let activeBuildings = {};
       for (let connection of userData) {
@@ -121,7 +122,9 @@
             number: connection.apBuildingNumber
           };
         } else {
-          activeBuildings[connection.apBuildingNumber].duration += calculateTime(connection);
+          activeBuildings[
+            connection.apBuildingNumber
+          ].duration += calculateTime(connection);
         }
       }
       // convert active Buildings into an array for simplicity in D3
@@ -130,23 +133,16 @@
         graphData.push(activeBuildings[building]);
       }
       //get only the durations and establish domain
-      let durations = graphData.map(e=> e.duration)
-      circleScale.domain([Math.min(...durations),Math.max(...durations)]).range([5,20])
-      legendG.call(legendEle)
+      // only update the domain once
+        let durations = graphData.map(e => e.duration);
+        circleScale
+          .domain([Math.min(...durations), Math.max(...durations)])
+          .range([5, 20]);
+        createLegend()
       // force correct radius
-      // calculate the values to parse, there's 5 icons, so we need initial, then 4 values that then get us to the end
-
-      let step = (circleScale.domain()[1]-circleScale.domain()[0])/4
-      let values = []
-      for (let i = 0;i< 4;i++) {
-        values.push(circleScale.domain()[0] + step*i)
-      }
-      values.push(circleScale.domain()[1])
-
-      d3.selectAll(".swatch").attr("r",(d,i)=> circleScale(values[i]))
 
       // update legend so values change
-      console.log("graph data ",graphData)
+      console.log("graph data ", graphData);
       // calculate the nw corner of a bounding box on the points
       let bbox = { x: {}, y: {} };
       // calculate the bounding box on the circles that are being drawn, decide on a max radius, and use it
@@ -179,17 +175,16 @@
       console.log("boundsbox is", bbox);
       bboxNWLatLng = new L.LatLng(bbox.y.max, bbox.x.min);
       bboxSELatLng = new L.LatLng(bbox.y.min, bbox.x.max);
-      redraw()
-    }
+      redraw();
+    };
     // this function lets us figure out the amount of time (in minutes) for a duration
-    let calculateTime = (d)=> {
+    let calculateTime = d => {
       // calculate in ms the data in niceDuration
-      let parts = d.niceDuration.split(":").map(e=> parseInt(e))
+      let parts = d.niceDuration.split(":").map(e => parseInt(e));
 
-      return parts[0]*60 + parts[1] + (parts[2]/60)
-    }
-    let initialize = (userData) => {
-
+      return parts[0] * 60 + parts[1] + parts[2] / 60;
+    };
+    let initialize = userData => {
       // this is the width the svg should be to cover the full map
       let bounds = mymap.getPixelBounds();
       let width = bounds.max.x - bounds.min.x;
@@ -209,36 +204,54 @@
       mymap.on("moveend", redraw);
       //establish the circle scale before the data gets changed at all
       // decide circle scale is the sum of the amount of time spent in that location during the selected time
-      // separate by building 
-      circleScale = d3
-        .scaleLinear()
-        .range([5, 20]);
+      // separate by building
+      circleScale = d3.scaleLinear().range([5, 20]);
       //legend setup
-      legendSvg = d3.select("#legend")
-      legendG = legendSvg.append("g").attr("transform","translate(20,20)")
-      legendEle = legend.legendSize()
-      .scale(circleScale)
-      .shape("circle")
-      .labelOffset(20)
-      .shapePadding(20)
-      .orient("vertical")
-      legendG.call(legendEle)
-      d3.select("#legendHolder").style("width",legendG.node().getBoundingClientRect().width + "px")
-      legendSvg.attr("height",(legendG.node().getBoundingClientRect().height + 20 )+"px")
-      legendSvg.attr("width",(legendG.node().getBoundingClientRect().width + 20 )+"px")
-      // attempt to style the created legend correctly
-      d3.selectAll(".swatch").attr("fill","red").attr("opacity",.5)
     };
+    let createLegend = ()=> {
+      if (legendG != undefined) {
+        legendG.remove()
+      }
+      legendSvg = d3.select("#legend");
+      legendG = legendSvg.append("g").attr("transform", "translate(20,20)");
+      legendEle = legend
+        .legendSize()
+        .scale(circleScale)
+        .shape("circle")
+        .labelOffset(20)
+        .shapePadding(20)
+        .orient("vertical");
+      legendG.call(legendEle);
+      d3.select("#legendHolder").style(
+        "width",
+        legendG.node().getBoundingClientRect().width + "px"
+      );
+      legendSvg.attr(
+        "height",
+        legendG.node().getBoundingClientRect().height + 20 + "px"
+      );
+      legendSvg.attr(
+        "width",
+        legendG.node().getBoundingClientRect().width + 20 + "px"
+      );
+      // attempt to style the created legend correctly
+      d3.selectAll(".swatch")
+        .attr("fill", "red")
+        .attr("opacity", 0.5);
+      if (circleScale.domain()[0] == circleScale.domain()[1]) {
+        d3.selectAll(".cell").data([1]).exit().remove()
+      }
+    }
     let unsubscribeWifiData = wifiData.subscribe(data => {
       if (!once) {
         initialize(data);
-        once = true
+        once = true;
       }
-      if(data.type != undefined) {
-        console.log("brush trigger data change",data.type)
-        updateData(data.data)
+      if (data.type != undefined) {
+        console.log("brush trigger data change", data.type);
+        updateData(data.data);
       } else {
-      updateData(data)
+        updateData(data);
       }
     });
   });
@@ -270,13 +283,13 @@
     height: 80vh;
   }
   #legendHolder {
-    position:absolute;
-    top:0px;
-    right:0px;
-    background:white;
-    border-radius:10px;
-    padding:10px;
-    z-index:5000;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+    z-index: 5000;
   }
 </style>
 
@@ -284,6 +297,6 @@
   <div id="mapid" />
 </div>
 <div id="legendHolder">
-<p>Radius in minutes</p>
-<svg id="legend">
-</svg></div>
+  <p>Radius in minutes</p>
+  <svg id="legend" />
+</div>
