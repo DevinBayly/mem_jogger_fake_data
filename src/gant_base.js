@@ -75,8 +75,8 @@ export let gantBase = (data, buildingReferences) => {
         for (let entry of ob.data) {
             let wapID = ob.calcWapID(entry)
 
-            if (ob.uniqueDevices.indexOf(entry["EndPointMatchedProfile"]) == -1) {
-                ob.uniqueDevices.push(entry["EndPointMatchedProfile"])
+            if (ob.uniqueDevices.indexOf(entry["deviceType"]) == -1) {
+                ob.uniqueDevices.push(entry["deviceType"])
             }
             if (ob.buildings.indexOf(wapID) == -1) {
                 ob.buildings.push(wapID)
@@ -122,10 +122,11 @@ export let gantBase = (data, buildingReferences) => {
             ob.devices[device] = []
         }
         for (let entry of ob.mutableData) {
-            ob.devices[entry["EndPointMatchedProfile"]].push(entry)
+            ob.devices[entry["deviceType"]].push(entry)
             ob.times.push(d3.isoParse(entry._time))
         }
         let last_time = new Date(d3.max(ob.times).getTime())
+        // Todo make last time the greatest time plus its duration
         last_time.setSeconds(last_time.getSeconds() + 5 * 60)
         // create the xscale that handles time 
         if (ob.xscale == undefined) {
@@ -274,26 +275,17 @@ export let gantBase = (data, buildingReferences) => {
             let deviceData = ob.devices[device]
             console.log("device", device, "data", deviceData)
             ob.occupancyBlocks = ob.datagroup.selectAll(`.dataElement${device}`).data(deviceData, function (d) {
-                return d._time + d.EndPointMatchedProfile + d.apRoomNumber
+                return d._time + d.deviceType + d.apRoomNumber
             })
-            let widthCalc = (d, i) => {
-
-                // TODO figure out how to convey the lack of confidence about certain end times
-                if (i + 1 == deviceData.length) {
-                    let time_end = d3.isoParse(deviceData[i]._time)
-                    time_end = time_end.setSeconds(time_end.getSeconds() + 5 * 60)
-                    return ob.xscale(time_end) - ob.xscale(d3.isoParse(deviceData[i]._time))
-                }
-                // investigate whether the next device data point is outside of a reasonable time connection window. seems like greater than 2 hours is pretty obvious.
-                let t2 = d3.isoParse(deviceData[i + 1]._time)
-                let t1 = d3.isoParse(deviceData[i]._time)
-                // dif is normall in ms so convert by  /(1000*60*60) would be hours
-                let dif = t2 - t1
-                if (dif / (1000 * 60 * 60) > 4) {
-                    return 5
-                } else {
-                    return ob.xscale(t2) - ob.xscale(t1)
-                }
+            let timeParser = d3.timeParse("%H:%M:%S")
+            let widthCalc = (d) => {
+                // calc new point in time that is the start plus the duration
+                let start = d3.isoParse(d._time)
+                let durationDate = timeParser(d.niceDuration)
+                start.setHours(start.getHours() + durationDate.getHours())
+                start.setMinutes(start.getMinutes() + durationDate.getMinutes())
+                start.setSeconds(start.getSeconds() + durationDate.getSeconds())
+                return start
             }
             ob.occupancyBlocks.join(
                 enter => enter.append("rect")
@@ -306,13 +298,12 @@ export let gantBase = (data, buildingReferences) => {
                         let i = ob.buildings.indexOf(wapID)
                         return ob.yscale(i)
                     })
-                    .attr("width", widthCalc)
+                    .attr("width",d=> ob.xscale(widthCalc(d))-ob.xscale(d._time))
                     .attr("height", ob.yscale.bandwidth())
                     .attr("fill", ob.deviceScheme(device))
-                    .attr("opacity", .7)
                     .call(enter => enter.transition().attr("x", d => ob.xscale(d3.isoParse(d._time)))),
                 update => update.call(update => update.transition()
-                    .attr("width", widthCalc)
+                    .attr("width",d=> ob.xscale(widthCalc(d))-ob.xscale(d._time))
                     .attr("x", d => ob.xscale(d3.isoParse(d._time)))
                 ),
                 exit => exit.call(exit => exit.transition().attr("x", 0).remove())
@@ -371,7 +362,6 @@ export let gantBase = (data, buildingReferences) => {
                 })
                 .attr("height", ob.brushableYScale.bandwidth())
                 .attr("fill", ob.deviceScheme(device))
-                .attr("opacity", .7)
         }
             let data = [[ob.maxTextWidth, 0], [ob.brushableXScale.range()[1]+ob.maxTextWidth, 0]]
             let line = d3.line()
