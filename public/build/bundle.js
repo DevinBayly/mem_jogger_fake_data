@@ -21833,16 +21833,16 @@ var app = (function () {
     			svg = svg_element("svg");
     			attr_dev(div0, "id", "mapid");
     			attr_dev(div0, "class", "svelte-1bvnkzk");
-    			add_location(div0, file$1, 271, 2, 9519);
+    			add_location(div0, file$1, 283, 2, 9986);
     			attr_dev(div1, "id", "leafletHolder");
     			attr_dev(div1, "class", "svelte-1bvnkzk");
-    			add_location(div1, file$1, 270, 0, 9492);
-    			add_location(p, file$1, 274, 0, 9569);
+    			add_location(div1, file$1, 282, 0, 9959);
+    			add_location(p, file$1, 286, 0, 10036);
     			attr_dev(svg, "id", "legend");
-    			add_location(svg, file$1, 275, 0, 9594);
+    			add_location(svg, file$1, 287, 0, 10061);
     			attr_dev(div2, "id", "legendHolder");
     			attr_dev(div2, "class", "svelte-1bvnkzk");
-    			add_location(div2, file$1, 273, 0, 9545);
+    			add_location(div2, file$1, 285, 0, 10012);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -22002,7 +22002,21 @@ var app = (function () {
     			//get only the durations and establish domain
     			let durations = graphData.map(e => e.duration);
 
-    			circleScale.domain([Math.min(...durations), Math.max(...durations)]).range([5, maxRadius]);
+    			circleScale.domain([Math.min(...durations), Math.max(...durations)]).range([5, 20]);
+    			legendG.call(legendEle);
+
+    			// force correct radius
+    			// calculate the values to parse, there's 5 icons, so we need initial, then 4 values that then get us to the end
+    			let step = (circleScale.domain()[1] - circleScale.domain()[0]) / 4;
+
+    			let values = [];
+
+    			for (let i = 0; i < 4; i++) {
+    				values.push(circleScale.domain()[0] + step * i);
+    			}
+
+    			values.push(circleScale.domain()[1]);
+    			selectAll(".swatch").attr("r", (d, i) => circleScale(values[i]));
 
     			// update legend so values change
     			console.log("graph data ", graphData);
@@ -22088,13 +22102,13 @@ var app = (function () {
     			//establish the circle scale before the data gets changed at all
     			// decide circle scale is the sum of the amount of time spent in that location during the selected time
     			// separate by building 
-    			circleScale = linear$2().range([5, maxRadius]);
+    			circleScale = linear$2().range([5, 20]);
 
     			//legend setup
     			legendSvg = select("#legend");
 
     			legendG = legendSvg.append("g").attr("transform", "translate(20,20)");
-    			legendEle = index$4.legendSize().scale(circleScale).shape("circle").labelOffset(20).shapePadding(10).orient("vertical");
+    			legendEle = index$4.legendSize().scale(circleScale).shape("circle").labelOffset(20).shapePadding(20).orient("vertical");
     			legendG.call(legendEle);
     			select("#legendHolder").style("width", legendG.node().getBoundingClientRect().width + "px");
     			legendSvg.attr("height", legendG.node().getBoundingClientRect().height + 20 + "px");

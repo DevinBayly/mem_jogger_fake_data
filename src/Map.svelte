@@ -131,7 +131,19 @@
       }
       //get only the durations and establish domain
       let durations = graphData.map(e=> e.duration)
-      circleScale.domain([Math.min(...durations),Math.max(...durations)]).range([5,maxRadius])
+      circleScale.domain([Math.min(...durations),Math.max(...durations)]).range([5,20])
+      legendG.call(legendEle)
+      // force correct radius
+      // calculate the values to parse, there's 5 icons, so we need initial, then 4 values that then get us to the end
+
+      let step = (circleScale.domain()[1]-circleScale.domain()[0])/4
+      let values = []
+      for (let i = 0;i< 4;i++) {
+        values.push(circleScale.domain()[0] + step*i)
+      }
+      values.push(circleScale.domain()[1])
+
+      d3.selectAll(".swatch").attr("r",(d,i)=> circleScale(values[i]))
 
       // update legend so values change
       console.log("graph data ",graphData)
@@ -200,7 +212,7 @@
       // separate by building 
       circleScale = d3
         .scaleLinear()
-        .range([5, maxRadius]);
+        .range([5, 20]);
       //legend setup
       legendSvg = d3.select("#legend")
       legendG = legendSvg.append("g").attr("transform","translate(20,20)")
@@ -208,7 +220,7 @@
       .scale(circleScale)
       .shape("circle")
       .labelOffset(20)
-      .shapePadding(10)
+      .shapePadding(20)
       .orient("vertical")
       legendG.call(legendEle)
       d3.select("#legendHolder").style("width",legendG.node().getBoundingClientRect().width + "px")
