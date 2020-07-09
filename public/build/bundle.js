@@ -21833,16 +21833,16 @@ var app = (function () {
     			svg = svg_element("svg");
     			attr_dev(div0, "id", "mapid");
     			attr_dev(div0, "class", "svelte-1bvnkzk");
-    			add_location(div0, file$1, 272, 2, 9557);
+    			add_location(div0, file$1, 271, 2, 9519);
     			attr_dev(div1, "id", "leafletHolder");
     			attr_dev(div1, "class", "svelte-1bvnkzk");
-    			add_location(div1, file$1, 271, 0, 9530);
-    			add_location(p, file$1, 275, 0, 9607);
+    			add_location(div1, file$1, 270, 0, 9492);
+    			add_location(p, file$1, 274, 0, 9569);
     			attr_dev(svg, "id", "legend");
-    			add_location(svg, file$1, 276, 0, 9632);
+    			add_location(svg, file$1, 275, 0, 9594);
     			attr_dev(div2, "id", "legendHolder");
     			attr_dev(div2, "class", "svelte-1bvnkzk");
-    			add_location(div2, file$1, 274, 0, 9583);
+    			add_location(div2, file$1, 273, 0, 9545);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -21968,8 +21968,6 @@ var app = (function () {
 
     		let updateData = userData => {
     			//
-    			circleScale.domain([,]);
-
     			console.log("running data");
 
     			if (userData.length == 0) {
@@ -22004,11 +22002,9 @@ var app = (function () {
     			//get only the durations and establish domain
     			let durations = graphData.map(e => e.duration);
 
-    			circleScale.domain([Math.min(...durations), Math.max(...durations)]);
+    			circleScale.domain([Math.min(...durations), Math.max(...durations)]).range([5, maxRadius]);
 
     			// update legend so values change
-    			legendG.call(legendEle);
-
     			console.log("graph data ", graphData);
 
     			// calculate the nw corner of a bounding box on the points

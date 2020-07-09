@@ -105,7 +105,6 @@
     };
     let updateData = userData => {
       //
-      circleScale.domain([,])
       console.log("running data")
       if (userData.length == 0) {
         // just pick a graphData 
@@ -132,9 +131,9 @@
       }
       //get only the durations and establish domain
       let durations = graphData.map(e=> e.duration)
-      circleScale.domain([Math.min(...durations),Math.max(...durations)])
+      circleScale.domain([Math.min(...durations),Math.max(...durations)]).range([5,maxRadius])
+
       // update legend so values change
-      legendG.call(legendEle)
       console.log("graph data ",graphData)
       // calculate the nw corner of a bounding box on the points
       let bbox = { x: {}, y: {} };
