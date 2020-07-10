@@ -1,8 +1,8 @@
 <script>
-  import VidOverlay from "./overlayVid.svelte"
   import * as d3 from "d3";
   import Gant from "./gant_chart.svelte";
-  window.onload = async () => {
+  import {onMount} from "svelte"
+  onMount( async () => {
     let paulData = await fetch(
       "location_data.json"
     ).then(res => res.json());
@@ -28,7 +28,8 @@
         buildingData: buildingNameData
       }
     });
-  };
+  }
+  )
 </script>
 
 <style>
@@ -54,7 +55,6 @@
 
 </style>
 
-<VidOverlay />
 
 <div id="tooltipHolder">
   <p id="tipText" />

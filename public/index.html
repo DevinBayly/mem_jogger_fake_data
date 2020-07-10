@@ -98,9 +98,10 @@
 			document.getElementById("statusNotAuth").style.display = 'block';
 			document.getElementById("statusAuth").style.display = 'none';
 			// Initiatlize CognitoAuth object
-			var auth = initCognitoSDK();
+			//var auth = initCognitoSDK();
 			document.getElementById("signInButton").addEventListener("click", function () {
-				userButton(auth);
+				//userButton(auth);
+				showSignedIn()
 			});
 			var curUrl = window.location.href;
 			auth.parseCognitoWebResponse(curUrl);
@@ -149,7 +150,7 @@
 		}
 
 		// Operations when signed in.
-		function showSignedIn(auth) {
+		function showSignedIn() {
 			document.querySelector("#removal").remove()
 			new window.LoadVis({
 				target: document.body,
@@ -159,6 +160,7 @@
 			document.getElementById("statusAuth").style.display = 'block';
 			*/
 			document.getElementById("signInButton").innerHTML = "Sign Out";
+			/*
 			if (auth) {
 				var idToken = auth.getIdToken().getJwtToken();
 				if (idToken) {
@@ -180,6 +182,7 @@
 				}
 			}
 			openTab("userdetails");
+			*/
 		}
 
 		// Operations when signed out.
