@@ -1,0 +1,248 @@
+<!DOCTYPE html><!--[if lte IE 9]><html lang="en" dir="ltr" class="lte-ie9 external-links ua-brand-icons sticky-footer"><![endif]-->
+<!--[if (gt IE 9)|(gt IEMobile 7)]><!--><html lang="en" dir="ltr" class="external-links ua-brand-icons sticky-footer"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="../../favicon.ico">
+  <title>SPA UA-CAP Test</title>
+
+  <!-- Latest icon font stylesheet -->
+  <link rel="stylesheet" href="https://cdn.uadigital.arizona.edu/lib/ua-brand-icons/latest/ua-brand-icons.css">
+
+  <!-- Compiled and minified UA Bootstrap CSS, icon font not included -->
+  <link rel="stylesheet" href="https://cdn.uadigital.arizona.edu/lib/ua-bootstrap/v1.0.0-beta.17/ua-bootstrap.min.css">
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://cdn.uadigital.arizona.edu/lib/ua-bootstrap/v1.0.0-beta.17/ua-bootstrap.min.js"></script>
+
+  <!-- AWS SDKs -->
+  <script src="js/amazon-cognito-auth.min.js"></script>
+
+
+</head>
+<header class="l-arizona-header bg-red" id="region_header_ua">
+    <section class="container l-container">
+      <div class="row"><a class="arizona-logo" href="http://www.arizona.edu" title="The University of Arizona homepage"><img class="arizona-line-logo" alt="The University of Arizona Wordmark Line Logo White" src="https://cdn.uadigital.arizona.edu/logos/v1.0.0/ua_wordmark_line_logo_white_rgb.min.svg"></a></div>
+    </section>
+  </header>
+  <body onload="onLoad()">
+  <div id="l_page">
+    <div id="header_site">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-6">
+            <div id="site_identifier"><a href="#"><img src="https://security.arizona.edu/sites/default/files/UA_UAInfoSec_Webheader-01.png"></a></div>
+          </div>
+      </div>
+      <!-- /.container-->
+    </div>
+    <!-- /#header_site-->
+
+    <div id="content_main">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-9 col-md-push-3" id="content">
+
+            <h1>SPA UA-CAP Test</h1>
+
+  <div><br></div>
+  <div>
+      <h1 id="statusNotAuth" title="Status">
+          You are not signed in! Please sign in to continue.
+	  </h1>
+      <h1 id="statusAuth" title="Status">
+          You have successfully signed in! 
+	  </h1>
+  </div>
+  <code id=lambdaResponse> </code>
+	<div class="tabsWell">
+		<div id="startButtons">
+			<div class="button">
+				<a class="nav-tabs" id="signInButton" href="javascript:void(0)" title="Sign in">Sign In</a>
+			</div>
+		</div>
+		<div class="tab-content">
+			<div class="tab-pane" id="userdetails">
+				<p class="text-icon" title="Minimize" id="tabIcon" onclick="toggleTab('usertab');">_</p>
+				<br>
+				<h2 id="usertabtitle">Tokens</h2>
+				<div class="user-form" id="usertab">
+					<pre id="idtoken"> ... </pre>
+					<pre id="acctoken"> ... </pre>
+					<pre id="reftoken"> ... </pre>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+
+	// Operations when the web page is loaded.
+	function onLoad() {
+		var i, items, tabs;
+		items = document.getElementsByClassName("tab-pane");
+		for (i = 0; i < items.length; i++) {
+			items[i].style.display = 'none';
+		}
+		document.getElementById("statusNotAuth").style.display = 'block';
+		document.getElementById("statusAuth").style.display = 'none';
+		// Initiatlize CognitoAuth object
+		var auth = initCognitoSDK();
+		document.getElementById("signInButton").addEventListener("click", function() {
+			userButton(auth);
+		});
+		var curUrl = window.location.href;
+		auth.parseCognitoWebResponse(curUrl);
+	}
+
+  // Operation when tab is closed.
+	function closeTab(tabName) {
+	  document.getElementById(tabName).style.display = 'none';
+	}
+
+  // Operation when tab is opened.
+  function openTab(tabName) {
+		document.getElementById(tabName).style.display = 'block';
+	}
+
+  // Operations about toggle tab.
+	function toggleTab(tabName) {
+		if (document.getElementById("usertab").style.display == 'none') {
+			document.getElementById("usertab").style.display = 'block';
+			document.getElementById("tabIcon").innerHTML = '_';
+		} else {
+			document.getElementById("usertab").style.display = 'none';
+			document.getElementById("tabIcon").innerHTML = '+';
+		}
+	}
+
+  // Operations when showing message.
+	function showMessage(msgTitle, msgText, msgDetail) {
+		var msgTab = document.getElementById('message');
+		document.getElementById('messageTitle').innerHTML = msgTitle;
+		document.getElementById('messageText').innerHTML = msgText;
+		document.getElementById('messageDetail').innerHTML = msgDetail;
+		msgTab.style.display = "block";
+	}
+
+  // Perform user operations.
+	function userButton(auth) {
+		var state = document.getElementById('signInButton').innerHTML;
+		if (state === "Sign Out") {
+			document.getElementById("signInButton").innerHTML = "Sign In";
+			auth.signOut();
+			showSignedOut();
+		    clearTokens();
+
+		} else {
+			auth.getSession();
+		}
+	}
+
+	// Operations when signed in.
+	function currentSession(auth) {
+		document.getElementById("statusNotAuth").style.display = 'none';
+		document.getElementById("statusAuth").style.display = 'block';
+		document.getElementById("signInButton").innerHTML = "Sign Out";
+		  var session = auth.getSignInUserSession();
+		  // the actual user
+		  var idToken = session.getIdToken().getJwtToken();
+		  if (idToken) {
+			var payload = idToken.split('.')[1];
+			var tokenobj = JSON.parse(atob(payload));
+			var formatted = JSON.stringify(tokenobj, undefined, 2);
+		    console.log('Id Token Info', formatted);
+			document.getElementById('idtoken').innerHTML = formatted;
+
+		  }
+		  var accessToken = session.getAccessToken().getJwtToken();
+		  if (accessToken) {
+			var payload = accessToken.split('.')[1];
+			var tokenobj = JSON.parse(atob(payload));
+			var formatted = JSON.stringify(tokenobj, undefined, 2);
+		    console.log('Access Token Info', formatted);
+			document.getElementById('acctoken').innerHTML = formatted;
+
+		  }
+		  var refreshToken = session.getRefreshToken().getToken();
+		  if (refreshToken) {
+		    var payload = refreshToken.split('.')[1];
+		    var formatted = JSON.parse(atob(payload));
+			document.getElementById('reftoken').innerHTML = refreshToken.substring(1, 20);
+		    console.log('Refresh Token Info', formatted);
+		  }
+  		openTab("userdetails");
+	}
+
+	// Operations when signed out.
+	function showSignedOut() {
+		document.getElementById("statusNotAuth").style.display = 'block';
+		document.getElementById("statusAuth").style.display = 'none';
+		document.getElementById('idtoken').innerHTML = " ... ";
+		document.getElementById('acctoken').innerHTML = " ... ";
+		document.getElementById('reftoken').innerHTML = " ... ";
+		closeTab("userdetails");
+	}
+
+  // Initialize a cognito auth object.
+	function initCognitoSDK() {
+		var authData = {
+			ClientId : '4bm64prfamvrt5s563cqirmq9', // Your client id here
+			AppWebDomain : 'uacap-timescape.auth.us-west-2.amazoncognito.com', // Exclude the "https://" part. 
+            TokenScopesArray: ['openid', 'profile', 'email', 'phone'],
+			RedirectUriSignIn : 'https://test.timescape.arizona.edu/index.html',
+			RedirectUriSignOut : 'https://test.timescape.arizona.edu/',
+            userPoolId: 'us-west-2_jKbmFSAtP'
+		};
+		var auth = new AmazonCognitoIdentity.CognitoAuth(authData);
+		// You can also set state parameter 
+		// auth.setState(<state parameter>);  
+        auth.userhandler = {
+        onSuccess: function(result) {
+			console.log('Sign in success', auth);
+			console.log('auth is ' + JSON.stringify(auth));
+			var cognitoUser = auth.getSignInUserSession();
+		    var token = cognitoUser.idToken.jwtToken;
+			console.log('username is ' + cognitoUser);
+			console.log('token is' + token);
+			currentSession(auth)
+		    const Url = 'https://60p8vnvhle.execute-api.us-west-2.amazonaws.com/tst/retrieveReport'
+			$.ajax({
+			    url: Url,
+			    dataType: 'json',
+		        contentType: 'application/json',
+		        beforeSend: function(request) {
+			      request.setRequestHeader("Authorization", token);
+			    },
+		        success: function(result) {
+			        console.log(result);
+			        document.getElementById('lambdaResponse').innerHTML = result
+			     },
+			    error: function(xhr, textStatus, error) {
+			      console.log('API ERROR', error);
+			      console.log(textStatus, xhr);
+	            }
+			});
+
+
+        },
+        onFailure: function(error) {
+			console.error('Sign in error', error);
+			console.log(error);
+			showSignedOut()
+        }
+		};
+		// The default response_type is "token", uncomment the next line will make it be "code".
+		// auth.useCodeGrantFlow();
+		return auth;
+	}
+
+	</script>
+</body>
+</html>
