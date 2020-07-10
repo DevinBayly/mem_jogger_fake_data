@@ -1,19 +1,24 @@
 <script>
-  export let name;
-  import VidOverlay from "./overlayVid.svelte";
+  import VidOverlay from "./overlayVid.svelte"
   import * as d3 from "d3";
   import Gant from "./gant_chart.svelte";
-  import { onMount } from "svelte";
-  onMount(async () => {
-    let paulData = await fetch("paulFebruaryTokenized.csv").then(res =>
-      res.text()
-    );
+  window.onload = async () => {
+    let paulData = await fetch(
+      "location_data.json"
+    ).then(res => res.json());
+    // remove the eventData attribute on everything
+    paulData = paulData.map(e=> {
+      e = e.eventData
+      // perform other important conversionss
+      // make seconds into ms for date creation
+      e._time = parseInt(e._time)*1000
+      return e
+    })
     console.log(paulData);
-    let buildingNameData = await fetch("building_names.csv").then(res =>
-      res.text()
-    );
+    let buildingNameData = await fetch(
+      "building_names.csv"
+    ).then(res => res.text());
     let dsv = d3.dsvFormat(",");
-    paulData = dsv.parse(paulData);
     buildingNameData = dsv.parse(buildingNameData);
     console.log(paulData, buildingNameData);
     const graph = new Gant({
@@ -23,7 +28,7 @@
         buildingData: buildingNameData
       }
     });
-  });
+  };
 </script>
 
 <style>
