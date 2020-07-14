@@ -1,5 +1,6 @@
 <script>
   export let buildingJSON;
+  import MissingView from "./MissingBuildingView.svelte"
   import { onMount } from "svelte";
   import { wifiData } from "./store.js";
   import * as d3 from "d3";
@@ -42,6 +43,7 @@
       legendSvg,
       legendG,
       legendEle,
+      missingBuildings,
       bboxSELatLng,
       svg,
       maxRadius = 20,
@@ -148,10 +150,13 @@
       // calculate the nw corner of a bounding box on the points
       let bbox = { x: {}, y: {} };
       // calculate the bounding box on the circles that are being drawn, decide on a max radius, and use it
+      missingBuildings =[]
       for (let i = 0; i < graphData.length; i++) {
         let d = graphData[i].coords;
         if (d == undefined) {
           console.log("missing coords", d);
+          missingBuildings.push(graphData[i])
+
           continue;
         }
         if (i == 0) {
@@ -172,6 +177,15 @@
         if (d.lng < bbox.x.min) {
           bbox.x.min = d.lng;
         }
+      }
+      // if we have missing buildings, create missing building ahref
+      if (missingBuildings.length > 0) {
+        new MissingView({
+          target:document.querySelector("#legendHolder"),
+          props:{
+            missingBuildings
+          }
+        })
       }
       // the northwest corner is the max.y and the min.x, and the south east corner is the min.y and the max.x
       console.log("boundsbox is", bbox);
