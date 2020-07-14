@@ -313,7 +313,7 @@ export let gantBase = (data, buildingReferences) => {
     }
     ob.generateBrush = () => {
         // calculate the space left to make the brushable region
-        d3.select("#topgraph").style("height", document.querySelector("#bottomgraph").getBoundingClientRect().top + "px")
+        d3.select("#topgraph").style("height",(document.querySelector("#bottomgraph").getBoundingClientRect().top - d3.select("#topgraph").node().getBoundingClientRect().top) + "px")
         // make a copy while the data is still for the global view
         ob.brushableXScale = ob.xscale.copy()
         // make the final range larger so it covers the entire bottom of page
