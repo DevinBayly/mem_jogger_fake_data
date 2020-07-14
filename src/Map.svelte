@@ -133,11 +133,14 @@
       }
       //get only the durations and establish domain
       // only update the domain once
-      let durations = graphData.map(e => e.duration);
-      circleScale
-        .domain([Math.min(...durations), Math.max(...durations)])
-        .range([5, 20]);
-      createLegend();
+        let durations = graphData.map(e => e.duration);
+        let minCircleScale = d3.scaleLinear()
+        .domain([0, Math.max(...durations)])
+        .range([0,20])
+        circleScale
+          .domain([minCircleScale.invert(5), Math.max(...durations)])
+          .range([5, 20]);
+        createLegend()
       // force correct radius
 
       // update legend so values change
@@ -180,8 +183,11 @@
     let calculateTime = d => {
       // calculate in ms the data in niceDuration
       let parts = d.niceDuration.split(":").map(e => parseInt(e));
-
-      return parts[0] * 60 + parts[1] + parts[2] / 60;
+      let total = parts[0] * 60 + parts[1] + parts[2] / 60;
+      if (total < 15) {
+        console.log("duration is less than 15 mins for ",d)
+      }
+      return total
     };
     let initialize = userData => {
       // this is the width the svg should be to cover the full map
@@ -204,12 +210,12 @@
       //establish the circle scale before the data gets changed at all
       // decide circle scale is the sum of the amount of time spent in that location during the selected time
       // separate by building
-      circleScale = d3.scaleLinear().range([5, 20]);
+      circleScale = d3.scaleLinear().nice().range([5, 20]).clamp(true);
       //legend setup
     };
-    let createLegend = () => {
+    let createLegend = ()=> {
       if (legendG != undefined) {
-        legendG.remove();
+        legendG.remove()
       }
       legendSvg = d3.select("#legend");
       legendG = legendSvg.append("g").attr("transform", "translate(20,20)");
@@ -218,6 +224,7 @@
         .scale(circleScale)
         .shape("circle")
         .labelOffset(20)
+        .labelFormat(d3.format(".0f"))
         .shapePadding(20)
         .orient("vertical");
       legendG.call(legendEle);
