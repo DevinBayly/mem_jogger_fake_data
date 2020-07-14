@@ -288,7 +288,6 @@
   }
   #legendHolder {
     position: absolute;
-    top: 0px;
     right: 0px;
     background: white;
     border-radius: 10px;

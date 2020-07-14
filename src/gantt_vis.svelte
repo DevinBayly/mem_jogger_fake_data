@@ -5,24 +5,16 @@
   import {onMount} from "svelte"
   onMount( async () => {
     // remove the eventData attribute on everything
-    paulData = reportData.map(e=> {
-      e = e.eventData
-      // perform other important conversionss
-      // make seconds into ms for date creation
-      e._time = parseInt(e._time)*1000
-      return e
-    })
-    console.log(paulData);
     let buildingNameData = await fetch(
       "building_names.csv"
     ).then(res => res.text());
     let dsv = d3.dsvFormat(",");
     buildingNameData = dsv.parse(buildingNameData);
-    console.log(paulData, buildingNameData);
+    console.log(reportData, buildingNameData);
     const graph = new Gant({
       target: document.body,
       props: {
-        data: paulData,
+        data: reportData,
         buildingData: buildingNameData
       }
     });

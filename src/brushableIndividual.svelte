@@ -148,6 +148,7 @@
       gbrush.call(brush);
     };
     let unsubscribe = wifiData.subscribe(data => {
+      if (data != null ) {
       if (svg == undefined) {
         userData = data
         initialize();
@@ -172,7 +173,7 @@
           redraw();
         }
       }
-      // connect redraw to this
+      }
     });
     let unsubDaySelected = daySelected.subscribe(day => {
       // update the brush
