@@ -28,10 +28,9 @@
             const Url = 'https://60p8vnvhle.execute-api.us-west-2.amazonaws.com/tst/retrieveReport'
             // converted fetch request from the ajax code
             fetch(Url,{
-                method:"POST",
                 headers:{
                     "Authorization":token,
-                    "contentType":"application/json",
+                    "Content-Type":"application/json",
                 }
             }).then(res=> res.json()).then(j=> console.log("retrieval worked",j)).catch(e=> {
                 console.log("error",e)
