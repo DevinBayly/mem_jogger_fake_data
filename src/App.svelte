@@ -1,7 +1,9 @@
 <script>
   //
   import UAHeader from "./UAHeader.svelte";
+  import IV from "./IndividualVis.svelte"
   import { onMount } from "svelte";
+  import {wifiData} from "./store.js"
   let auth, signInButton;
   //Teresa Portela's auth functions
   function initCognitoSDK() {
@@ -32,7 +34,11 @@
                     "Authorization":token,
                     "Content-Type":"application/json",
                 }
-            }).then(res=> res.json()).then(j=> console.log("retrieval worked",j)).catch(e=> {
+            }).then(res=> res.json()).then(j=> {
+                // load the individual visualizations at this point
+                wifiData.set(j)
+
+            }).catch(e=> {
                 console.log("error",e)
             })
             /*

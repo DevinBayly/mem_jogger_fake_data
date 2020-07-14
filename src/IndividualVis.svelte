@@ -1,4 +1,5 @@
 <script>
+  export let reportData
   import VisOp from "./VisOption.svelte"
   import MapApplication from "./map_vis.svelte"
   import GanttApplication from "./gantt_vis.svelte"
@@ -9,7 +10,10 @@
   let gantt= ()=> {
     holder.remove()
     new GanttApplication({
-      target:document.body
+      target:document.body,
+      props:{
+        reportData
+      }
     })
     console.log("loading gantt")
   }
@@ -19,7 +23,6 @@
     holder.remove()
     new MapApplication({
       target:document.body,
-      props:{}
     })
   }
 </script>

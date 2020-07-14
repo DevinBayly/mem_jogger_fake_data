@@ -1,5 +1,4 @@
 <script>
-  export let name;
   export let buildingJSON;
   import { onMount } from "svelte";
   import { wifiData } from "./store.js";
@@ -134,11 +133,11 @@
       }
       //get only the durations and establish domain
       // only update the domain once
-        let durations = graphData.map(e => e.duration);
-        circleScale
-          .domain([Math.min(...durations), Math.max(...durations)])
-          .range([5, 20]);
-        createLegend()
+      let durations = graphData.map(e => e.duration);
+      circleScale
+        .domain([Math.min(...durations), Math.max(...durations)])
+        .range([5, 20]);
+      createLegend();
       // force correct radius
 
       // update legend so values change
@@ -208,9 +207,9 @@
       circleScale = d3.scaleLinear().range([5, 20]);
       //legend setup
     };
-    let createLegend = ()=> {
+    let createLegend = () => {
       if (legendG != undefined) {
-        legendG.remove()
+        legendG.remove();
       }
       legendSvg = d3.select("#legend");
       legendG = legendSvg.append("g").attr("transform", "translate(20,20)");
@@ -239,19 +238,24 @@
         .attr("fill", "red")
         .attr("opacity", 0.5);
       if (circleScale.domain()[0] == circleScale.domain()[1]) {
-        d3.selectAll(".cell").data([1]).exit().remove()
+        d3.selectAll(".cell")
+          .data([1])
+          .exit()
+          .remove();
       }
-    }
+    };
     let unsubscribeWifiData = wifiData.subscribe(data => {
-      if (!once) {
-        initialize(data);
-        once = true;
-      }
-      if (data.type != undefined) {
-        console.log("brush trigger data change", data.type);
-        updateData(data.data);
-      } else {
-        updateData(data);
+      if (data != null) {
+        if (!once) {
+          initialize(data);
+          once = true;
+        }
+        if (data.type != undefined) {
+          console.log("brush trigger data change", data.type);
+          updateData(data.data);
+        } else {
+          updateData(data);
+        }
       }
     });
   });

@@ -1,4 +1,5 @@
 <script>
+
 import Map from "./Map.svelte"
 import Brushable from "./brushableIndividual.svelte"
 import Selectors from "./dataSelectors.svelte"

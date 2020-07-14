@@ -1,13 +1,11 @@
 <script>
+  export let reportData
   import * as d3 from "d3";
   import Gant from "./gant_chart.svelte";
   import {onMount} from "svelte"
   onMount( async () => {
-    let paulData = await fetch(
-      "location_data.json"
-    ).then(res => res.json());
     // remove the eventData attribute on everything
-    paulData = paulData.map(e=> {
+    paulData = reportData.map(e=> {
       e = e.eventData
       // perform other important conversionss
       // make seconds into ms for date creation
