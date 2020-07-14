@@ -42,6 +42,12 @@
             //remove everything except the signout
             introText.remove()
             signInHolder.className = "signInVis"
+            // properly format data for vis
+            j = j.map(e => {
+              e = e.eventData
+              e._time = e._time*1000
+              return e
+            })
             new IV({
                 target:document.body,
                 props:{
@@ -53,26 +59,8 @@
           .catch(e => {
             console.log("error", e);
           });
-        /*
-			$.ajax({
-			    url: Url,
-			    dataType: 'json',
-		        contentType: 'application/json',
-		        beforeSend: function(request) {
-			      request.setRequestHeader("Authorization", token);
-			    },
-		        success: function(result) {
-                    console.log(result);
-                    // here's where I'll call the individual visualization
-			        //document.getElementById('lambdaResponse').innerHTML = result
-			     },
-			    error: function(xhr, textStatus, error) {
-			      console.log('API ERROR', error);
-			      console.log(textStatus, xhr);
-	            }
-            });
-            */
-      },
+          
+             },
       onFailure: function(error) {
         console.error("Sign in error", error);
         console.log(error);
