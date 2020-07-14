@@ -44,6 +44,7 @@
             signInHolder.className = "signInVis"
             // properly format data for vis
             console.log("json data is ",jsonData)
+            console.log("type of json data ",typeof(jsonData))
             jsonData = jsonData.map(e => {
               e = e.eventData
               e._time = e._time*1000
