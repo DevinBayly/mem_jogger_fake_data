@@ -1,6 +1,7 @@
 <script>
   //
   import UAHeader from "./UAHeader.svelte";
+  import NotPermitted from "./NotPermitted.svelte"
   import IV from "./IndividualVis.svelte";
   import { onMount } from "svelte";
   import { wifiData } from "./store.js";
@@ -30,6 +31,11 @@
         const Url =
           "https://60p8vnvhle.execute-api.us-west-2.amazonaws.com/tst/retrieveReport";
         // converted fetch request from the ajax code
+        introText.remove()
+            signInButton.style.color = "white"
+            signInHolder.style.position = "absolute"
+            signInHolder.style.right = "10px"
+            signInHolder.style.top = "20px"
         fetch(Url, {
           headers: {
             Authorization: token,
@@ -40,8 +46,6 @@
           .then(jsonData => {
             // load the individual visualizations at this point
             //remove everything except the signout
-            introText.remove()
-            signInHolder.className = "signInVis"
             // properly format data for vis
             // issue with data being string still? this seems intermittent, 
             if (typeof("") === typeof(jsonData)) {
@@ -65,6 +69,10 @@
           })
           .catch(e => {
             console.log("error", e);
+            // load the missing data page
+            new NotPermitted({
+              target:document.body,
+            })
           });
 
              },
@@ -126,11 +134,6 @@
 </script>
 <style>
 /*move  the sign out to the upper right corner*/
-.signOutVis{
-    position:absolute;
-    right:0px;
-}
-
 </style>
 <UAHeader />
 <div bind:this={introText}>
