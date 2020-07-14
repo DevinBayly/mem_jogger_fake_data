@@ -37,13 +37,13 @@
           }
         })
           .then(res => res.json())
-          .then(j => {
+          .then(jsonData => {
             // load the individual visualizations at this point
             //remove everything except the signout
             introText.remove()
             signInHolder.className = "signInVis"
             // properly format data for vis
-            j = j.map(e => {
+            jsonData = jsonData.map(e => {
               e = e.eventData
               e._time = e._time*1000
               return e
@@ -51,15 +51,15 @@
             new IV({
                 target:document.body,
                 props:{
-                    reportData:j
+                    reportData:jsonData
                 }
             })
-            wifiData.set(j);
+            wifiData.set(jsonData);
           })
           .catch(e => {
             console.log("error", e);
           });
-          
+
              },
       onFailure: function(error) {
         console.error("Sign in error", error);
