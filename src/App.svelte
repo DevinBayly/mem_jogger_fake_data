@@ -43,6 +43,10 @@
             introText.remove()
             signInHolder.className = "signInVis"
             // properly format data for vis
+            // issue with data being string still? this seems intermittent, 
+            if (typeof("") === typeof(jsonData)) {
+              jsonData = JSON.parse(jsonData)
+            }
             console.log("json data is ",jsonData)
             console.log("type of json data ",typeof(jsonData))
             jsonData = jsonData.map(e => {
