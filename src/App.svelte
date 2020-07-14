@@ -43,11 +43,13 @@
             introText.remove()
             signInHolder.className = "signInVis"
             // properly format data for vis
+            console.log("json data is ",jsonData)
             jsonData = jsonData.map(e => {
               e = e.eventData
               e._time = e._time*1000
               return e
             })
+            console.log("filtered",jsonData)
             new IV({
                 target:document.body,
                 props:{
