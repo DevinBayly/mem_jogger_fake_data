@@ -1,61 +1,133 @@
 <script>
-  import VisOp from "./VisOption.svelte"
-  import MapApplication from "./map_vis.svelte"
-  import GanttApplication from "./gantt_vis.svelte"
-  // put in Teresa's signin code
-  // include the reachout to the lambda function
-  // introduce the page with the options
-  let holder
-  let gantt= ()=> {
-    holder.remove()
-    new GanttApplication({
-      target:document.body
-    })
-    console.log("loading gantt")
-  }
-  let map = ()=> {
-    console.log("loading map")
-    // remove holder
-    holder.remove()
-    new MapApplication({
-      target:document.body,
-      props:{}
-    })
-  }
+  //
+  import UAHeader from "./UAHeader.svelte";
+  import { onMount } from "svelte";
+  let auth, signInButton;
+  //Teresa Portela's auth functions
+  function initCognitoSDK() {
+		var authData = {
+			ClientId : '4bm64prfamvrt5s563cqirmq9', // Your client id here
+			AppWebDomain : 'uacap-timescape.auth.us-west-2.amazoncognito.com', // Exclude the "https://" part. 
+            TokenScopesArray: ['openid', 'profile', 'email', 'phone'],
+			RedirectUriSignIn : 'https://test.timescape.arizona.edu/index.html',
+			RedirectUriSignOut : 'https://test.timescape.arizona.edu/',
+            userPoolId: 'us-west-2_jKbmFSAtP'
+		};
+		var auth = new AmazonCognitoIdentity.CognitoAuth(authData);
+		// You can also set state parameter 
+		// auth.setState(<state parameter>);  
+        auth.userhandler = {
+        onSuccess: function(result) {
+			console.log('Sign in success', auth);
+			console.log('auth is ' + JSON.stringify(auth));
+			var cognitoUser = auth.getSignInUserSession();
+		    var token = cognitoUser.idToken.jwtToken;
+			console.log('username is ' + cognitoUser);
+			console.log('token is' + token);
+			currentSession(auth)
+            const Url = 'https://60p8vnvhle.execute-api.us-west-2.amazonaws.com/tst/retrieveReport'
+            // converted fetch request from the ajax code
+            fetch(Url,{
+                method:"POST",
+                headers:{
+                    "Authorization":token,
+                    "contentType":"application/json",
+                }
+            }).then(res=> res.json()).then(j=> console.log("retrieval worked",j)).catch(e=> {
+                console.log("error",e)
+            })
+            /*
+			$.ajax({
+			    url: Url,
+			    dataType: 'json',
+		        contentType: 'application/json',
+		        beforeSend: function(request) {
+			      request.setRequestHeader("Authorization", token);
+			    },
+		        success: function(result) {
+                    console.log(result);
+                    // here's where I'll call the individual visualization
+			        //document.getElementById('lambdaResponse').innerHTML = result
+			     },
+			    error: function(xhr, textStatus, error) {
+			      console.log('API ERROR', error);
+			      console.log(textStatus, xhr);
+	            }
+            });
+            */
+
+
+        },
+        onFailure: function(error) {
+			console.error('Sign in error', error);
+			console.log(error);
+			showSignedOut()
+        }
+		};
+		// The default response_type is "token", uncomment the next line will make it be "code".
+		// auth.useCodeGrantFlow();
+		return auth;
+	}
+  function userButton(auth) {
+    var state = signInButton.innerHTML;
+    if (state === "Sign Out") {
+      signInButton.innerHTML = "Sign In";
+      auth.signOut();
+      clearTokens();
+    } else {
+      auth.getSession();
+    }
+  } 
+  
+	// Operations when signed in.
+	function currentSession(auth) {
+		signInButton.innerHTML = "Sign Out";
+		  var session = auth.getSignInUserSession();
+		  // the actual user
+		  var idToken = session.getIdToken().getJwtToken();
+		  if (idToken) {
+			var payload = idToken.split('.')[1];
+			var tokenobj = JSON.parse(atob(payload));
+			var formatted = JSON.stringify(tokenobj, undefined, 2);
+		    console.log('Id Token Info', formatted);
+
+		  }
+		  var accessToken = session.getAccessToken().getJwtToken();
+		  if (accessToken) {
+			var payload = accessToken.split('.')[1];
+			var tokenobj = JSON.parse(atob(payload));
+			var formatted = JSON.stringify(tokenobj, undefined, 2);
+		    console.log('Access Token Info', formatted);
+		  }
+		  var refreshToken = session.getRefreshToken().getToken();
+		  if (refreshToken) {
+		    var payload = refreshToken.split('.')[1];
+		    var formatted = JSON.parse(atob(payload));
+		    console.log('Refresh Token Info', formatted);
+		  }
+	}
+
+
+  onMount(() => {
+    auth = initCognitoSDK();
+    signInButton.addEventListener("click", () => {
+      userButton(auth);
+    });
+    auth.parseCognitoWebResponse(window.location.href);
+  });
 </script>
 
-<style>
+<UAHeader />
+<div id="Title">
+  <h1>UA Timescape</h1>
+</div>
+<div id="summary">
+  <p>
+    Using wifi network information to combat the spread of the Corona Virus
+    during the COVID-19 Pandemic
+  </p>
+</div>
 
-* {
-    z-index: 5;
-}
-#holder {
-  height:100%;
-  background:#183055;
-  color:white;
-}
-#title {
-  display:flex;
-  justify-content: center;
-}
-#options {
-  cursor:pointer;
-  display:flex;
-  justify-content: center;
-  height:100%;
-}
-</style>
-
-<div id="holder" bind:this={holder}>
-  <div id="title">
-    <h3>Memory Jogger</h3>
-  </div>
-  <div id="options">
-  <div id="gantt-side" on:click={gantt}>
-    <VisOp imgSrc="gantt_background.png" title="Gantt Chart" summaryText="View your data from the last 2 weeks with particular attention to the 'when' you were in a location" ></VisOp>
-  </div>
-  <div id="map-side" on:click={map}>
-  <VisOp imgSrc="map_background.png" title="Map Visualization" summaryText="Explore where you've been on campus for over 15 minutes at a time overlaid on this campus map" ></VisOp>
-  </div>
-  </div>
+<div id="signin">
+  <a bind:this={signInButton}>Sign In</a>
 </div>
