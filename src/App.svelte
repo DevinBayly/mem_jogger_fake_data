@@ -79,7 +79,9 @@
       onFailure: function(error) {
         console.error("Sign in error", error);
         console.log(error);
-        showSignedOut();
+        new NotPermitted({
+          target:document.body
+        })
       }
     };
     // The default response_type is "token", uncomment the next line will make it be "code".
