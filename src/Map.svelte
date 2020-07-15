@@ -153,9 +153,9 @@
       missingBuildings =[]
       for (let i = 0; i < graphData.length; i++) {
         let d = graphData[i].coords;
+        missingBuildings.push(graphData[i])
         if (d == undefined) {
           console.log("missing coords", d);
-          missingBuildings.push(graphData[i])
 
           continue;
         }
