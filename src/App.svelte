@@ -91,7 +91,6 @@
     if (state === "Sign Out") {
       signInButton.innerHTML = "Sign In";
       auth.signOut();
-      clearTokens();
     } else {
       auth.getSession();
     }
@@ -145,7 +144,7 @@
   margin:0 auto;
 }
 #signin {
-  margin:20%;
+  margin:5%;
 }
 </style>
 
