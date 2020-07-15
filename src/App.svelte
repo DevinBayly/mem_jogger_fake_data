@@ -134,9 +134,21 @@
 </script>
 <style>
 #small {
-  font-size:8px;
+  font-size:12px;
+}
+#title {
+  margin:10%;
+
+}
+#summary {
+  width:80%;
+  margin:0 auto;
+}
+#signin {
+  margin:20%;
 }
 </style>
+
 <UAHeader />
 <div bind:this={introText}>
   <div id="Title">
