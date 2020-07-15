@@ -1,20 +1,21 @@
 <script>
   //
   import UAHeader from "./UAHeader.svelte";
-  import NotPermitted from "./NotPermitted.svelte"
+  import NotPermitted from "./NotPermitted.svelte";
   import IV from "./IndividualVis.svelte";
   import { onMount } from "svelte";
   import { wifiData } from "./store.js";
-  let auth, signInButton,signInHolder,introText;
+  let auth, signInButton, signInHolder, introText;
   //Teresa Portela's auth functions
   function initCognitoSDK() {
+    //
     var authData = {
-      ClientId: "4bm64prfamvrt5s563cqirmq9", // Your client id here
-      AppWebDomain: "uacap-timescape.auth.us-west-2.amazoncognito.com", // Exclude the "https://" part.
+      ClientId: "4qkpam1nldvol9i736l6fvbnu9", // Your client id here
+      AppWebDomain: "uacap-tst-domain.us-west-2.amazoncognito.com", // Exclude the "https://" part.
       TokenScopesArray: ["openid", "profile", "email", "phone"],
       RedirectUriSignIn: "https://test.timescape.arizona.edu/index.html",
       RedirectUriSignOut: "https://test.timescape.arizona.edu/",
-      userPoolId: "us-west-2_jKbmFSAtP"
+      userPoolId: "us-west-2_9zt4gLEaV"
     };
     var auth = new AmazonCognitoIdentity.CognitoAuth(authData);
     // You can also set state parameter
@@ -31,11 +32,11 @@
         const Url =
           "https://60p8vnvhle.execute-api.us-west-2.amazonaws.com/tst/retrieveReport";
         // converted fetch request from the ajax code
-        introText.remove()
-            signInButton.style.color = "white"
-            signInHolder.style.position = "absolute"
-            signInHolder.style.right = "10px"
-            signInHolder.style.top = "20px"
+        introText.remove();
+        signInButton.style.color = "white";
+        signInHolder.style.position = "absolute";
+        signInHolder.style.right = "10px";
+        signInHolder.style.top = "20px";
         fetch(Url, {
           headers: {
             Authorization: token,
@@ -47,35 +48,34 @@
             // load the individual visualizations at this point
             //remove everything except the signout
             // properly format data for vis
-            // issue with data being string still? this seems intermittent, 
-            if (typeof("") === typeof(jsonData)) {
-              jsonData = JSON.parse(jsonData)
+            // issue with data being string still? this seems intermittent,
+            if (typeof "" === typeof jsonData) {
+              jsonData = JSON.parse(jsonData);
             }
-            console.log("json data is ",jsonData)
-            console.log("type of json data ",typeof(jsonData))
+            console.log("json data is ", jsonData);
+            console.log("type of json data ", typeof jsonData);
             jsonData = jsonData.map(e => {
-              e = e.eventData
-              e._time = e._time*1000
-              return e
-            })
-            console.log("filtered",jsonData)
+              e = e.eventData;
+              e._time = e._time * 1000;
+              return e;
+            });
+            console.log("filtered", jsonData);
             new IV({
-                target:document.body,
-                props:{
-                    reportData:jsonData
-                }
-            })
+              target: document.body,
+              props: {
+                reportData: jsonData
+              }
+            });
             wifiData.set(jsonData);
           })
           .catch(e => {
             console.log("error", e);
             // load the missing data page
             new NotPermitted({
-              target:document.body,
-            })
+              target: document.body
+            });
           });
-
-             },
+      },
       onFailure: function(error) {
         console.error("Sign in error", error);
         console.log(error);
@@ -131,21 +131,21 @@
     auth.parseCognitoWebResponse(window.location.href);
   });
 </script>
-<style>
-#small {
-  font-size:12px;
-}
-#title {
-  margin:10%;
 
-}
-#summary {
-  width:80%;
-  margin:0 auto;
-}
-#signin {
-  margin:5%;
-}
+<style>
+  #small {
+    font-size: 12px;
+  }
+  #title {
+    margin: 10%;
+  }
+  #summary {
+    width: 80%;
+    margin: 0 auto;
+  }
+  #signin {
+    margin: 5%;
+  }
 </style>
 
 <UAHeader />
@@ -155,12 +155,12 @@
   </div>
   <div id="summary">
     <p>
-      Minimizing exposure to the novel coronavirus is key to protecting UArizona students, faculty and staff from COVID-19. This site has been created to support strategic efforts related to crowd density, managing campus spaces, mitigating spread, and learning about risk factors.
-
+      Minimizing exposure to the novel coronavirus is key to protecting UArizona
+      students, faculty and staff from COVID-19. This site has been created to
+      support strategic efforts related to crowd density, managing campus
+      spaces, mitigating spread, and learning about risk factors.
     </p>
-    <p>
-    You will need authorization to log in to this site using your NetID. 
-</p>
+    <p>You will need authorization to log in to this site using your NetID.</p>
   </div>
 
 </div>
@@ -168,5 +168,5 @@
   <a bind:this={signInButton}>Sign In</a>
 </div>
 <div id="contact">
-<p id="small">For questions, please contact: uacap@list.arizona.edu
-</p></div>
+  <p id="small">For questions, please contact: uacap@list.arizona.edu</p>
+</div>
