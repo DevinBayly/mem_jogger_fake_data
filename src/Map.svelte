@@ -107,6 +107,10 @@
     };
     let updateData = userData => {
       //
+      // remove missing buildings from legend if found
+      if( document.querySelector("#missingReport")) {
+         document.querySelector("#missingReport").remove()
+      }
       console.log("running data");
       if (userData.length == 0) {
         // just pick a graphData
@@ -114,12 +118,19 @@
         redraw();
         return;
       }
+      missingBuildings =[]
       let activeBuildings = {};
       for (let connection of userData) {
+        // testing
+        if (buildingMap[connection.apBuildingNumber] == undefined) {
+          // this is a missing building
+          // no connection of apBuildingNumber with the map we have generated
+          missingBuildings.push(connection)
+        }
         if (activeBuildings[connection.apBuildingNumber] == undefined) {
           activeBuildings[connection.apBuildingNumber] = {
             coords: buildingMap[connection.apBuildingNumber],
-            duration: 1,
+            duration: calculateTime(connection),
             number: connection.apBuildingNumber
           };
         } else {
@@ -150,10 +161,8 @@
       // calculate the nw corner of a bounding box on the points
       let bbox = { x: {}, y: {} };
       // calculate the bounding box on the circles that are being drawn, decide on a max radius, and use it
-      missingBuildings =[]
       for (let i = 0; i < graphData.length; i++) {
         let d = graphData[i].coords;
-        missingBuildings.push(graphData[i])
         if (d == undefined) {
           console.log("missing coords", d);
 
@@ -244,7 +253,7 @@
       legendG.call(legendEle);
       d3.select("#legendHolder").style(
         "width",
-        legendG.node().getBoundingClientRect().width + "px"
+        (legendG.node().getBoundingClientRect().width + 20) + "px"
       );
       legendSvg.attr(
         "height",
@@ -312,6 +321,7 @@
     right: 0px;
     background: white;
     border-radius: 10px;
+    border:1px black solid;
     padding: 10px;
     z-index: 5000;
   }
