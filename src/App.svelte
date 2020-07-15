@@ -30,7 +30,7 @@
         console.log("token is" + token);
         currentSession(auth);
         const Url =
-          "https://60p8vnvhle.execute-api.us-west-2.amazonaws.com/tst/retrieveReport";
+        "https://a11kuxg1y2.execute-api.us-west-2.amazonaws.com/tst/retrieveReport"
         // converted fetch request from the ajax code
         introText.remove();
         signInButton.style.color = "white";
