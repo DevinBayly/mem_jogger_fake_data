@@ -79,6 +79,7 @@
       onFailure: function(error) {
         console.error("Sign in error", error);
         console.log(error);
+        introText.remove();
         new NotPermitted({
           target:document.body
         })

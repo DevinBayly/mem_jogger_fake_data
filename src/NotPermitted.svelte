@@ -1,4 +1,3 @@
-<UAHeader />
 <div>
   <div id="Title">
     <h1>UA Timescape</h1>
