@@ -22,6 +22,10 @@
     // auth.setState(<state parameter>);
     auth.userhandler = {
       onSuccess: function(result) {
+        //remove the removable elements
+        for (let e of document.querySelectorAll(".removable")) {
+          e.remove();
+        }
         console.log("Sign in success", auth);
         console.log("auth is " + JSON.stringify(auth));
         var cognitoUser = auth.getSignInUserSession();
@@ -30,13 +34,12 @@
         console.log("token is" + token);
         currentSession(auth);
         const Url =
-        "https://a11kuxg1y2.execute-api.us-west-2.amazonaws.com/tst/retrieveReport"
-        // converted fetch request from the ajax code
-        introText.remove();
+          "https://a11kuxg1y2.execute-api.us-west-2.amazonaws.com/tst/retrieveReport";
         signInButton.style.color = "white";
         signInHolder.style.position = "absolute";
         signInHolder.style.right = "10px";
         signInHolder.style.top = "20px";
+        // converted fetch from ajax code
         fetch(Url, {
           headers: {
             Authorization: token,
@@ -70,6 +73,10 @@
           })
           .catch(e => {
             console.log("error", e);
+            //remove the removable elements
+            for (let e of document.querySelectorAll(".removable")) {
+              e.remove();
+            }
             // load the missing data page
             new NotPermitted({
               target: document.body
@@ -79,10 +86,10 @@
       onFailure: function(error) {
         console.error("Sign in error", error);
         console.log(error);
-        introText.remove();
+        signInHolder.remmove();
         new NotPermitted({
-          target:document.body
-        })
+          target: document.body
+        });
       }
     };
     // The default response_type is "token", uncomment the next line will make it be "code".
@@ -152,7 +159,7 @@
 </style>
 
 <UAHeader />
-<div bind:this={introText}>
+<div bind:this={introText} class="removable">
   <div id="Title">
     <h1>UA Timescape</h1>
   </div>
@@ -170,6 +177,6 @@
 <div id="signin" bind:this={signInHolder}>
   <a bind:this={signInButton}>Sign In</a>
 </div>
-<div id="contact">
+<div id="contact" class="removable">
   <p id="small">For questions, please contact: uacap@list.arizona.edu</p>
 </div>
