@@ -24,6 +24,8 @@
     box-shadow: 0 7px 23px 0 rgba(32, 44, 62, 0.68);
     border-radius: 10px;
     margin:5%;
+    padding:5%;
+    background:white;
 }
 #title {
     padding: 2%;

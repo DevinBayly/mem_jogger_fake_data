@@ -39,6 +39,7 @@
         signInHolder.style.position = "absolute";
         signInHolder.style.right = "10px";
         signInHolder.style.top = "20px";
+        signInHolder.style.margin = "0px"
         // converted fetch from ajax code
         fetch(Url, {
           headers: {
