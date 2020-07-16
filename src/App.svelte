@@ -101,7 +101,7 @@
     var state = signInButton.innerHTML;
     if (state === "Sign Out") {
       signInButton.innerHTML = "Sign In";
-      auth.globalSignOut();
+      auth.signOut({global:true});
     } else {
       auth.getSession();
     }
