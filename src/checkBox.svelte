@@ -1,11 +1,18 @@
 <script>
   export let Content;
   import { wifiData, allDevices } from "./store.js";
+  // listen on wifidata, 
+  let modifiedData
+  let once = false
+  wifiData.subscribe(value=> {
+    if (value != null && ! once) {
+      modifiedData = value
+      once = true
+    }
+  })
   // thhis is the step that will be replaced by a fetch from the s3 bucket, can be made into another store so we don't refetch
-  import { paulData } from "./data.js";
   let devices;
   // deal with changes that have occured to the data format since original development
-  let modifiedData = paulData.map(e=> e.eventData)
   let updateData = () => {
     // reset the data,
     // only include parts of the results that pertain to the devices that are selected

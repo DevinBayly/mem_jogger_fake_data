@@ -126,7 +126,14 @@
       // call the brush constructor with .call
       redraw();
     };
-
+    let calcWidth = (d)=>  {
+      let start = d3.isoParse(d._time)
+      let duration = d.niceDuration.split(":").map(e=>parseInt(e))
+      start.setMinutes(start.getMinutes()+duration[1])
+      start.setSeconds(start.getSeconds() + duration[2])
+      start.setHours(start.getHours() + duration[0])
+      return start
+    }
     let redraw = () => {
       // make the small blocks
       blocksG
@@ -141,7 +148,9 @@
                 yscale(buildings.indexOf(d.apBuildingNumber))
               )
               .attr("height", yscale.bandwidth())
-              .attr("width", 1),
+              .attr("width", d=> {
+                return xscale(calcWidth(d)) - xscale(d._time)
+              }),
           update => update,
           exit => exit.remove()
         );
