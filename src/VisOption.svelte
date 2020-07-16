@@ -21,8 +21,6 @@
     width:200%;
 }
 .text {
-    background:#183055;
-    color:white;
     box-shadow: 0 7px 23px 0 rgba(32, 44, 62, 0.68);
     border-radius: 10px;
     margin:5%;
