@@ -4,6 +4,7 @@
   import { onMount } from "svelte";
   import { mapData } from "./store.js";
   import * as d3 from "d3";
+import MissingBuilding from "./MissingBuildingDensity.svelte"
   import legend from "d3-svg-legend"
   onMount(async () => {
     console.log("loaded");
@@ -43,6 +44,7 @@
       legendSvg,
       legendG,
       circleLegend,
+      missingBuildings,
       circleOpacityScale,
       applyLatLngToLayer,
       bboxNWLatLng,
@@ -133,7 +135,13 @@
         return
       }
       let activeBuildings = {};
+      missingBuildings = []
       for (let connection of userData) {
+        if (buildingMap[connection.latestBuilding] == undefined) {
+          // this is a missing building
+          // no connection of apBuildingNumber with the map we have generated
+          missingBuildings.push(connection)
+        }
         if (activeBuildings[connection.latestBuilding] == undefined) {
           activeBuildings[connection.latestBuilding] = {
             coords: buildingMap[connection.latestBuilding],
@@ -143,6 +151,15 @@
         } else {
           activeBuildings[connection.latestBuilding].count += 1;
         }
+      }
+            // if we have missing buildings, create missing building ahref
+      if (missingBuildings.length > 0) {
+        new MissingBuilding({
+          target:document.querySelector("#legendHolder"),
+          props:{
+            missingBuildings
+          }
+        })
       }
       // convert active Buildings into an array for simplicity in D3
       graphData = [];
