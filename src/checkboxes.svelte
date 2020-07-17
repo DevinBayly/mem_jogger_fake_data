@@ -27,4 +27,6 @@
     display:flex;
 }
 </style>
-<div id="checkBoxHolder" bind:this={holder} />
+<div id="checkBoxHolder" bind:this={holder} >
+<p>Devices:</p>
+</div>
