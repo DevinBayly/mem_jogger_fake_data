@@ -30,7 +30,7 @@
       for (let i = 0; i < times.length; i++) {
         let time = times[i];
         if (time < end && time > start) {
-          permittedTimes.push(i);
+          permittedTimes.push(JSON.stringify(time));
         }
       }
       // update the coordinator
@@ -43,8 +43,10 @@
     let redraw = () => {
       d3.selectAll(".minuteMarks").remove()
       let last_time = new Date(d3.max(times).getTime());
-      last_time.setSeconds(last_time.getSeconds() + 5 * 60);
+      last_time.setSeconds(last_time.getSeconds() + 5 );
       xscale.domain([d3.min(times), last_time]);
+
+      axisG.call(axis);
       // create the vertical minute marks
       let first = xscale.domain()[0];
       let last = xscale.domain()[1];
@@ -130,8 +132,11 @@
         coordinator.update(value => {
           // in final version this will be a time stamp instead of an index
           for (let i = 0; i < times.length; i++) {
+            // they are still off by too much even when they say they are equal.
+            let delta = Math.abs(times[i].getTime() - cursorTime.getTime())/1000
+            console.log(delta)
             if (times[i].getTime() == cursorTime.getTime()) {
-              value.time = i;
+              value.time =JSON.stringify(times[i]);
               value.trigger = "cursor";
               break;
             }
@@ -144,16 +149,12 @@
       if (svg == undefined && data != null) {
         initialize();
       }
-      if (data != null) {
+      if (data != null && times== undefined ) {
         times = [];
-        let time = new Date();
-        time.setSeconds(0);
-        time.setMilliseconds(0);
         for (let i in data) {
           // number of minutes
-
-          times.push(new Date(time.getTime()));
-          time.setMinutes(time.getMinutes() + 1);
+          let itime = new Date(i)
+          times.push(itime);
         }
         console.log("times are", times);
         redraw();

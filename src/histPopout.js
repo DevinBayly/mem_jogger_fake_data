@@ -64,17 +64,15 @@ export let histogram = (graphElement, building,dims) => {
             ob.data = []
             //probably will become timestamps
             // start, remove this 
-            let start = new Date()
             for (let key in allBuildings) {
                 let minuteData = allBuildings[key]
                 for (let buildingMinute of minuteData) {
                     //compare each building in the minute to the building we want to draw the hist for
                     if (buildingMinute.latestBuilding == building ) {
-                        ob.data.push({time:new Date(start.getTime()),count:buildingMinute.count})
+                        ob.data.push({time:new Date(key),count:buildingMinute.count})
                         break
                     }
                 }
-                start.setMinutes(start.getMinutes() +1)
             }
             if (ob.svg == undefined) {
                 //init

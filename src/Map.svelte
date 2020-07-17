@@ -1,4 +1,5 @@
 <script>
+// 
   export let buildingJSON;
   import MissingView from "./MissingBuildingView.svelte"
   import { onMount } from "svelte";
@@ -188,6 +189,7 @@
         }
       }
       // if we have missing buildings, create missing building ahref
+      // resolved?
       if (missingBuildings.length > 0) {
         new MissingView({
           target:document.querySelector("#legendHolder"),

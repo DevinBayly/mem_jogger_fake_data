@@ -36,9 +36,9 @@ fetch("revised.json").then(res => res.json()).then(data => {
         }
         if (value.trigger == "brush") {
             // expect an array of permitted time indices
-            let selectedData = []
+            let selectedData ={} 
             for (let key of value.time) {
-                selectedData.push(data[key])
+                selectedData[key.replace(/\"/g,"")] = data[key.replace(/\"/g,"")]
             }
             histogramData.set(selectedData)
         } else if (value.trigger == "cursor") {

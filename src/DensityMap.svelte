@@ -290,7 +290,6 @@ import MissingBuilding from "./MissingBuildingDensity.svelte"
   }
   #legendHolder {
     position:absolute;
-    top:0px;
     right:0px;
     z-index:5000;
     background:white;

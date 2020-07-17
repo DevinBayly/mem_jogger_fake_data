@@ -1,187 +1,55 @@
 <script>
-  //
+  //small change
   import UAHeader from "./UAHeader.svelte";
-  import NotPermitted from "./NotPermitted.svelte";
   import IV from "./IndividualVis.svelte";
   import SV from "./StakeHolderVis.svelte"
   import { onMount } from "svelte";
   import { wifiData } from "./store.js";
-  let auth, signInButton, signInHolder, introText;
-  //Teresa Portela's auth functions
-  function initCognitoSDK() {
-    //
-    var authData = {
-      ClientId: "4qkpam1nldvol9i736l6fvbnu9", // Your client id here
-      AppWebDomain: "uacap-tst-domain.auth.us-west-2.amazoncognito.com", // Exclude the "https://" part.
-      TokenScopesArray: ["openid", "profile", "email", "phone"],
-      RedirectUriSignIn: "https://test.timescape.arizona.edu/index.html",
-      RedirectUriSignOut: "https://test.timescape.arizona.edu/",
-      userPoolId: "us-west-2_9zt4gLEaV"
-    };
-    var auth = new AmazonCognitoIdentity.CognitoAuth(authData);
-    // You can also set state parameter
-    // auth.setState(<state parameter>);
-    auth.userhandler = {
-      onSuccess: function(result) {
-        //remove the removable elements
-        for (let e of document.querySelectorAll(".removable")) {
-          e.remove();
-        }
-        console.log("Sign in success", auth);
-        console.log("auth is " + JSON.stringify(auth));
-        var cognitoUser = auth.getSignInUserSession();
-        var token = cognitoUser.idToken.jwtToken;
-        console.log("username is " + cognitoUser);
-        console.log("token is" + token);
-        currentSession(auth);
-        const Url =
-          "https://a11kuxg1y2.execute-api.us-west-2.amazonaws.com/tst/retrieveReport";
-        signInButton.style.color = "white";
-        signInHolder.style.position = "absolute";
-        signInHolder.style.right = "10px";
-        signInHolder.style.top = "20px";
-        signInHolder.style.margin = "0px"
-        // converted fetch from ajax code
-        fetch(Url, {
-          headers: {
-            Authorization: token,
-            "Content-Type": "application/json"
-          }
-        })
-          .then(res => res.json())
-          .then(jsonData => {
-            // load the individual visualizations at this point
-            //remove everything except the signout
-            // properly format data for vis
-            // issue with data being string still? this seems intermittent,
-            if (typeof "" === typeof jsonData) {
-              jsonData = JSON.parse(jsonData);
-            }
-            console.log("json data is ", jsonData);
-            console.log("type of json data ", typeof jsonData);
-            jsonData = jsonData.map(e => {
-              e = e.eventData;
-              e._time = e._time * 1000;
-              return e;
-            });
-            console.log("filtered", jsonData);
-            new IV({
-              target: document.body,
-              props: {
-                reportData: jsonData
-              }
-            });
-            new SV({
-              target:document.body,
-            })
-            wifiData.set(jsonData);
+  let auth, signInButton,signInHolder,introText;
+  let mockData = "[\n{\n    \"eventData\": {\n        \"apRoomNumber\": \"170\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"117\", \n        \"_time\": \"1583010793\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-29 22:15:51\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"01:02:38\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"Soccer\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"117\", \n        \"_time\": \"1583010601\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-29 22:14:31\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"01:04:30\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"200E\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"73\", \n        \"_time\": \"1582933370\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-29 00:41:26\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:58:36\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"100E\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"73\", \n        \"_time\": \"1582932004\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-28 23:49:40\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:29:36\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"100E\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"73\", \n        \"_time\": \"1582924795\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-28 22:16:55\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:57:00\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"200E\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"73\", \n        \"_time\": \"1582749480\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-26 21:02:55\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:24:55\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"200E\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"73\", \n        \"_time\": \"1582675702\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-26 01:36:40\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"01:28:18\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"100E\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"73\", \n        \"_time\": \"1582675662\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-26 01:36:20\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"01:28:38\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"B203\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"55\", \n        \"_time\": \"1582664205\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-25 21:56:03\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:59:18\", \n        \"deviceType\": \"Ubuntu-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"906\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"77\", \n        \"_time\": \"1582583382\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-24 23:22:05\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:52:23\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"100E\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"73\", \n        \"_time\": \"1582575591\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-24 22:16:55\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"01:57:04\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"ODN\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"30\", \n        \"_time\": \"1582569363\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-24 18:53:45\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:17:42\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"ODW\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"26\", \n        \"_time\": \"1582569318\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-24 18:54:39\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:19:21\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"B246\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"55\", \n        \"_time\": \"1582241047\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-20 23:47:50\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:23:43\", \n        \"deviceType\": \"Ubuntu-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"B258\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"55\", \n        \"_time\": \"1582135584\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-19 18:47:19\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:40:55\", \n        \"deviceType\": \"Ubuntu-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"100E\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"73\", \n        \"_time\": \"1582066513\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-18 23:34:54\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:39:41\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"200E\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"73\", \n        \"_time\": \"1582066204\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-18 23:49:56\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:59:52\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"100E\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"73\", \n        \"_time\": \"1582043582\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-18 16:51:45\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:18:43\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"200E\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"73\", \n        \"_time\": \"1582040893\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-18 16:33:19\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:45:06\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"ODNorth\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"17\", \n        \"_time\": \"1581984233\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-18 00:31:11\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:27:18\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"ODNorth\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"66\", \n        \"_time\": \"1581984219\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-18 00:31:19\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:27:40\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"MallStage\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"17\", \n        \"_time\": \"1581984176\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-18 00:32:20\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:29:24\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"ODW\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"26\", \n        \"_time\": \"1581972811\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-17 21:16:07\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:22:36\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"200E\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"73\", \n        \"_time\": \"1581722899\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-15 00:18:27\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:50:08\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"B202\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"55\", \n        \"_time\": \"1581706624\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-14 20:48:33\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"01:51:29\", \n        \"deviceType\": \"Apple-iPad\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"100E\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"73\", \n        \"_time\": \"1581695728\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-14 17:29:54\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"01:34:26\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"200E\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"73\", \n        \"_time\": \"1581695568\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-14 16:31:04\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:38:16\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"B202\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"55\", \n        \"_time\": \"1581654462\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-14 05:27:24\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:59:42\", \n        \"deviceType\": \"Apple-iPad\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"130\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"73\", \n        \"_time\": \"1581541192\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-12 21:45:02\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:45:10\", \n        \"deviceType\": \"Ubuntu-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"200E\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"73\", \n        \"_time\": \"1581534190\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-12 20:01:39\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:58:29\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"100E\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"73\", \n        \"_time\": \"1581533327\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-12 19:10:31\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:21:44\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"200E\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"73\", \n        \"_time\": \"1581467709\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-12 01:08:14\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:33:05\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"ODSE\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"73\", \n        \"_time\": \"1581467654\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-12 01:08:31\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:34:17\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"102\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"240\", \n        \"_time\": \"1581451430\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-11 20:21:35\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:17:45\", \n        \"deviceType\": \"Ubuntu-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"101\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"240\", \n        \"_time\": \"1581451283\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-11 20:39:29\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:38:06\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n},{\n    \"eventData\": {\n        \"apRoomNumber\": \"ODNorth\", \n        \"__mv_apRoomNumber\": \"\", \n        \"__mv_deviceType\": \"\", \n        \"apBuildingNumber\": \"240\", \n        \"_time\": \"1581451282\", \n        \"__mv__time\": \"\", \n        \"endTime\": \"2020-02-11 20:40:15\", \n        \"__mv_endTime\": \"\", \n        \"__mv_niceDuration\": \"\", \n        \"niceDuration\": \"00:38:53\", \n        \"deviceType\": \"Linux-Workstation\", \n        \"__mv_apBuildingNumber\": \"\"\n    }\n}]\n"
+  onMount(()=> {
+      // 
+      signInButton.addEventListener("click",(e)=> {
+          introText.remove()
+          mockData= JSON.parse(mockData)
+          // modify the data for compatibility in applications
+          mockData = mockData.map(e=> {
+              e = e.eventData
+              e._time = e._time *1000
+              return e
           })
-          .catch(e => {
-            console.log("error", e);
-            //remove the removable elements
-            for (let e of document.querySelectorAll(".removable")) {
-              e.remove();
-            }
-            // load the missing data page
-            new NotPermitted({
-              target: document.body
-            });
-          });
-      },
-      onFailure: function(error) {
-        console.error("Sign in error", error);
-        console.log(error);
-        signInHolder.remmove();
-        new NotPermitted({
-          target: document.body
-        });
-      }
-    };
-    // The default response_type is "token", uncomment the next line will make it be "code".
-    // auth.useCodeGrantFlow();
-    return auth;
-  }
-  function userButton(auth) {
-    var state = signInButton.innerHTML;
-    if (state === "Sign Out") {
-      signInButton.innerHTML = "Sign In";
-      auth.signOut({global:true});
-    } else {
-      auth.getSession();
-    }
-  }
+          new IV({
+              target:document.body,
+              props:{
+                  reportData:mockData
+              }
+          })
+          wifiData.set(mockData)
+          signInHolder.style.position ="absolute"
+          signInHolder.style.right = "0px"
+          signInHolder.style.top = "0px"
+          signInButton.style.color = "white"
+          new SV({
+            target:document.body,
+          })
 
-  // Operations when signed in.
-  function currentSession(auth) {
-    signInButton.innerHTML = "Sign Out";
-    var session = auth.getSignInUserSession();
-    // the actual user
-    var idToken = session.getIdToken().getJwtToken();
-    if (idToken) {
-      var payload = idToken.split(".")[1];
-      var tokenobj = JSON.parse(atob(payload));
-      var formatted = JSON.stringify(tokenobj, undefined, 2);
-      console.log("Id Token Info", formatted);
-    }
-    var accessToken = session.getAccessToken().getJwtToken();
-    if (accessToken) {
-      var payload = accessToken.split(".")[1];
-      var tokenobj = JSON.parse(atob(payload));
-      var formatted = JSON.stringify(tokenobj, undefined, 2);
-      console.log("Access Token Info", formatted);
-    }
-    var refreshToken = session.getRefreshToken().getToken();
-    if (refreshToken) {
-      var payload = refreshToken.split(".")[1];
-      var formatted = JSON.parse(atob(payload));
-      console.log("Refresh Token Info", formatted);
-    }
-  }
-
-  onMount(() => {
-    auth = initCognitoSDK();
-    signInButton.addEventListener("click", () => {
-      userButton(auth);
-    });
-    auth.parseCognitoWebResponse(window.location.href);
-  });
-</script>
-
-<style>
-  #small {
-    font-size: 12px;
-  }
-  #title {
-    margin: 10%;
-  }
-  #summary {
-    width: 80%;
-    margin: 0 auto;
-  }
-  #signin {
-    margin: 5%;
-  }
-</style>
+      })
+  })
+  </script>
 
 <UAHeader />
-<div bind:this={introText} class="removable">
+<div bind:this={introText}>
   <div id="Title">
     <h1>UA Timescape</h1>
   </div>
   <div id="summary">
     <p>
-      Minimizing exposure to the novel coronavirus is key to protecting UArizona
-      students, faculty and staff from COVID-19. This site has been created to
-      support strategic efforts related to crowd density, managing campus
-      spaces, mitigating spread, and learning about risk factors.
+      Using wifi network information to combat the spread of the Corona Virus
+      during the COVID-19 Pandemic
     </p>
-    <p>You will need authorization to log in to this site using your NetID.</p>
   </div>
 
 </div>
 <div id="signin" bind:this={signInHolder}>
   <a bind:this={signInButton}>Sign In</a>
-</div>
-<div id="contact" class="removable">
-  <p id="small">For questions, please contact: uacap@list.arizona.edu</p>
 </div>
