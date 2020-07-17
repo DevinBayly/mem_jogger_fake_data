@@ -15,7 +15,7 @@
       AppWebDomain: "uacap-tst-domain.auth.us-west-2.amazoncognito.com", // Exclude the "https://" part.
       TokenScopesArray: ["openid", "profile", "email", "phone"],
       RedirectUriSignIn: "https://test.timescape.arizona.edu/index.html",
-      RedirectUriSignOut: "https://test.timescape.arizona.edu/",
+      RedirectUriSignOut: "https://shibboleth.arizona.edu/cgi-bin/logout.pl",
       userPoolId: "us-west-2_9zt4gLEaV"
     };
     var auth = new AmazonCognitoIdentity.CognitoAuth(authData);
