@@ -3,6 +3,7 @@
   import UAHeader from "./UAHeader.svelte";
   import NotPermitted from "./NotPermitted.svelte";
   import IV from "./IndividualVis.svelte";
+  import SV from "./StakeHolderVis.svelte"
   import { onMount } from "svelte";
   import { wifiData } from "./store.js";
   let auth, signInButton, signInHolder, introText;
@@ -70,6 +71,9 @@
                 reportData: jsonData
               }
             });
+            new SV({
+              target:document.body,
+            })
             wifiData.set(jsonData);
           })
           .catch(e => {
