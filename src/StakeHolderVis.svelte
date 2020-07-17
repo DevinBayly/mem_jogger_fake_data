@@ -20,6 +20,7 @@ import DensityMap from "./density_vis.svelte"
 }
 #holder {
   height:100%;
+  background:white;
 }
 #title {
   display:flex;
