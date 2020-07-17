@@ -31,7 +31,7 @@ fetch("revised.json").then(res => res.json()).then(data => {
 
             data = newData
 
-            mapData.set(data[0])
+            mapData.set(Object.values(data)[0])
             histogramData.set(data)
         }
         if (value.trigger == "brush") {
@@ -42,9 +42,9 @@ fetch("revised.json").then(res => res.json()).then(data => {
             }
             histogramData.set(selectedData)
         } else if (value.trigger == "cursor") {
-            mapData.set(data[value.time])
+            mapData.set(data[value.time.replace(/\"/g,"")])
         }
     })
-    mapData.set(data[0])
+    mapData.set(Object.values(data)[0])
     histogramData.set(data)
 })
