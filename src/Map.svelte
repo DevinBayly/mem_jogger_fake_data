@@ -115,6 +115,9 @@
       console.log("running data");
       if (userData.length == 0) {
         // just pick a graphData
+        // remove the legend
+        legendG.remove()
+        document.querySelector("#legend")
         graphData = [];
         redraw();
         return;
@@ -333,6 +336,6 @@
   <div id="mapid" />
 </div>
 <div id="legendHolder">
-  <p>Radius in minutes</p>
+  <p>Minutes Spent in Area</p>
   <svg id="legend" />
 </div>
