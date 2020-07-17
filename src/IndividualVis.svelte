@@ -34,8 +34,7 @@
 }
 #holder {
   height:100%;
-  background:#183055;
-  color:white;
+  background:white;
 }
 #title {
   display:flex;

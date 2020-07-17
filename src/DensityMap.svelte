@@ -234,7 +234,7 @@ import MissingBuilding from "./MissingBuildingDensity.svelte"
       let maxCount = Math.max(...userData.map(e=>e.count))
       circleOpacityScale = d3
         .scaleLinear()
-        .domain([1, maxCount])
+        .domain([1, maxCount]).nice()
         .range(["rgba(255,0,0,.1)","rgba(255,0,0,1)"])
       //make a legend
       legendSvg = d3.select("#legend")
