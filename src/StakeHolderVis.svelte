@@ -5,8 +5,11 @@ import DensityMap from "./density_vis.svelte"
   let holder
   let map = ()=> {
     console.log("loading map")
-    // remove holder
-    holder.remove()
+    // remove holders
+    for( let opHolder of document.querySelectorAll("#holder")) {
+      opHolder.remove()
+    }
+
     new DensityMap({
       target:document.body,
     })
@@ -20,7 +23,6 @@ import DensityMap from "./density_vis.svelte"
 }
 #holder {
   height:100%;
-  background:white;
 }
 #title {
   display:flex;
