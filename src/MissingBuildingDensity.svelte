@@ -4,8 +4,8 @@
   function prettyReport(reportData) {
     let text = "helpful resource for determining names of buildings in cases of inconsistent numbering https://pdc.arizona.edu/Building/\n";
     for (let e of reportData) {
-      text += `\n count for building is ${JSON.stringify(new Date(e.count))}
-               building number: ${e.latestConnection}
+      text += `\n count for building is ${e.count}
+               building number: ${e.latestBuilding}
 `;
     }
     return text;

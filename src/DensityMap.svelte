@@ -124,6 +124,11 @@ import MissingBuilding from "./MissingBuildingDensity.svelte"
       );
     };
     let updateData = userData => {
+      // remove previous report link
+      let report = document.querySelector("#missingReport")
+      if( report ) {
+        report.remove()
+      }
       let maxCount = Math.max(...userData.map(e=>e.count))
       circleOpacityScale.domain([1,maxCount])
       legendG.call(circleLegend)
