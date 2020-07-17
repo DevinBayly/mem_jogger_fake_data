@@ -7,10 +7,10 @@
   // include the reachout to the lambda function
   // introduce the page with the options
   let holder;
+  let gantt = () => {
   for (let opHolder of document.querySelectorAll("#holder")) {
     opHolder.remove();
   }
-  let gantt = () => {
     new GanttApplication({
       target: document.body,
       props: {
@@ -20,6 +20,9 @@
     console.log("loading gantt");
   };
   let map = () => {
+  for (let opHolder of document.querySelectorAll("#holder")) {
+    opHolder.remove();
+  }
     console.log("loading map");
     // remove holder
     new MapApplication({
