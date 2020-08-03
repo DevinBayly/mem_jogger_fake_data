@@ -1,0 +1,4 @@
+node_modules/*
+public/build/*
+src/data.js
+src/App.svelte
