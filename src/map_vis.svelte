@@ -3,7 +3,7 @@
 import Map from "./Map.svelte"
 import Brushable from "./brushableIndividual.svelte"
 import Selectors from "./dataSelectors.svelte"
-import {buildingJSON} from "./data.js"
+import {buildingJSON} from "./buildingData.js"
 import {wifiData } from "./store.js"
 // setup the store with the data for this application
 
