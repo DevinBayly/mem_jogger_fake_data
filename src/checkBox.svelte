@@ -43,7 +43,7 @@ label {
   padding:1px;
 }</style>
 
-<label title={`Device Guess: "${Guess}"`}> 
+<label title={`Best Guess: "${Guess}"`}> 
   <input type="checkbox" checked on:click={updateDevices} />
   {Content}
 </label>
