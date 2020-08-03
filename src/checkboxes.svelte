@@ -10,7 +10,6 @@
       // make sure lst isn't null
 
       if (lst != null) {
-        console.error(lst)
         if (!once) {
           // generate a check box element for each
           let i = 1
