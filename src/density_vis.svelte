@@ -1,7 +1,7 @@
 <script>
 import Map from "./DensityMap.svelte"
 import Brushable from "./brushableDensity.svelte"
-import {buildingJSON} from "./data.js"
+import {buildingJSON} from "./buildingData.js"
 // setup the store with the data for this application
 //
 let dims ={
