@@ -132,6 +132,10 @@
       start.setMinutes(start.getMinutes()+duration[1])
       start.setSeconds(start.getSeconds() + duration[2])
       start.setHours(start.getHours() + duration[0])
+      // if duration is 0 show it as a 1 minute section so its detectable in brush region
+      if (start  == d3.isoParse(d._time)) {
+        start.setMinutes(start.getMinutes() + 1)
+      }
       return start
     }
     let redraw = () => {
@@ -200,4 +204,6 @@
   });
 </script>
 
-<div id="brushableHolder" />
+<div id="brushableHolder" >
+<p>Drag To Select Time:</p>
+</div>  
