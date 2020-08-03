@@ -1,5 +1,5 @@
 <script>
-  export let Content;
+  export let Content,Guess;
   import { wifiData, allDevices } from "./store.js";
   // listen on wifidata, 
   let modifiedData
@@ -28,8 +28,8 @@
   let updateDevices = () => {
     allDevices.update(devs => {
       console.log("changing devices");
-      devs[Content].checked = !devs[Content].checked;
-      console.log("to", devs[Content].checked);
+      devs[Guess].checked = !devs[Guess].checked;
+      console.log("to", devs[Guess].checked);
       devices = devs;
       // trigger the change of the wifidata
       updateData();
@@ -38,7 +38,12 @@
   };
 </script>
 
-<label>
+<style>
+label {
+  padding:1px;
+}</style>
+
+<label title={`Device Guess: "${Guess}"`}> 
   <input type="checkbox" checked on:click={updateDevices} />
   {Content}
 </label>

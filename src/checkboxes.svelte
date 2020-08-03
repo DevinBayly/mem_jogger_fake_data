@@ -5,28 +5,38 @@
   let holder;
   onMount(() => {
     console.log("holder is", holder);
-    let once = false
+    let once = false;
     allDevices.subscribe(lst => {
-      if (!once) {
-        // generate a check box element for each
-        for (let device in lst) {
-          new CB({
-            target: holder,
-            props: {
-                Content:device
-            }
-          });
+      // make sure lst isn't null
+
+      if (lst != null) {
+        console.error(lst)
+        if (!once) {
+          // generate a check box element for each
+          let i = 1
+          for (let deviceName in lst) {
+            new CB({
+              target: holder,
+              props: {
+                Content: `Device ${i}`,
+                Guess: deviceName
+              }
+            });
+            i++
+          }
+          once = true;
         }
-        once =true
       }
     });
   });
 </script>
+
 <style>
-#checkBoxHolder{
-    display:flex;
-}
+  #checkBoxHolder {
+    display: flex;
+  }
 </style>
-<div id="checkBoxHolder" bind:this={holder} >
-<p>Devices:</p>
+
+<div id="checkBoxHolder" bind:this={holder}>
+  <p>Devices:</p>
 </div>
