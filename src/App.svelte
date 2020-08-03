@@ -61,7 +61,6 @@
             console.log("type of json data ", typeof jsonData);
             jsonData = jsonData.map(e => {
               e = e.eventData;
-              e._time = e._time * 1000;
               return e;
             });
             console.log("filtered", jsonData);
