@@ -1,7 +1,7 @@
 <script>
-// 
+  //
   export let buildingJSON;
-  import MissingView from "./MissingBuildingView.svelte"
+  import MissingView from "./MissingBuildingView.svelte";
   import { onMount } from "svelte";
   import { wifiData } from "./store.js";
   import * as d3 from "d3";
@@ -109,27 +109,27 @@
     let updateData = userData => {
       //
       // remove missing buildings from legend if found
-      if( document.querySelector("#missingReport")) {
-         document.querySelector("#missingReport").remove()
+      if (document.querySelector("#missingReport")) {
+        document.querySelector("#missingReport").remove();
       }
       console.log("running data");
       if (userData.length == 0) {
         // just pick a graphData
         // remove the legend
-        legendG.remove()
-        document.querySelector("#legend")
+        legendG.remove();
+        document.querySelector("#legend");
         graphData = [];
         redraw();
         return;
       }
-      missingBuildings =[]
+      missingBuildings = [];
       let activeBuildings = {};
       for (let connection of userData) {
         // testing
         if (buildingMap[connection.apBuildingNumber] == undefined) {
           // this is a missing building
           // no connection of apBuildingNumber with the map we have generated
-          missingBuildings.push(connection)
+          missingBuildings.push(connection);
         }
         if (activeBuildings[connection.apBuildingNumber] == undefined) {
           activeBuildings[connection.apBuildingNumber] = {
@@ -150,14 +150,15 @@
       }
       //get only the durations and establish domain
       // only update the domain once
-        let durations = graphData.map(e => e.duration);
-        let minCircleScale = d3.scaleLinear()
+      let durations = graphData.map(e => e.duration);
+      let minCircleScale = d3
+        .scaleLinear()
         .domain([0, Math.max(...durations)])
-        .range([0,20])
-        circleScale
-          .domain([minCircleScale.invert(5), Math.max(...durations)])
-          .range([5, 20]);
-        createLegend()
+        .range([0, 20]);
+      circleScale
+        .domain([minCircleScale.invert(5), Math.max(...durations)])
+        .range([5, 20]);
+      createLegend();
       // force correct radius
 
       // update legend so values change
@@ -195,11 +196,11 @@
       // resolved?
       if (missingBuildings.length > 0) {
         new MissingView({
-          target:document.querySelector("#legendHolder"),
-          props:{
+          target: document.querySelector("#legendHolder"),
+          props: {
             missingBuildings
           }
-        })
+        });
       }
       // the northwest corner is the max.y and the min.x, and the south east corner is the min.y and the max.x
       console.log("boundsbox is", bbox);
@@ -213,9 +214,9 @@
       let parts = d.niceDuration.split(":").map(e => parseInt(e));
       let total = parts[0] * 60 + parts[1] + parts[2] / 60;
       if (total < 15) {
-        console.log("duration is less than 15 mins for ",d)
+        console.log("duration is less than 15 mins for ", d);
       }
-      return total
+      return total;
     };
     let initialize = userData => {
       // this is the width the svg should be to cover the full map
@@ -238,12 +239,16 @@
       //establish the circle scale before the data gets changed at all
       // decide circle scale is the sum of the amount of time spent in that location during the selected time
       // separate by building
-      circleScale = d3.scaleLinear().nice().range([5, 20]).clamp(true);
+      circleScale = d3
+        .scaleLinear()
+        .nice()
+        .range([5, 20])
+        .clamp(true);
       //legend setup
     };
-    let createLegend = ()=> {
+    let createLegend = () => {
       if (legendG != undefined) {
-        legendG.remove()
+        legendG.remove();
       }
       legendSvg = d3.select("#legend");
       legendG = legendSvg.append("g").attr("transform", "translate(20,20)");
@@ -258,7 +263,7 @@
       legendG.call(legendEle);
       d3.select("#legendHolder").style(
         "width",
-        (legendG.node().getBoundingClientRect().width + 20) + "px"
+        legendG.node().getBoundingClientRect().width + 20 + "px"
       );
       legendSvg.attr(
         "height",
@@ -326,16 +331,18 @@
     right: 0px;
     background: white;
     border-radius: 10px;
-    border:1px black solid;
+    border: 1px black solid;
     padding: 10px;
     z-index: 5000;
   }
 </style>
 
 <div id="leafletHolder">
-  <div id="mapid" />
-</div>
-<div id="legendHolder">
-  <p>Minutes Spent in Area</p>
-  <svg id="legend" />
+  <div id="mapid">
+
+    <div id="legendHolder">
+      <p>Minutes Spent in Area</p>
+      <svg id="legend" />
+    </div>
+  </div>
 </div>
