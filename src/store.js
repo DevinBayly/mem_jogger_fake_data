@@ -9,3 +9,4 @@ export const daySelected = writable(0)
 export const mapData = writable(null)
 export const histogramData = writable(null)
 export let coordinator
+//

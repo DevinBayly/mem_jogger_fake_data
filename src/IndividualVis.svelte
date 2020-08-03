@@ -2,23 +2,10 @@
   export let reportData;
   import VisOp from "./VisOption.svelte";
   import MapApplication from "./map_vis.svelte";
-  import GanttApplication from "./gantt_vis.svelte";
   // put in Teresa's signin code
   // include the reachout to the lambda function
   // introduce the page with the options
   let holder;
-  let gantt = () => {
-  for (let opHolder of document.querySelectorAll("#holder")) {
-    opHolder.remove();
-  }
-    new GanttApplication({
-      target: document.body,
-      props: {
-        reportData
-      }
-    });
-    console.log("loading gantt");
-  };
   let map = () => {
   for (let opHolder of document.querySelectorAll("#holder")) {
     opHolder.remove();
@@ -54,15 +41,13 @@
 <div id="holder" bind:this={holder}>
   <div id="title">
     <h3>Memory Jogger</h3>
+
   </div>
+  <div id="MJMexplanation">
+  <p>Explanation text placeHolder: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa sit tempore d</p></div>
+  <div id="screencast">
+  <a href="#">TODO link to screencast</a></div>
   <div id="options">
-    <div id="gantt-side" on:click={gantt}>
-      <VisOp
-        imgSrc="gantt_background.png"
-        title="Gantt Chart"
-        summaryText="View your data from the last 2 weeks with particular
-        attention to the 'when' you were in a location" />
-    </div>
     <div id="map-side" on:click={map}>
       <VisOp
         imgSrc="map_background.png"

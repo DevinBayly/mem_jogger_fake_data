@@ -29,9 +29,9 @@ let dims ={
 </style>
 
 <div id="secondVisHolder">
-<Map buildingJSON={buildingJSON}></Map>
 <div id="bottomViews">
-<Brushable dims={dims}></Brushable>
 <Selectors></Selectors>
+<Brushable dims={dims}></Brushable>
 </div>
+<Map buildingJSON={buildingJSON}></Map>
 </div>
