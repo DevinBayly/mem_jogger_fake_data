@@ -10,15 +10,19 @@
       // make sure lst isn't null
 
       if (lst != null) {
+        console.error(lst)
         if (!once) {
           // generate a check box element for each
-          for (let device in lst) {
+          let i = 1
+          for (let deviceName in lst) {
             new CB({
               target: holder,
               props: {
-                Content: device
+                Content: `Device ${i}`,
+                Guess: deviceName
               }
             });
+            i++
           }
           once = true;
         }
