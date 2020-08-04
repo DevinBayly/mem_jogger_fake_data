@@ -227,7 +227,7 @@
       let totalDuration = (parts[0] *60* 60 + parts[1]*60 + parts[2])*1000;
       // 15minutes in ms
       if (totalDuration < 15*60*1000) {
-        console.error("duration is less than 15 mins for ", d);
+        //console.error("duration is less than 15 mins for ", d);
       }
       return {start:d._time,dur:totalDuration};
     };
