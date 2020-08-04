@@ -2,7 +2,7 @@
   //
   export let buildingJSON;
   import MissingView from "./MissingBuildingView.svelte";
-  import {MergeInterval} from "./algos.js"
+  import { MergeInterval } from "./algos.js";
   import { onMount } from "svelte";
   import { wifiData } from "./store.js";
   import * as d3 from "d3";
@@ -40,6 +40,7 @@
     let once = false;
     let graphData,
       circleScale,
+      catScale,
       applyLatLngToLayer,
       bboxNWLatLng,
       legendSvg,
@@ -63,7 +64,8 @@
           enter =>
             enter
               .append("circle")
-              .attr("r", d => circleScale(d.duration))
+              .attr("opacity",.8)
+              .attr("r", 10)
               .attr("class", "testPoints")
               .attr("transform", d => {
                 if (d.coords == undefined) {
@@ -74,8 +76,14 @@
                   })`;
                 }
               })
-              .attr("fill", "red")
-              .attr("opacity", 0.5),
+              .attr("fill", d => catScale(d.category))
+              .attr("title", d => {
+                if (d.duration > 60) {
+                  return `${Math.floor(d.duration / 60)} Hours, ${d.duration% 60} Minutes`;
+                } else {
+                  return `${d.duration} Minutes`;
+                }
+              }),
           update =>
             update
               .attr("transform", d => {
@@ -87,7 +95,14 @@
                   })`;
                 }
               })
-              .attr("r", d => circleScale(d.duration)),
+              .attr("fill", d => catScale(d.category))
+              .attr("title", d => {
+                if (d.duration > 60) {
+                  return `${Math.floor(d.duration / 60)} Hours, ${d.duration% 60} Minutes`;
+                } else {
+                  return `${d.duration} Minutes`;
+                }
+              }),
           exit => exit.remove()
         );
       // the width is the diff nw and se bbox points
@@ -139,28 +154,44 @@
             number: connection.apBuildingNumber
           };
         } else {
-          activeBuildings[
-            connection.apBuildingNumber
-          ].connections.push( connectionData(connection))
+          activeBuildings[connection.apBuildingNumber].connections.push(
+            connectionData(connection)
+          );
         }
       }
       // feed each building's connections into the mergeinterval algorithm, sum and set as duration value
       graphData = [];
       for (let building in activeBuildings) {
         // run the mergeinterval algorithm
-        let dedupDurations = MergeInterval(activeBuildings[building].connections)
-        let sum = 0
+        let dedupDurations = MergeInterval(
+          activeBuildings[building].connections
+        );
+        let sum = 0;
         // calculate sum in ms
         for (let connection of dedupDurations) {
-          sum+= connection.dur
+          sum += connection.dur;
         }
+        let minutes = sum / (1000 * 60);
         //establish a duration attribute in minutes
-        activeBuildings[building].duration = sum/(1000*60)
+        activeBuildings[building].duration = minutes;
+        let category;
+        if (minutes < 15) {
+          category = 1;
+        } else if (minutes > 15 && minutes < 60) {
+          category = 2;
+        } else {
+          category = 3;
+        }
+
+        activeBuildings[building].category = category;
         graphData.push(activeBuildings[building]);
       }
       //get only the durations and establish domain
       // only update the domain once
       let durations = graphData.map(e => e.duration);
+      // create categorical scale
+      catScale = d3.scaleQuantize().domain([1,3]).range(["#fee8c8","#fdbb84","#e34a33"]);
+
       let minCircleScale = d3
         .scaleLinear()
         .domain([0, Math.max(...durations)])
@@ -224,12 +255,13 @@
       // calculate in ms the data in niceDuration
       let parts = d.niceDuration.split(":").map(e => parseInt(e));
       // hour,minute,second, want in ms as that's the getTime resolution
-      let totalDuration = (parts[0] *60* 60 + parts[1]*60 + parts[2])*1000;
+      let totalDuration =
+        (parts[0] * 60 * 60 + parts[1] * 60 + parts[2]) * 1000;
       // 15minutes in ms
-      if (totalDuration < 15*60*1000) {
+      if (totalDuration < 15 * 60 * 1000) {
         //console.error("duration is less than 15 mins for ", d);
       }
-      return {start:d._time,dur:totalDuration};
+      return { start: d._time, dur: totalDuration };
     };
     let initialize = userData => {
       // this is the width the svg should be to cover the full map
@@ -266,11 +298,11 @@
       legendSvg = d3.select("#legend");
       legendG = legendSvg.append("g").attr("transform", "translate(20,20)");
       legendEle = legend
-        .legendSize()
-        .scale(circleScale)
+        .legendColor()
+        .scale(catScale)
+        .labels(["< 15 mins","15 mins to 1 hour ", "> 1 hour"])
         .shape("circle")
         .labelOffset(20)
-        .labelFormat(d3.format(".0f"))
         .shapePadding(20)
         .orient("vertical");
       legendG.call(legendEle);
@@ -286,16 +318,6 @@
         "width",
         legendG.node().getBoundingClientRect().width + 20 + "px"
       );
-      // attempt to style the created legend correctly
-      d3.selectAll(".swatch")
-        .attr("fill", "red")
-        .attr("opacity", 0.5);
-      if (circleScale.domain()[0] == circleScale.domain()[1]) {
-        d3.selectAll(".cell")
-          .data([1])
-          .exit()
-          .remove();
-      }
     };
     let unsubscribeWifiData = wifiData.subscribe(data => {
       if (data != null) {
