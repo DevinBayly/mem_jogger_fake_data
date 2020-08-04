@@ -2,6 +2,7 @@
   //
   export let buildingJSON;
   import MissingView from "./MissingBuildingView.svelte";
+  import {MergeInterval} from "./algos.js"
   import { onMount } from "svelte";
   import { wifiData } from "./store.js";
   import * as d3 from "d3";
@@ -134,18 +135,27 @@
         if (activeBuildings[connection.apBuildingNumber] == undefined) {
           activeBuildings[connection.apBuildingNumber] = {
             coords: buildingMap[connection.apBuildingNumber],
-            duration: calculateTime(connection),
+            connections: [connectionData(connection)],
             number: connection.apBuildingNumber
           };
         } else {
           activeBuildings[
             connection.apBuildingNumber
-          ].duration += calculateTime(connection);
+          ].connections.push( connectionData(connection))
         }
       }
-      // convert active Buildings into an array for simplicity in D3
+      // feed each building's connections into the mergeinterval algorithm, sum and set as duration value
       graphData = [];
       for (let building in activeBuildings) {
+        // run the mergeinterval algorithm
+        let dedupDurations = MergeInterval(activeBuildings[building].connections)
+        let sum = 0
+        // calculate sum in ms
+        for (let connection of dedupDurations) {
+          sum+= connection.dur
+        }
+        //establish a duration attribute in minutes
+        activeBuildings[building].duration = sum/(1000*60)
         graphData.push(activeBuildings[building]);
       }
       //get only the durations and establish domain
@@ -208,15 +218,18 @@
       bboxSELatLng = new L.LatLng(bbox.y.min, bbox.x.max);
       redraw();
     };
-    // this function lets us figure out the amount of time (in minutes) for a duration
-    let calculateTime = d => {
+    // this function takes the important values out of each connection and makes an object that can be put in an array for mergeinterval algorithm to run on
+    // first step in deduplicating duration calculations
+    let connectionData = d => {
       // calculate in ms the data in niceDuration
       let parts = d.niceDuration.split(":").map(e => parseInt(e));
-      let total = parts[0] * 60 + parts[1] + parts[2] / 60;
-      if (total < 15) {
-        console.log("duration is less than 15 mins for ", d);
+      // hour,minute,second, want in ms as that's the getTime resolution
+      let totalDuration = (parts[0] *60* 60 + parts[1]*60 + parts[2])*1000;
+      // 15minutes in ms
+      if (totalDuration < 15*60*1000) {
+        console.error("duration is less than 15 mins for ", d);
       }
-      return total;
+      return {start:d._time,dur:totalDuration};
     };
     let initialize = userData => {
       // this is the width the svg should be to cover the full map
