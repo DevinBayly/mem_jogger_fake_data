@@ -37,5 +37,4 @@
 </style>
 
 <div id="checkBoxHolder" bind:this={holder}>
-  <p>Devices:</p>
 </div>

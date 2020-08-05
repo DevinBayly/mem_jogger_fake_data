@@ -47,5 +47,5 @@
 </style>
 <div id="content">
 <select name="" id="days" bind:this={selectElement} on:change={selectionMade}>
-<option value="default" selected hidden disabled>Select Day: showing {dateTimeFormat.format(firstDate)} </option></select>
+</select>
 </div>
