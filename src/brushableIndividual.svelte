@@ -130,7 +130,7 @@
               timeBoundedData.push(resEntry)
             } else if (end > t2) {
               // delta is duration in ms
-              let delta = t2.getTime() - st.getTime()
+              let delta = t2.getTime() - t1.getTime()
               resEntry.niceDuration = `${Math.floor(delta/(1000*60*60))}:${Math.floor(delta/(1000*60)%60)}:${Math.floor(delta/(1000)%60)}`
               timeBoundedData.push(resEntry)
             }
