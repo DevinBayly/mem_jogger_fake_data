@@ -66,6 +66,8 @@
               .append("circle")
               .attr("opacity",.8)
               .attr("r", 10)
+              .attr("stroke","white")
+              .attr("stroke-width",2)
               .attr("class", "testPoints")
               .attr("transform", d => {
                 if (d.coords == undefined) {
