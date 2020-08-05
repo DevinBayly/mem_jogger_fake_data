@@ -2,6 +2,7 @@
   //
   export let buildingJSON;
   import MissingView from "./MissingBuildingView.svelte";
+  import Popout from "./Popout.svelte"
   import { MergeInterval } from "./algos.js";
   import { onMount } from "svelte";
   import { wifiData } from "./store.js";
@@ -107,6 +108,24 @@
               }),
           exit => exit.remove()
         );
+      circle.on("mouseover",function(){
+        let circ = d3.select(this)
+        let data = circ.data()[0]
+        //get the xy, and make a new popout, push the popout to collection to remove on zoom
+        let duration = (data.duration > 60) ? `${Math.floor(data.duration / 60)} Hours, ${data.duration% 60} Minutes`: `${data.duration} Minutes`
+        new Popout({
+          target:mymap.getPanes().overlayPane,
+          props:{
+            time:duration,
+            screen:applyLatLngToLayer(data.coords)
+          }
+        })
+      })
+      circle.on("mouseout",()=> {
+        for (let popout of document.querySelectorAll("#popoutHolder")) {
+          popout.remove()
+        }
+      })
       // the width is the diff nw and se bbox points
       let screenNW = applyLatLngToLayer(bboxNWLatLng);
       let screenSE = applyLatLngToLayer(bboxSELatLng);
