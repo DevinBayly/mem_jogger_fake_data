@@ -31,7 +31,7 @@
       let duration = d.niceDuration.split(":").map(e=>parseInt(e))
       // if duration is 0 show it as a 1 minute section so its detectable in brush region
       if (duration.reduce((a,b)=> a+b,0) == 0) {
-        start.setMinutes(start.getMinutes() + 1)
+        start.setSeconds(start.getSeconds() + 1)
       } else {
       start.setMinutes(start.getMinutes()+duration[1])
       start.setSeconds(start.getSeconds() + duration[2])
@@ -129,7 +129,9 @@
               // don't modify duration
               timeBoundedData.push(resEntry)
             } else if (end > t2) {
-              resEntry.niceDuration = `${t2.getHours()}:${t2.getMinutes()}:${t2.getSeconds()}`
+              // delta is duration in ms
+              let delta = t2.getTime() - st.getTime()
+              resEntry.niceDuration = `${Math.floor(delta/(1000*60*60))}:${Math.floor(delta/(1000*60)%60)}:${Math.floor(delta/(1000)%60)}`
               timeBoundedData.push(resEntry)
             }
           } else if (st <t2 && st > t1 ) {
@@ -143,7 +145,9 @@
               // don't modify duration
               timeBoundedData.push(resEntry)
             } else if (end > t2) {
-              resEntry.niceDuration = `${t2.getHours()}:${t2.getMinutes()}:${t2.getSeconds()}`
+              // delta is duration in ms
+              let delta = t2.getTime() - st.getTime()
+              resEntry.niceDuration = `${Math.floor(delta/(1000*60*60))}:${Math.floor(delta/(1000*60)%60)}:${Math.floor(delta/(1000)%60)}`
               timeBoundedData.push(resEntry)
             }
           }
