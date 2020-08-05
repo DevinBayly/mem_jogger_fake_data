@@ -8,7 +8,7 @@ import {wifiData } from "./store.js"
 // setup the store with the data for this application
 
 let dims ={
-  width:window.innerWidth*.8,
+  width:window.innerWidth*.5,
   height:100,
   margin:20
 }
@@ -22,14 +22,14 @@ let dims ={
   width:100%;
 
 }
-#bottomViews {
+#topViews {
   display:flex;
-
+  justify-content: space-evenly;
 }
 </style>
 
 <div id="secondVisHolder">
-<div id="bottomViews">
+<div id="topViews">
 <Selectors></Selectors>
 <Brushable dims={dims}></Brushable>
 </div>

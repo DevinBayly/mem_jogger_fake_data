@@ -44,6 +44,9 @@
     
 </script>
 <style>
+#content {
+    display:flex;
+}
 </style>
 <div id="content">
 <select name="" id="days" bind:this={selectElement} on:change={selectionMade}>
