@@ -12,7 +12,8 @@
   export let dims;
   onMount(() => {
     // setup, and there may be reason to update some variables that are declared
-    let userData,svg,
+    let userData,
+      svg,
       times,
       buildings,
       devices,
@@ -26,19 +27,19 @@
       t1,
       t2;
 
-    let calcWidth = (d)=>  {
-      let start = d3.isoParse(d._time)
-      let duration = d.niceDuration.split(":").map(e=>parseInt(e))
+    let calcWidth = d => {
+      let start = d3.isoParse(d._time);
+      let duration = d.niceDuration.split(":").map(e => parseInt(e));
       // if duration is 0 show it as a 1 minute section so its detectable in brush region
-      if (duration.reduce((a,b)=> a+b,0) == 0) {
-        start.setSeconds(start.getSeconds() + 1)
+      if (duration.reduce((a, b) => a + b, 0) == 0) {
+        start.setSeconds(start.getSeconds() + 1);
       } else {
-      start.setMinutes(start.getMinutes()+duration[1])
-      start.setSeconds(start.getSeconds() + duration[2])
-      start.setHours(start.getHours() + duration[0])
+        start.setMinutes(start.getMinutes() + duration[1]);
+        start.setSeconds(start.getSeconds() + duration[2]);
+        start.setHours(start.getHours() + duration[0]);
       }
-      return start
-    }
+      return start;
+    };
     let initialize = () => {
       svg = d3
         .select("#brushableHolder")
@@ -84,28 +85,32 @@
         .append("g")
         .attr("transform", `translate(${dims.margin},${dims.margin})`);
       // include the vertical lines at the day intervals
-        let start = xscale.domain()[0]
-        // truncate start back to beginning of day
-        start.setHours(0)
-        start.setMinutes(0)
-        start.setSeconds(0)
-        let end = xscale.domain()[1]
-        let current = new Date(start.getTime())
-        for (let i = 0;;i++) {
-            let pathData =[[xscale(current),0],[xscale(current),yscale.range()[1]]]
-            let lineGenerator = d3.line()
-            .x(d=> d[0])
-            .y(d=> d[1])
-            blocksG.append("path")
-              .datum(pathData)
-              .attr("stroke","red")
-              .attr("d",lineGenerator)
-            current.setMinutes(current.getMinutes() + 60*24)
-            if (current > end) {
-                break
-            }
-
+      let start = xscale.domain()[0];
+      // truncate start back to beginning of day
+      start.setHours(0);
+      start.setMinutes(0);
+      start.setSeconds(0);
+      let end = xscale.domain()[1];
+      let current = new Date(start.getTime());
+      for (let i = 0; ; i++) {
+        let pathData = [
+          [xscale(current), 0],
+          [xscale(current), yscale.range()[1]]
+        ];
+        let lineGenerator = d3
+          .line()
+          .x(d => d[0])
+          .y(d => d[1]);
+        blocksG
+          .append("path")
+          .datum(pathData)
+          .attr("stroke", "red")
+          .attr("d", lineGenerator);
+        current.setMinutes(current.getMinutes() + 60 * 24);
+        if (current > end) {
+          break;
         }
+      }
       // brush steps
       //define a brush event
       function brushEnd() {
@@ -116,39 +121,56 @@
         let timeBoundedData = [];
         for (let entry of userData) {
           // 8 cases, TODO this can probably be condensed
-          let st = d3.isoParse(entry._time)
+          let st = d3.isoParse(entry._time);
           // think about the 0 duration entries?
-          let end = calcWidth(entry)
+          let end = calcWidth(entry);
           //replace the st and ends in the entry at the end
           // copy so that we don't accidentally mess up any original data
-          let resEntry = {... entry}
-          if(st < t1){
-            resEntry._time = t1.getTime()
+          let resEntry = { ...entry };
+          if (st < t1) {
+            resEntry._time = t1.getTime();
             if (end < t2 && end > t1) {
               // substitute the extent for the start because its out of brushable region
-              // don't modify duration
-              timeBoundedData.push(resEntry)
+              // remove as much time from the end as nec to calculate correct nice duration again
+              let delta = end.getTime() - t1.getTime();
+              resEntry.niceDuration = `${Math.floor(
+                delta / (1000 * 60 * 60)
+              )}:${Math.floor((delta / (1000 * 60)) % 60)}:${Math.floor(
+                (delta / 1000) % 60
+              )}`;
+              timeBoundedData.push(resEntry);
             } else if (end > t2) {
               // delta is duration in ms
-              let delta = t2.getTime() - t1.getTime()
-              resEntry.niceDuration = `${Math.floor(delta/(1000*60*60))}:${Math.floor(delta/(1000*60)%60)}:${Math.floor(delta/(1000)%60)}`
-              timeBoundedData.push(resEntry)
+              let delta = t2.getTime() - t1.getTime();
+              resEntry.niceDuration = `${Math.floor(
+                delta / (1000 * 60 * 60)
+              )}:${Math.floor((delta / (1000 * 60)) % 60)}:${Math.floor(
+                (delta / 1000) % 60
+              )}`;
+              timeBoundedData.push(resEntry);
             }
-          } else if (st <t2 && st > t1 ) {
+          } else if (st < t2 && st > t1) {
             //assumption isend is greater than t1 since end > st, so not writing it
-            if( end < t1) {
-              console.error("data problem with end",end,"check calcwidth")
-              continue
+            if (end < t1) {
+              console.error("data problem with end", end, "check calcwidth");
+              continue;
             }
             if (end < t2) {
               // substitute the extent for the start because its out of brushable region
               // don't modify duration
-              timeBoundedData.push(resEntry)
+              if (resEntry.niceDuration.match(/16/)) {
+                console.log(resEntry.niceDuration);
+              }
+              timeBoundedData.push(resEntry);
             } else if (end > t2) {
               // delta is duration in ms
-              let delta = t2.getTime() - st.getTime()
-              resEntry.niceDuration = `${Math.floor(delta/(1000*60*60))}:${Math.floor(delta/(1000*60)%60)}:${Math.floor(delta/(1000)%60)}`
-              timeBoundedData.push(resEntry)
+              let delta = t2.getTime() - st.getTime();
+              resEntry.niceDuration = `${Math.floor(
+                delta / (1000 * 60 * 60)
+              )}:${Math.floor((delta / (1000 * 60)) % 60)}:${Math.floor(
+                (delta / 1000) % 60
+              )}`;
+              timeBoundedData.push(resEntry);
             }
           }
         }
@@ -186,8 +208,8 @@
                 yscale(buildings.indexOf(d.apBuildingNumber))
               )
               .attr("height", yscale.bandwidth())
-              .attr("width", d=> {
-                return xscale(calcWidth(d)) - xscale(d._time)
+              .attr("width", d => {
+                return xscale(calcWidth(d)) - xscale(d._time);
               }),
           update => update,
           exit => exit.remove()
@@ -195,31 +217,31 @@
       gbrush.call(brush);
     };
     let unsubscribe = wifiData.subscribe(data => {
-      if (data != null ) {
-      if (svg == undefined) {
-        userData = data
-        initialize();
-      } else {
-        // do redraw
-        if (data.type != undefined) {
-          // this is a brush based update
-          console.log("brush updated the data");
+      if (data != null) {
+        if (svg == undefined) {
+          userData = data;
+          initialize();
         } else {
-          // see if we have brush and alter the data
-          if (t1 != undefined) {
-            let timeBoundedData = [];
-            for (let entry of data) {
-              let etime = d3.isoParse(entry._time);
-              if (etime > t1 && etime < t2) {
-                timeBoundedData.push(entry);
+          // do redraw
+          if (data.type != undefined) {
+            // this is a brush based update
+            console.log("brush updated the data");
+          } else {
+            // see if we have brush and alter the data
+            if (t1 != undefined) {
+              let timeBoundedData = [];
+              for (let entry of data) {
+                let etime = d3.isoParse(entry._time);
+                if (etime > t1 && etime < t2) {
+                  timeBoundedData.push(entry);
+                }
               }
+              wifiData.set({ type: "brush", data: timeBoundedData });
             }
-            wifiData.set({type:"brush",data:timeBoundedData})
+            userData = data;
+            redraw();
           }
-          userData = data
-          redraw();
         }
-      }
       }
     });
     let unsubDaySelected = daySelected.subscribe(day => {
@@ -238,6 +260,6 @@
   });
 </script>
 
-<div id="brushableHolder" >
-<p>Drag To Select Time:</p>
-</div>  
+<div id="brushableHolder">
+  <p>Drag To Select Time:</p>
+</div>
