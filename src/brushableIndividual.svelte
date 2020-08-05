@@ -25,6 +25,20 @@
       gbrush,
       t1,
       t2;
+
+    let calcWidth = (d)=>  {
+      let start = d3.isoParse(d._time)
+      let duration = d.niceDuration.split(":").map(e=>parseInt(e))
+      // if duration is 0 show it as a 1 minute section so its detectable in brush region
+      if (duration.reduce((a,b)=> a+b,0) == 0) {
+        start.setMinutes(start.getMinutes() + 1)
+      } else {
+      start.setMinutes(start.getMinutes()+duration[1])
+      start.setSeconds(start.getSeconds() + duration[2])
+      start.setHours(start.getHours() + duration[0])
+      }
+      return start
+    }
     let initialize = () => {
       svg = d3
         .select("#brushableHolder")
@@ -101,9 +115,37 @@
         // update data shown for the graph, but make it clear that this is not supposed to update the brushable area
         let timeBoundedData = [];
         for (let entry of userData) {
-          let etime = d3.isoParse(entry._time);
-          if (etime > t1 && etime < t2) {
-            timeBoundedData.push(entry);
+          // 8 cases, TODO this can probably be condensed
+          let st = d3.isoParse(entry._time)
+          // think about the 0 duration entries?
+          let end = calcWidth(entry)
+          //replace the st and ends in the entry at the end
+          // copy so that we don't accidentally mess up any original data
+          let resEntry = {... entry}
+          if(st < t1){
+            resEntry._time = t1.getTime()
+            if (end < t2 && end > t1) {
+              // substitute the extent for the start because its out of brushable region
+              // don't modify duration
+              timeBoundedData.push(resEntry)
+            } else if (end > t2) {
+              resEntry.niceDuration = `${t2.getHours()}:${t2.getMinutes()}:${t2.getSeconds()}`
+              timeBoundedData.push(resEntry)
+            }
+          } else if (st <t2 && st > t1 ) {
+            //assumption isend is greater than t1 since end > st, so not writing it
+            if( end < t1) {
+              console.error("data problem with end",end,"check calcwidth")
+              continue
+            }
+            if (end < t2) {
+              // substitute the extent for the start because its out of brushable region
+              // don't modify duration
+              timeBoundedData.push(resEntry)
+            } else if (end > t2) {
+              resEntry.niceDuration = `${t2.getHours()}:${t2.getMinutes()}:${t2.getSeconds()}`
+              timeBoundedData.push(resEntry)
+            }
           }
         }
         // update the map data
@@ -126,18 +168,6 @@
       // call the brush constructor with .call
       redraw();
     };
-    let calcWidth = (d)=>  {
-      let start = d3.isoParse(d._time)
-      let duration = d.niceDuration.split(":").map(e=>parseInt(e))
-      start.setMinutes(start.getMinutes()+duration[1])
-      start.setSeconds(start.getSeconds() + duration[2])
-      start.setHours(start.getHours() + duration[0])
-      // if duration is 0 show it as a 1 minute section so its detectable in brush region
-      if (start  == d3.isoParse(d._time)) {
-        start.setMinutes(start.getMinutes() + 1)
-      }
-      return start
-    }
     let redraw = () => {
       // make the small blocks
       blocksG
