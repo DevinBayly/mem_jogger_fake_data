@@ -1,9 +1,4 @@
 <script>
-export let visHolder
-import {onMount} from "svelte"
-import {bbstore,wifiData,subs} from "./store.js"
-import IV from "./IndividualVis.svelte"
-let holder
 
 let goBack= ()=> {
 location.reload()
@@ -24,7 +19,7 @@ p {
     color:white;
 }
 </style>
-<div id="content" bind:this={holder}>
+<div id="content" >
 <div id="arrow" class="ua-brand-left-arrow" on:click={goBack} ></div>
 <div id="name">
     <p >Memory Jog Map |</p>
