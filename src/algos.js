@@ -12,7 +12,7 @@ export let MergeInterval = (data) => {
         }
         //console.log("cur,",cur)
         //console.log("next",next)
-        if (next.start < (cur.start + cur.dur)) {
+        if (next.start <= (cur.start + cur.dur)) {
             //console.log("overlap",cur,next)
             if ((cur.start + cur.dur) < (next.start + next.dur)) {
                 //console.log("updating")
