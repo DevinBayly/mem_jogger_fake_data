@@ -27,6 +27,6 @@
 
 <div id="popoutHolder" bind:this={holder}>
   <div id="text">
-    <p>Time: {time}</p>
+    <p>Estimated Time: {time}</p>
   </div>
 </div>
