@@ -32,8 +32,8 @@
   }
 </style>
 
-<div id="content"  on:mouseenter={entering} on:mouseleave={leaving}>
-  <div bind:this={arrowEle} id="arrow" class="ua-brand-left-arrow" on:click={goBack} />
+<div id="content"  on:mouseenter={entering} on:mouseleave={leaving} on:click={goBack} >
+  <div bind:this={arrowEle} id="arrow" class="ua-brand-left-arrow" />
   <div id="name">
     <p bind:this={pEle}>Memory Jog Map |</p>
   </div>
