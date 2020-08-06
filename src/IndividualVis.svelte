@@ -21,10 +21,10 @@
   cookies.split(";").map(e=> {
     console.log("searching cookies",e)
     if (e.match(/gotovis=true/)){
-      // launch the map
-      map()
       // remove the cookie
       document.cookie="gotovis=false"
+      // launch the map
+      map()
     }
   })
   ;
