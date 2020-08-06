@@ -1,5 +1,7 @@
 <script>
   let goBack = () => {
+    // destroy gotovis cookie
+    document.cookie = "gotovis=false"
     location.reload();
   };
   let arrowEle,pEle

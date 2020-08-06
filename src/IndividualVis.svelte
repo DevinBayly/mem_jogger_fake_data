@@ -15,7 +15,19 @@
     new MapApplication({
       target: document.body
     });
-  };
+  }
+  // look for the gotovis ccookie, and launch map automatically if found
+  let cookies = decodeURIComponent(document.cookie)
+  cookies.split(";").map(e=> {
+    console.log("searching cookies",e)
+    if (e.match(/gotovis=true/)){
+      // launch the map
+      map()
+      // remove the cookie
+      document.cookie="gotovis=false"
+    }
+  })
+  ;
 </script>
 
 <style>
