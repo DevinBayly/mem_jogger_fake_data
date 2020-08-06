@@ -80,7 +80,10 @@
             }
             // load the missing data page
             new NotPermitted({
-              target: document.body
+              target: document.body,
+              props:{
+                reason:"User has no data to show"
+              }
             });
           });
       },
@@ -89,7 +92,10 @@
         console.log(error);
         signInHolder.remmove();
         new NotPermitted({
-          target: document.body
+          target: document.body,
+          props:{
+            reason:"Sign in error"
+          }
         });
       }
     };

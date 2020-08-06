@@ -15,7 +15,19 @@
     new MapApplication({
       target: document.body
     });
-  };
+  }
+  // look for the gotovis ccookie, and launch map automatically if found
+  let cookies = decodeURIComponent(document.cookie)
+  cookies.split(";").map(e=> {
+    console.log("searching cookies",e)
+    if (e.match(/gotovis=true/)){
+      // launch the map
+      map()
+      // remove the cookie
+      document.cookie="gotovis=false"
+    }
+  })
+  ;
 </script>
 
 <style>
@@ -31,7 +43,6 @@
     justify-content: center;
   }
   #options {
-    cursor: pointer;
     display: flex;
     justify-content: center;
     height: 100%;
@@ -58,7 +69,7 @@
       <VisOp
         imgSrc="map_background.png"
         title="Map Visualization"
-        summaryText="Explore where you've been on campus for over 15 minutes at
+        summaryText="Click the image to explore where you've been on campus for over 15 minutes at
         a time overlaid on this campus map" />
     </div>
   </div>

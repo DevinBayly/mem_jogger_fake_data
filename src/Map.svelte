@@ -8,6 +8,10 @@
   import { wifiData } from "./store.js";
   import * as d3 from "d3";
   import legend from "d3-svg-legend";
+  // make a 4 minute cookie that can take them back to the visualization page if they refresh
+  let future = new Date()
+  future.setMinutes(future.getMinutes() + 4)
+  document.cookie=`gotovis=true;expires=${JSON.stringify(future)}`
   onMount(async () => {
     console.log("loaded");
     console.log("building Json is ", buildingJSON);

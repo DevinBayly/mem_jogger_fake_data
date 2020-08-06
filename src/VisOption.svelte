@@ -15,6 +15,7 @@
 }
 #optionHolder {
     height:100%;
+    cursor:pointer;
 }
 #optionHolder img {
     z-index: 1;
