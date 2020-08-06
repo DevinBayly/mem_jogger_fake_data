@@ -112,7 +112,7 @@
         let circ = d3.select(this)
         let data = circ.data()[0]
         //get the xy, and make a new popout, push the popout to collection to remove on zoom
-        let duration = (data.duration > 60) ? `${Math.floor(data.duration / 60)} Hours, ${data.duration% 60} Minutes`: `${data.duration} Minutes`
+        let duration = (data.duration > 60) ? `${Math.floor(data.duration / 60)} Hours, ${(data.duration% 60).toPrecision(2)} Minutes`: `${data.duration.toPrecision(2)} Minutes`
         new Popout({
           target:mymap.getPanes().overlayPane,
           props:{
