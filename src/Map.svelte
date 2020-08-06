@@ -398,7 +398,7 @@
   <div id="mapid">
 
     <div id="legendHolder">
-      <p>Minutes Spent in Area</p>
+      <p>Estimated Minutes Spent in Area</p>
       <svg id="legend" />
     </div>
   </div>

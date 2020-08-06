@@ -36,6 +36,12 @@
     justify-content: center;
     height: 100%;
   }
+  #MJMexplanation p {
+    width:80%;
+    margin:0 auto;
+
+  }
+
 </style>
 
 <div id="holder" bind:this={holder}>
@@ -44,7 +50,7 @@
 
   </div>
   <div id="MJMexplanation">
-  <p>Explanation text placeHolder: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa sit tempore d</p></div>
+  <p>This Memory Jog map is designed to help you remember where you’ve been on the UA campus for the two weeks prior to your survey. Please understand that the displayed locations and other data is a “best guess”, based on UA wifi connection information from your internet-enabled devices, such as a smart watch, or mobile phone. The connection information can be ambiguous, and vary widely from one smart device to another. This tool is only to help jog your memory, and is not guaranteed to be completely accurate.</p></div>
   <div id="screencast">
   <a href="#">TODO link to screencast</a></div>
   <div id="options">
