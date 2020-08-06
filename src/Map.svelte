@@ -339,6 +339,7 @@
         "width",
         legendG.node().getBoundingClientRect().width + 20 + "px"
       );
+      d3.selectAll(".swatch").attr("stroke","black").attr("stroke-width",1)
     };
     let unsubscribeWifiData = wifiData.subscribe(data => {
       if (data != null) {
