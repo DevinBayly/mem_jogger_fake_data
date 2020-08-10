@@ -67,7 +67,7 @@
   <div id="options">
     <div id="map-side" on:click={map}>
       <VisOp
-        imgSrc="map_background.png"
+        imgSrc="map_background_updated.png"
         title="Map Visualization"
         summaryText="Click the image to explore where you've been on campus for over 15 minutes at
         a time overlaid on this campus map" />
