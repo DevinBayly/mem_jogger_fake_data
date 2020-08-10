@@ -43,7 +43,7 @@
     };
     function zoomed(e) {
       let rescalex = d3.event.transform.rescaleX(xscale);
-      xscale = rescalex
+      xscale = rescalex;
       // redraw the contents of the graph, do I also need to change the brush?
       brushXAxis.scale(rescalex);
       brushXAxisG.call(brushXAxis);
@@ -55,7 +55,8 @@
       // mostly makes it so you don't pan out of data realm
       zoom = d3
         .zoom()
-        .scaleExtent([1, 20])
+        .scaleExtent([0, 20])
+        .extent([[dims.margin, 0], [dims.width -dims.margin, dims.height]])
         .on("zoom", zoomed);
       svg = d3
         .select("#brushableHolder")
@@ -101,7 +102,7 @@
       blocksG = svg
         .append("g")
         .attr("transform", `translate(${dims.margin},${dims.margin})`);
-      
+
       // brush steps
       //define a brush event
       function brushEnd() {
@@ -186,7 +187,7 @@
       redraw();
     };
     let redraw = () => {
-// include the vertical lines at the day intervals
+      // include the vertical lines at the day intervals
       let start = xscale.domain()[0];
       // truncate start back to beginning of day
       start.setHours(0);
@@ -194,7 +195,7 @@
       start.setSeconds(0);
       let end = xscale.domain()[1];
       let current = new Date(start.getTime());
-      d3.selectAll(".vertDayMark").remove()
+      d3.selectAll(".vertDayMark").remove();
       for (let i = 0; ; i++) {
         let pathData = [
           [xscale(current), 0],
@@ -208,7 +209,7 @@
           .append("path")
           .datum(pathData)
           .attr("stroke", "red")
-          .attr("class","vertDayMark")
+          .attr("class", "vertDayMark")
           .attr("d", lineGenerator);
         current.setMinutes(current.getMinutes() + 60 * 24);
         if (current > end) {
