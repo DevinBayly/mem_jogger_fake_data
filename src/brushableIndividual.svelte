@@ -17,6 +17,7 @@
       times,
       buildings,
       devices,
+      ogXscale,
       xscale,
       zoom,
       yscale,
@@ -42,8 +43,8 @@
       return start;
     };
     function zoomed(e) {
-      let rescalex = d3.event.transform.rescaleX(xscale);
-      xscale = rescalex;
+      let rescalex = d3.event.transform.rescaleX(ogXscale);
+      xscale = rescalex
       // redraw the contents of the graph, do I also need to change the brush?
       brushXAxis.scale(rescalex);
       brushXAxisG.call(brushXAxis);
@@ -55,8 +56,7 @@
       // mostly makes it so you don't pan out of data realm
       zoom = d3
         .zoom()
-        .scaleExtent([0, 20])
-        .extent([[dims.margin, 0], [dims.width -dims.margin, dims.height]])
+        .scaleExtent([.8, 20])
         .on("zoom", zoomed);
       svg = d3
         .select("#brushableHolder")
@@ -84,6 +84,8 @@
         .scaleTime()
         .domain([d3.min(times), last_time])
         .range([0, dims.width - dims.margin]);
+        // allows us to make changes to xscale for everywhere else, except the zoom baseline
+      ogXscale = xscale.copy()
       // set the times to be the values used in the dataSelectors component
       timeSelected.update(() => [d3.min(times), last_time]);
       allDevices.set(devices);
@@ -99,6 +101,8 @@
         .attr("class", "brushAxis")
         .attr("transform", `translate(${dims.margin},${dims.margin})`)
         .call(brushXAxis);
+      // make cursor into pointer on ticks to indicate drag options
+      d3.selectAll(".tick").style("cursor","pointer")
       blocksG = svg
         .append("g")
         .attr("transform", `translate(${dims.margin},${dims.margin})`);
@@ -184,7 +188,7 @@
       gbrush = blocksG.append("g").attr("class", "gBrush");
       gbrush.call(brush);
       // call the brush constructor with .call
-      redraw();
+      redraw(xscale);
     };
     let redraw = () => {
       // include the vertical lines at the day intervals
