@@ -55,7 +55,7 @@
       // mostly makes it so you don't pan out of data realm
       zoom = d3
         .zoom()
-        .scaleExtent([1, 20])
+        .scaleExtent([0, 20])
         .on("zoom", zoomed);
       svg = d3
         .select("#brushableHolder")
