@@ -1,7 +1,6 @@
 <script>
   import DD from "./dropdown.svelte";
   import { wifiData, timeSelected } from "./store.js";
-  import CB from "./checkboxes.svelte"
   import { onMount } from "svelte";
   import * as d3 from "d3";
   let DDparent;
@@ -29,7 +28,4 @@
 <div id="selectorHolder">
 <p>Select date and time to view your locations and devices on the map:</p>
   <div id="selection"></div>
-  <div id="checkBoxes">
-  <CB></CB>
-  </div>
 </div>

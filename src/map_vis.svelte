@@ -10,7 +10,7 @@ import {wifiData } from "./store.js"
 // setup the store with the data for this application
 let visHolder
 let dims ={
-  width:window.innerWidth*.5,
+  width:window.innerWidth,
   height:100,
   margin:20
 }
@@ -37,7 +37,6 @@ onMount(()=> {
 
 <div id="secondVisHolder" >
 <div id="topViews">
-<Selectors></Selectors>
 <Brushable dims={dims}></Brushable>
 </div>
 <Map buildingJSON={buildingJSON}></Map>

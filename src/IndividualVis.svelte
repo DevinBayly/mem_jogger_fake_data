@@ -63,7 +63,7 @@
   <div id="MJMexplanation">
   <p>This Memory Jog map is designed to help you remember where you’ve been on the UA campus for the two weeks prior to your survey. Please understand that the displayed locations and other data is a “best guess”, based on UA wifi connection information from your internet-enabled devices, such as a smart watch, or mobile phone. The connection information can be ambiguous, and vary widely from one smart device to another. This tool is only to help jog your memory, and is not guaranteed to be completely accurate.</p></div>
   <div id="screencast">
-  <a href="instructions.webm">Instructional Screencast</a></div>
+  <a href="instructions.webm">"How to use" video</a></div>
   <div id="options">
     <div id="map-side" on:click={map}>
       <VisOp

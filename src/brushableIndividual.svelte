@@ -18,6 +18,7 @@
       buildings,
       devices,
       xscale,
+      zoom,
       yscale,
       brushXAxis,
       brushXAxisG,
@@ -40,12 +41,28 @@
       }
       return start;
     };
+    function zoomed(e) {
+      let rescalex = d3.event.transform.rescaleX(xscale);
+      xscale = rescalex
+      // redraw the contents of the graph, do I also need to change the brush?
+      brushXAxis.scale(rescalex);
+      brushXAxisG.call(brushXAxis);
+      redraw();
+    }
     let initialize = () => {
+      //scaleExtent controls min and max scale factor
+      // translate controls the possible translation , extent is [[x0,y0],[x1,y1]] where the first corresponds  to the top left, and the second the bottom right
+      // mostly makes it so you don't pan out of data realm
+      zoom = d3
+        .zoom()
+        .scaleExtent([1, 20])
+        .on("zoom", zoomed);
       svg = d3
         .select("#brushableHolder")
         .append("svg")
         .attr("width", dims.width)
         .attr("height", dims.height);
+      svg.call(zoom);
       times = [];
       buildings = [];
       devices = {};
@@ -84,33 +101,7 @@
       blocksG = svg
         .append("g")
         .attr("transform", `translate(${dims.margin},${dims.margin})`);
-      // include the vertical lines at the day intervals
-      let start = xscale.domain()[0];
-      // truncate start back to beginning of day
-      start.setHours(0);
-      start.setMinutes(0);
-      start.setSeconds(0);
-      let end = xscale.domain()[1];
-      let current = new Date(start.getTime());
-      for (let i = 0; ; i++) {
-        let pathData = [
-          [xscale(current), 0],
-          [xscale(current), yscale.range()[1]]
-        ];
-        let lineGenerator = d3
-          .line()
-          .x(d => d[0])
-          .y(d => d[1]);
-        blocksG
-          .append("path")
-          .datum(pathData)
-          .attr("stroke", "red")
-          .attr("d", lineGenerator);
-        current.setMinutes(current.getMinutes() + 60 * 24);
-        if (current > end) {
-          break;
-        }
-      }
+      
       // brush steps
       //define a brush event
       function brushEnd() {
@@ -195,6 +186,35 @@
       redraw();
     };
     let redraw = () => {
+// include the vertical lines at the day intervals
+      let start = xscale.domain()[0];
+      // truncate start back to beginning of day
+      start.setHours(0);
+      start.setMinutes(0);
+      start.setSeconds(0);
+      let end = xscale.domain()[1];
+      let current = new Date(start.getTime());
+      d3.selectAll(".vertDayMark").remove()
+      for (let i = 0; ; i++) {
+        let pathData = [
+          [xscale(current), 0],
+          [xscale(current), yscale.range()[1]]
+        ];
+        let lineGenerator = d3
+          .line()
+          .x(d => d[0])
+          .y(d => d[1]);
+        blocksG
+          .append("path")
+          .datum(pathData)
+          .attr("stroke", "red")
+          .attr("class","vertDayMark")
+          .attr("d", lineGenerator);
+        current.setMinutes(current.getMinutes() + 60 * 24);
+        if (current > end) {
+          break;
+        }
+      }
       // make the small blocks
       blocksG
         .selectAll("rect")
@@ -211,7 +231,12 @@
               .attr("width", d => {
                 return xscale(calcWidth(d)) - xscale(d._time);
               }),
-          update => update,
+          update =>
+            update
+              .attr("x", d => xscale(d3.isoParse(d._time)))
+              .attr("width", d => {
+                return xscale(calcWidth(d)) - xscale(d._time);
+              }),
           exit => exit.remove()
         );
       gbrush.call(brush);
