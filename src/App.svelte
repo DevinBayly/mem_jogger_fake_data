@@ -5,54 +5,147 @@
   import IV from "./IndividualVis.svelte";
   import { onMount } from "svelte";
   import { wifiData } from "./store.js";
-  import data from "./data.js"
-  let auth, signInButton, signInHolder, introText,jsonData;
+  let auth, signInButton, signInHolder, introText;
   //Teresa Portela's auth functions
-  function startApplication() {
+  function initCognitoSDK() {
     //
-    for (let e of document.querySelectorAll(".removable")) {
-      e.remove();
-    }
-    signInButton.style.color = "white";
-    signInHolder.style.position = "absolute";
-    signInHolder.style.right = "10px";
-    signInHolder.style.top = "20px";
-    signInHolder.style.margin = "0px";
-    // converted fetch from ajax code
-    jsonData =data
-    if (typeof "" === typeof jsonData) {
-      jsonData = JSON.parse(jsonData);
-    }
-    console.log("json data is ", jsonData);
-    console.log("type of json data ", typeof jsonData);
-    jsonData = jsonData.map(e => {
-      e = e.eventData;
-      return e;
-    });
-    console.log("filtered", jsonData);
-    new IV({
-      target: document.body,
-      props: {
-        reportData: jsonData
+    var authData = {
+      ClientId: "4qkpam1nldvol9i736l6fvbnu9", // Your client id here
+      AppWebDomain: "uacap-tst-domain.auth.us-west-2.amazoncognito.com", // Exclude the "https://" part.
+      TokenScopesArray: ["openid", "profile", "email", "phone"],
+      RedirectUriSignIn: "https://test.timescape.arizona.edu/index.html",
+      RedirectUriSignOut: "https://shibboleth.arizona.edu/cgi-bin/logout.pl",
+      userPoolId: "us-west-2_9zt4gLEaV"
+    };
+    var auth = new AmazonCognitoIdentity.CognitoAuth(authData);
+    // You can also set state parameter
+    // auth.setState(<state parameter>);
+    auth.userhandler = {
+      onSuccess: function(result) {
+        //remove the removable elements
+        for (let e of document.querySelectorAll(".removable")) {
+          e.remove();
+        }
+        console.log("Sign in success", auth);
+        console.log("auth is " + JSON.stringify(auth));
+        var cognitoUser = auth.getSignInUserSession();
+        var token = cognitoUser.idToken.jwtToken;
+        console.log("username is " + cognitoUser);
+        console.log("token is" + token);
+        currentSession(auth);
+        const Url =
+          "https://a11kuxg1y2.execute-api.us-west-2.amazonaws.com/tst/retrieveReport";
+        signInButton.style.color = "white";
+        signInHolder.style.position = "absolute";
+        signInHolder.style.right = "10px";
+        signInHolder.style.top = "20px";
+        signInHolder.style.margin = "0px"
+        // converted fetch from ajax code
+        fetch(Url, {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json"
+          }
+        })
+          .then(res => res.json())
+          .then(jsonData => {
+            // load the individual visualizations at this point
+            //remove everything except the signout
+            // properly format data for vis
+            // issue with data being string still? this seems intermittent,
+            if (typeof "" === typeof jsonData) {
+              jsonData = JSON.parse(jsonData);
+            }
+            console.log("json data is ", jsonData);
+            console.log("type of json data ", typeof jsonData);
+            jsonData = jsonData.map(e => {
+              e = e.eventData;
+              e._time = e._time *1000
+              return e;
+            });
+            console.log("filtered", jsonData);
+            new IV({
+              target: document.body,
+              props: {
+                reportData: jsonData
+              }
+            });
+            wifiData.set(jsonData);
+          })
+          .catch(e => {
+            console.log("error", e);
+            //remove the removable elements
+            for (let e of document.querySelectorAll(".removable")) {
+              e.remove();
+            }
+            // load the missing data page
+            new NotPermitted({
+              target: document.body,
+              props:{
+                reason:"User has no data to show"
+              }
+            });
+          });
+      },
+      onFailure: function(error) {
+        console.error("Sign in error", error);
+        console.log(error);
+        signInHolder.remmove();
+        new NotPermitted({
+          target: document.body,
+          props:{
+            reason:"Sign in error"
+          }
+        });
       }
-    });
-    wifiData.set(jsonData);
+    };
+    // The default response_type is "token", uncomment the next line will make it be "code".
+    // auth.useCodeGrantFlow();
+    return auth;
   }
-  function userButton() {
+  function userButton(auth) {
     var state = signInButton.innerHTML;
     if (state === "Sign Out") {
       signInButton.innerHTML = "Sign In";
+      auth.signOut({global:true});
     } else {
-      startApplication()
-      signInButton.innerHTML = "Sign Out"
+      auth.getSession();
     }
   }
 
+  // Operations when signed in.
+  function currentSession(auth) {
+    signInButton.innerHTML = "Sign Out";
+    var session = auth.getSignInUserSession();
+    // the actual user
+    var idToken = session.getIdToken().getJwtToken();
+    if (idToken) {
+      var payload = idToken.split(".")[1];
+      var tokenobj = JSON.parse(atob(payload));
+      var formatted = JSON.stringify(tokenobj, undefined, 2);
+      console.log("Id Token Info", formatted);
+    }
+    var accessToken = session.getAccessToken().getJwtToken();
+    if (accessToken) {
+      var payload = accessToken.split(".")[1];
+      var tokenobj = JSON.parse(atob(payload));
+      var formatted = JSON.stringify(tokenobj, undefined, 2);
+      console.log("Access Token Info", formatted);
+    }
+    var refreshToken = session.getRefreshToken().getToken();
+    if (refreshToken) {
+      var payload = refreshToken.split(".")[1];
+      var formatted = JSON.parse(atob(payload));
+      console.log("Refresh Token Info", formatted);
+    }
+  }
 
   onMount(() => {
+    auth = initCognitoSDK();
     signInButton.addEventListener("click", () => {
-      userButton();
+      userButton(auth);
     });
+    auth.parseCognitoWebResponse(window.location.href);
   });
 </script>
 
