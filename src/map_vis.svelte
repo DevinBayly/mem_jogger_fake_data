@@ -10,7 +10,7 @@ import {wifiData } from "./store.js"
 // setup the store with the data for this application
 let visHolder
 let dims ={
-  width:window.innerWidth,
+  width:window.innerWidth*.99,
   height:100,
   margin:20
 }
