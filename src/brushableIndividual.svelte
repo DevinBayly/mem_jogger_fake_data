@@ -189,6 +189,13 @@
       gbrush.call(brush);
       // call the brush constructor with .call
       redraw(xscale);
+      // force select first day
+      let firstDay = xscale.domain()[0]
+      // set the hours,minutes,seconds to 0, 
+      firstDay.setHours(0)
+      firstDay.setMinutes(0)
+      firstDay.setSeconds(0)
+      daySelected.set(firstDay)
     };
     let redraw = () => {
       // include the vertical lines at the day intervals
