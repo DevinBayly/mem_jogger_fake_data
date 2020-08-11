@@ -56,7 +56,7 @@
       // mostly makes it so you don't pan out of data realm
       zoom = d3
         .zoom()
-        .scaleExtent([.8, 20])
+        .scaleExtent([1, 20])
         .on("zoom", zoomed);
       svg = d3
         .select("#brushableHolder")
@@ -77,13 +77,15 @@
         }
       }
       let last_time = new Date(d3.max(times).getTime());
-      last_time.setSeconds(last_time.getSeconds() + 5 * 60);
+      last_time.setHours(last_time.getHours() + 24)
       // create the xscale that handles time
+      let first_time = new Date(d3.min(times).getTime())
+      first_time.setHours(first_time.getHours() - 24)
 
       xscale = d3
         .scaleTime()
-        .domain([d3.min(times), last_time])
-        .range([0, dims.width - dims.margin]);
+        .domain([first_time, last_time])
+        .range([0, dims.width - dims.margin*2]);
         // allows us to make changes to xscale for everywhere else, except the zoom baseline
       ogXscale = xscale.copy()
       // set the times to be the values used in the dataSelectors component
@@ -195,6 +197,8 @@
       firstDay.setHours(0)
       firstDay.setMinutes(0)
       firstDay.setSeconds(0)
+      // min domain is actuall 24 hours earlier than first data day, as buffer
+      firstDay.setHours(firstDay.getHours() + 24)
       daySelected.set(firstDay)
     };
     let redraw = () => {
