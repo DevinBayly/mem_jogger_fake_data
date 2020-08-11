@@ -5,7 +5,7 @@
   import Popout from "./Popout.svelte"
   import { MergeInterval } from "./algos.js";
   import { onMount } from "svelte";
-  import { wifiData } from "./store.js";
+  import { wifiData , timeRange} from "./store.js";
   import * as d3 from "d3";
   import legend from "d3-svg-legend";
   // make a 4 minute cookie that can take them back to the visualization page if they refresh
@@ -402,6 +402,7 @@
   <div id="mapid">
 
     <div id="legendHolder">
+      <p> Viewing Data from {$timeRange.start} to {$timeRange.end}</p>
       <p>Estimated Minutes Spent in Area</p>
       <svg id="legend" />
     </div>

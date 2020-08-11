@@ -8,5 +8,9 @@ export const timeBounds = writable([])
 export const daySelected = writable(0)
 export const mapData = writable(null)
 export const histogramData = writable(null)
+export const timeRange = writable({
+    start:0,
+    end:0
+})
 export let coordinator
 //

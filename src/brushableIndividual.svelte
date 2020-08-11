@@ -6,7 +6,8 @@
     timeSelected,
     allDevices,
     daySelected,
-    timeBounds
+    timeBounds,
+    timeRange
   } from "./store.js";
   // make brushable dimensions element, set this from the view that can query size of other elements on screen
   export let dims;
@@ -29,6 +30,8 @@
       t1,
       t2;
 
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const dateTimeFormat = new Intl.DateTimeFormat('en-US', options);
     let calcWidth = d => {
       let start = d3.isoParse(d._time);
       let duration = d.niceDuration.split(":").map(e => parseInt(e));
@@ -44,7 +47,7 @@
     };
     function zoomed(e) {
       let rescalex = d3.event.transform.rescaleX(ogXscale);
-      xscale = rescalex
+      xscale = rescalex;
       // redraw the contents of the graph, do I also need to change the brush?
       brushXAxis.scale(rescalex);
       brushXAxisG.call(brushXAxis);
@@ -77,17 +80,17 @@
         }
       }
       let last_time = new Date(d3.max(times).getTime());
-      last_time.setHours(last_time.getHours() + 24)
+      last_time.setHours(last_time.getHours() + 24);
       // create the xscale that handles time
-      let first_time = new Date(d3.min(times).getTime())
-      first_time.setHours(first_time.getHours() - 24)
+      let first_time = new Date(d3.min(times).getTime());
+      first_time.setHours(first_time.getHours() - 24);
 
       xscale = d3
         .scaleTime()
         .domain([first_time, last_time])
-        .range([0, dims.width - dims.margin*2]);
-        // allows us to make changes to xscale for everywhere else, except the zoom baseline
-      ogXscale = xscale.copy()
+        .range([0, dims.width - dims.margin * 2]);
+      // allows us to make changes to xscale for everywhere else, except the zoom baseline
+      ogXscale = xscale.copy();
       // set the times to be the values used in the dataSelectors component
       timeSelected.update(() => [d3.min(times), last_time]);
       allDevices.set(devices);
@@ -104,7 +107,7 @@
         .attr("transform", `translate(${dims.margin},${dims.margin})`)
         .call(brushXAxis);
       // make cursor into pointer on ticks to indicate drag options
-      d3.selectAll(".tick").style("cursor","pointer")
+      d3.selectAll(".tick").style("cursor", "pointer");
       blocksG = svg
         .append("g")
         .attr("transform", `translate(${dims.margin},${dims.margin})`);
@@ -172,6 +175,13 @@
             }
           }
         }
+        let timesOnly = timeBoundedData.map(e=> new Date(e._time))
+        let rangeextent = d3.extent(timesOnly);
+
+        timeRange.set({
+          start: dateTimeFormat.format( rangeextent[0]),
+          end: dateTimeFormat.format(rangeextent[1])
+        });
         // update the map data
         wifiData.set({ type: "brushupdate", data: timeBoundedData });
       }
@@ -192,14 +202,14 @@
       // call the brush constructor with .call
       redraw(xscale);
       // force select first day
-      let firstDay = xscale.domain()[0]
-      // set the hours,minutes,seconds to 0, 
-      firstDay.setHours(0)
-      firstDay.setMinutes(0)
-      firstDay.setSeconds(0)
+      let firstDay = xscale.domain()[0];
+      // set the hours,minutes,seconds to 0,
+      firstDay.setHours(0);
+      firstDay.setMinutes(0);
+      firstDay.setSeconds(0);
       // min domain is actuall 24 hours earlier than first data day, as buffer
-      firstDay.setHours(firstDay.getHours() + 24)
-      daySelected.set(firstDay)
+      firstDay.setHours(firstDay.getHours() + 24);
+      daySelected.set(firstDay);
     };
     let redraw = () => {
       // include the vertical lines at the day intervals
