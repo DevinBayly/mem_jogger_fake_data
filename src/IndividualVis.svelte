@@ -84,7 +84,7 @@
   <div id="horizontal">
     <div id="lhs">
       <div id="about">
-      <p id="aboutHeader">Memory Map Help</p>
+      <p id="aboutHeader"><b>Memory Map Help</b></p>
         <a
           href="#"
           title=" This Memory Jog map is designed to help you remember where
@@ -103,11 +103,13 @@
           ambiguous, and vary widely from one smart device to another. This tool
           is only to help jog your memory, and is not guaranteed to be
           completely accurate. ">
-          * About this tool
+          About this tool
         </a>
       </div>
       <div id="screencast">
-        <a href="instructions.webm">* How-to use (video)</a>
+        <a href="instructions.webm"> How-to use (video)</a>
+        
+
       </div>
     </div>
     <div id="rhs">

@@ -2,4 +2,4 @@
 
 </script>
 
-<a id="missingReport">Unidentified buildings</a>
+<p id="missingReport">Unidentified buildings</p>
