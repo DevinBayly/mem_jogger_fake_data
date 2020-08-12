@@ -54,62 +54,95 @@
     padding-bottom: 20px;
   }
   #horizontal {
-    padding-top:5px;
+    padding-top: 5px;
     display: flex;
     align-items: stretch;
-    height:100%;
+    height: 100%;
   }
   #lhs {
     flex: 1 1;
-    background: #ededed ;
+    background: #ededed;
     border-radius: 10px;
     box-shadow: 0 7px 23px 0 rgba(32, 44, 62, 0.68);
-    margin-right:5px;
+    margin-right: 5px;
   }
   #rhs {
     flex: 3 3;
   }
   #introItalic {
     font-style: italic;
-    font-size:12px;
-    color:#828181;
+    font-size: 12px;
+    color: #828181;
   }
-  #aboutHeader{
-   padding-top:10%;
-   padding-bottom:10%;
+  #lhsHeader {
+    padding-top: 20%;
   }
+ul.basic {
+all:unset;
+}
+.basic li {
+  all:unset;
+  display:list-item;
+  list-style: circle black;
+}
+li a {
+  all:unset;
+  color:blue;
+  cursor:pointer;
+}
+.sublhs {
+  display:flex;
+  padding-left:20%;
+}
+.sublhs p {
+  cursor:pointer;
+}
 </style>
 
 <div id="holder" bind:this={holder}>
   <div id="horizontal">
     <div id="lhs">
-      <div id="about">
-      <p id="aboutHeader"><b>Memory Map Help</b></p>
-        <a
-          href="#"
-          title=" This Memory Jog map is designed to help you remember where
-          you’ve been on the UA campus for the two weeks prior to your survey.
-          Please understand that the displayed locations and other data is a
-          “best guess”, based on UA wifi connection information from your
-          internet-enabled devices, such as a smart watch, or mobile phone. The
-          connection information can be ambiguous, and vary widely from one
-          smart device to another. This tool is only to help jog your memory,
-          and is not guaranteed to be completely accurate.This Memory Jog map is
-          designed to help you remember where you’ve been on the UA campus for
-          the two weeks prior to your survey. Please understand that the
-          displayed locations and other data is a “best guess”, based on UA wifi
-          connection information from your internet-enabled devices, such as a
-          smart watch, or mobile phone. The connection information can be
-          ambiguous, and vary widely from one smart device to another. This tool
-          is only to help jog your memory, and is not guaranteed to be
-          completely accurate. ">
-          About this tool
-        </a>
+      <div id="lhsHeader" class="sublhs">
+        <p id="lhsHeader">
+          <b>Memory Map Help</b>
+        </p>
       </div>
-      <div id="screencast">
-        <a href="instructions.webm"> How-to use (video)</a>
-        
 
+      <div id="about" class="sublhs">
+        <ul class="basic">
+          <li>
+
+            <p
+              href="#"
+              title=" This Memory Jog map is designed to help you remember where
+              you’ve been on the UA campus for the two weeks prior to your
+              survey. Please understand that the displayed locations and other
+              data is a “best guess”, based on UA wifi connection information
+              from your internet-enabled devices, such as a smart watch, or
+              mobile phone. The connection information can be ambiguous, and
+              vary widely from one smart device to another. This tool is only to
+              help jog your memory, and is not guaranteed to be completely
+              accurate.This Memory Jog map is designed to help you remember
+              where you’ve been on the UA campus for the two weeks prior to your
+              survey. Please understand that the displayed locations and other
+              data is a “best guess”, based on UA wifi connection information
+              from your internet-enabled devices, such as a smart watch, or
+              mobile phone. The connection information can be ambiguous, and
+              vary widely from one smart device to another. This tool is only to
+              help jog your memory, and is not guaranteed to be completely
+              accurate. ">
+              About this tool
+            </p>
+          </li>
+        </ul>
+      </div>
+
+      <div id="screencast" class="sublhs">
+        <ul class="basic">
+          <li>
+            <a href="instructions.webm">How-to use (video)</a>
+          </li>
+        </ul>
       </div>
     </div>
     <div id="rhs">
