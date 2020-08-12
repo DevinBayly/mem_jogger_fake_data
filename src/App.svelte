@@ -118,12 +118,15 @@
       if (document.querySelector("#holder")) {
         document.querySelector("#holder").remove();
       }
+      if (document.querySelector("#signin")) {
+document.querySelector("#signin").remove()
+      }
       let newURl = `${window.location}`;
       window.history.replaceState({}, "", newURl.replace(/index.*/, ""));
       new NotPermitted({
         target: document.body,
         props: {
-          reason: "user is signed out"
+          reason: "user is signed out, close Tab or reload page."
         }
       });
       //add a notpermitted page with the reason "you are logged out"
