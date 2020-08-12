@@ -118,7 +118,7 @@
       if (document.querySelector("#holder")) {
         document.querySelector("#holder").remove();
       }
-      let newURl = window.location;
+      let newURl = `${window.location}`;
       window.history.replaceState({}, "", newURl.replace(/index.*/, ""));
       new NotPermitted({
         target: document.body,
