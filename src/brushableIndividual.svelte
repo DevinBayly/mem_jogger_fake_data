@@ -323,8 +323,8 @@ p {
 }
 </style>
 <div id="info">
-<p> This map covers the time period <b>{$timeRange.start}</b> - <b>{$timeRange.end}</b></p>
-  <p><b>Instructions:</b>Drag mouse across area to select specific day and time. Hover mouse over circles to get estimated time spent in area, click and drag to move the map</p>
+<p> This map is currently showing the time period <b>{$timeRange.start}</b> - <b>{$timeRange.end}</b></p>
+  <p><b>Instructions: </b> Drag mouse across area to select specific day and time. Hover mouse over circles to get estimated time spent in area, click and drag to move the map</p>
 </div>
 <div id="brushableHolder">
 </div>

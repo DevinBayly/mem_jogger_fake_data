@@ -65,6 +65,7 @@
     border-radius: 10px;
     box-shadow: 0 7px 23px 0 rgba(32, 44, 62, 0.68);
     margin-right:5px;
+    text-align:left;
   }
   #rhs {
     flex: 3 3;
@@ -84,8 +85,9 @@
   <div id="horizontal">
     <div id="lhs">
       <div id="about">
-      <p id="aboutHeader">Memory Map Help</p>
-        <a
+      <p id="aboutHeader"><b>Memory Map Help</b></p>
+      <ul>
+        <li><a
           href="#"
           title=" This Memory Jog map is designed to help you remember where
           you’ve been on the UA campus for the two weeks prior to your survey.
@@ -103,11 +105,16 @@
           ambiguous, and vary widely from one smart device to another. This tool
           is only to help jog your memory, and is not guaranteed to be
           completely accurate. ">
-          * About this tool
-        </a>
+          About this tool
+        </a></li>
+      </ul>
       </div>
       <div id="screencast">
-        <a href="instructions.webm">* How-to use (video)</a>
+      <ul>
+        <li><a href="instructions.webm"> How-to use (video)</a></li>
+      </ul>
+        
+
       </div>
     </div>
     <div id="rhs">
