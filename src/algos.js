@@ -30,3 +30,19 @@ export let MergeInterval = (data) => {
     }
     return data
 }
+// return number of mins in nice duration
+let getMinutes = d => {
+    let duration = d.niceDuration.split(":").map(e => parseInt(e));
+    return duration[0]*60 + duration[1];
+};
+// go through and make all events that are less than 5 min durations into 5 mins.
+// thought is that not representing is worse than over representing
+export let assignThreshold = (data) => {
+    for(let e of data) {
+        let mins = getMinutes(e)
+        if (mins < 5) {
+            //force set the nice duration
+            e.niceDuration = `0:5:0`
+        }
+    }
+}
