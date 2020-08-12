@@ -65,7 +65,6 @@
     border-radius: 10px;
     box-shadow: 0 7px 23px 0 rgba(32, 44, 62, 0.68);
     margin-right:5px;
-    text-align:left;
   }
   #rhs {
     flex: 3 3;
