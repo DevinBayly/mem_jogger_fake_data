@@ -107,6 +107,21 @@
     var state = signInButton.innerHTML;
     if (state === "Sign Out") {
       signInButton.innerHTML = "Sign In";
+      // enssssure that we set up the auth page again
+      // prevent auto loading the map
+
+        document.cookie = "gotovis=false";
+        //replace the history to remove the access token even on back
+        document.querySelector("#secondVisHolder").remove()
+        let newURl = window.location
+        window.history.replaceState({},"",newURl.replace(/access.*/,""))
+        new NotPermitted({
+          target:document.body,
+          props:{
+            reason:"user is signed out"
+          }
+        })
+        //add a notpermitted page with the reason "you are logged out"
       auth.signOut({global:true});
     } else {
       auth.getSession();
