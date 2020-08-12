@@ -122,7 +122,7 @@
           }
         })
         //add a notpermitted page with the reason "you are logged out"
-      setTimeout(()=>{auth.signOut({global:true}},3000);
+      setTimeout(()=>{auth.signOut({global:true})},3000);
     } else {
       auth.getSession();
     }
