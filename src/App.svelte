@@ -5,6 +5,7 @@
   import IV from "./IndividualVis.svelte";
   import { onMount } from "svelte";
   import { wifiData } from "./store.js";
+  import {assignThreshold} from "./algos.js"
   import data from "./data.js"
   let auth, signInButton, signInHolder, introText,jsonData;
   //Teresa Portela's auth functions
@@ -29,6 +30,8 @@
       e = e.eventData;
       return e;
     });
+    // perfom threshold modification, set all < 5min events to 5mins
+    assignThreshold(jsonData)
     console.log("filtered", jsonData);
     new IV({
       target: document.body,
