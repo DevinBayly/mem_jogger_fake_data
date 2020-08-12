@@ -108,6 +108,7 @@
         .call(brushXAxis);
       // make cursor into pointer on ticks to indicate drag options
       d3.selectAll(".tick").style("cursor", "pointer");
+      d3.selectAll(".tick text").style("cursor", "pointer");
       blocksG = svg
         .append("g")
         .attr("transform", `translate(${dims.margin},${dims.margin})`);
@@ -311,6 +312,19 @@
   });
 </script>
 
+<style>
+#info {
+  display:flex;
+}
+p {
+  display:block;
+  font-size:12px;
+  width:50%;
+}
+</style>
+<div id="info">
+<p> This map covers the time period <b>{$timeRange.start}</b> - <b>{$timeRange.end}</b></p>
+  <p><b>Instructions:</b>Drag mouse across area to select specific day and time. Hover mouse over circles to get estimated time spent in area, click and drag to move the map</p>
+</div>
 <div id="brushableHolder">
-  <p>Drag To Select Time:</p>
 </div>
