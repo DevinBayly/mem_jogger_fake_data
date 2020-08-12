@@ -86,8 +86,7 @@
     <div id="lhs">
       <div id="about">
       <p id="aboutHeader"><b>Memory Map Help</b></p>
-      <ul>
-        <li><a
+        <a
           href="#"
           title=" This Memory Jog map is designed to help you remember where
           you’ve been on the UA campus for the two weeks prior to your survey.
@@ -106,13 +105,10 @@
           is only to help jog your memory, and is not guaranteed to be
           completely accurate. ">
           About this tool
-        </a></li>
-      </ul>
+        </a>
       </div>
       <div id="screencast">
-      <ul>
-        <li><a href="instructions.webm"> How-to use (video)</a></li>
-      </ul>
+        <a href="instructions.webm"> How-to use (video)</a>
         
 
       </div>
