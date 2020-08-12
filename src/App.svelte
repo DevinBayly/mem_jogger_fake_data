@@ -39,7 +39,7 @@
         signInHolder.style.position = "absolute";
         signInHolder.style.right = "10px";
         signInHolder.style.top = "20px";
-        signInHolder.style.margin = "0px"
+        signInHolder.style.margin = "0px";
         // converted fetch from ajax code
         fetch(Url, {
           headers: {
@@ -60,7 +60,7 @@
             console.log("type of json data ", typeof jsonData);
             jsonData = jsonData.map(e => {
               e = e.eventData;
-              e._time = e._time *1000
+              e._time = e._time * 1000;
               return e;
             });
             console.log("filtered", jsonData);
@@ -81,8 +81,8 @@
             // load the missing data page
             new NotPermitted({
               target: document.body,
-              props:{
-                reason:"User has no data to show"
+              props: {
+                reason: "User has no data to show"
               }
             });
           });
@@ -93,8 +93,8 @@
         signInHolder.remmove();
         new NotPermitted({
           target: document.body,
-          props:{
-            reason:"Sign in error"
+          props: {
+            reason: "Sign in error"
           }
         });
       }
@@ -110,19 +110,26 @@
       // enssssure that we set up the auth page again
       // prevent auto loading the map
 
-        document.cookie = "gotovis=false";
-        //replace the history to remove the access token even on back
-        document.querySelector("#secondVisHolder").remove()
-        let newURl = window.location
-        window.history.replaceState({},"",newURl.replace(/access.*/,""))
-        new NotPermitted({
-          target:document.body,
-          props:{
-            reason:"user is signed out"
-          }
-        })
-        //add a notpermitted page with the reason "you are logged out"
-      setTimeout(()=>{auth.signOut({global:true})},3000);
+      document.cookie = "gotovis=false";
+      //replace the history to remove the access token even on back
+      if (document.querySelector("#secondVisHolder")) {
+        document.querySelector("#secondVisHolder").remove();
+      }
+      if (document.querySelector("#holder")) {
+        document.querySelector("#holder").remove();
+      }
+      let newURl = window.location;
+      window.history.replaceState({}, "", newURl.replace(/index.*/, ""));
+      new NotPermitted({
+        target: document.body,
+        props: {
+          reason: "user is signed out"
+        }
+      });
+      //add a notpermitted page with the reason "you are logged out"
+      setTimeout(() => {
+        auth.signOut({ global: true });
+      }, 3000);
     } else {
       auth.getSession();
     }
