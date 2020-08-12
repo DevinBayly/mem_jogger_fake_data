@@ -29,14 +29,11 @@ onMount(()=> {
   width:100%;
 
 }
-#topViews {
-  display:flex;
-  justify-content: space-evenly;
-}
 </style>
 
 <div id="secondVisHolder" >
 <div id="topViews">
+
 <Brushable dims={dims}></Brushable>
 </div>
 <Map buildingJSON={buildingJSON}></Map>

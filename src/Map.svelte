@@ -402,7 +402,6 @@
   <div id="mapid">
 
     <div id="legendHolder">
-      <p> Viewing Data from {$timeRange.start} to {$timeRange.end}</p>
       <p>Estimated Minutes Spent in Area</p>
       <svg id="legend" />
     </div>
