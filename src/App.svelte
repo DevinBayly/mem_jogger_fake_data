@@ -3,6 +3,7 @@
   import UAHeader from "./UAHeader.svelte";
   import NotPermitted from "./NotPermitted.svelte";
   import IV from "./IndividualVis.svelte";
+  import {assignThreshold} from "./algos.js"
   import { onMount } from "svelte";
   import { wifiData } from "./store.js";
   let auth, signInButton, signInHolder, introText;
@@ -63,7 +64,8 @@
               e._time = e._time * 1000;
               return e;
             });
-            console.log("filtered", jsonData);
+            // bump up the times less than 5 mins
+            assignThreshold(jsonData)
             new IV({
               target: document.body,
               props: {
