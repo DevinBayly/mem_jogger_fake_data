@@ -324,7 +324,7 @@ p {
 </style>
 <div id="info">
 <p> This map is currently showing the time period <b>{$timeRange.start}</b> - <b>{$timeRange.end}</b></p>
-  <p><b>Instructions: </b> Drag mouse across the date selector below, to select a specific day. Increase the size of the selector using your mouse "zoom" feature, to select a specific time period. Double click or shift double click to zoom also. Click and drag axis tick marks to pan forward or backward in time. Below in the map, Hover the mouse pointer over circles to get estimated time spent in area. Click and drag to move the map, or zoom to increase the size.</p>
+  <p><b>Instructions: </b> To select a specific day, drag mouse across the date selector below. To select a specific time period, increase the size of the selector by double-clicking, or use mouse wheel to zoom in. Hover the mouse pointer over map circles to get estimated time spent in area.</p>
   
 </div>
 <div id="brushableHolder">
