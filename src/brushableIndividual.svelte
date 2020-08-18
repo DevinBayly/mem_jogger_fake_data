@@ -60,6 +60,7 @@
       zoom = d3
         .zoom()
         .scaleExtent([1, 20])
+        .translateExtent([[dims.margin, -Infinity], [dims.width - dims.margin, Infinity]])
         .on("zoom", zoomed);
       svg = d3
         .select("#brushableHolder")
