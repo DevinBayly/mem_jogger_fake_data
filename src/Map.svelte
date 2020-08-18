@@ -1,7 +1,6 @@
 <script>
   //
   export let buildingJSON;
-  import MissingView from "./MissingBuildingView.svelte";
   import Popout from "./Popout.svelte"
   import { MergeInterval } from "./algos.js";
   import { onMount } from "svelte";
@@ -51,7 +50,6 @@
       legendSvg,
       legendG,
       legendEle,
-      missingBuildings,
       bboxSELatLng,
       svg,
       maxRadius = 20,
@@ -149,10 +147,6 @@
     };
     let updateData = userData => {
       //
-      // remove missing buildings from legend if found
-      if (document.querySelector("#missingReport")) {
-        document.querySelector("#missingReport").remove();
-      }
       console.log("running data");
       if (userData.length == 0) {
         // just pick a graphData
@@ -163,15 +157,8 @@
         redraw();
         return;
       }
-      missingBuildings = [];
       let activeBuildings = {};
       for (let connection of userData) {
-        // testing
-        if (buildingMap[connection.apBuildingNumber] == undefined) {
-          // this is a missing building
-          // no connection of apBuildingNumber with the map we have generated
-          missingBuildings.push(connection);
-        }
         if (activeBuildings[connection.apBuildingNumber] == undefined) {
           activeBuildings[connection.apBuildingNumber] = {
             coords: buildingMap[connection.apBuildingNumber],
@@ -257,16 +244,6 @@
         if (d.lng < bbox.x.min) {
           bbox.x.min = d.lng;
         }
-      }
-      // if we have missing buildings, create missing building ahref
-      // resolved?
-      if (missingBuildings.length > 0) {
-        new MissingView({
-          target: document.querySelector("#legendHolder"),
-          props: {
-            missingBuildings
-          }
-        });
       }
       // the northwest corner is the max.y and the min.x, and the south east corner is the min.y and the max.x
       console.log("boundsbox is", bbox);
