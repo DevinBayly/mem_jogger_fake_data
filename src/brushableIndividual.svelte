@@ -25,6 +25,7 @@
       brushXAxis,
       brushXAxisG,
       blocksG,
+      currentExt,
       brush,
       gbrush,
       t1,
@@ -51,6 +52,10 @@
       // redraw the contents of the graph, do I also need to change the brush?
       brushXAxis.scale(rescalex);
       brushXAxisG.call(brushXAxis);
+      if (currentExt != undefined) {
+
+        gbrush.call(brush.move,currentExt)
+      }
       redraw();
     }
     let initialize = () => {
@@ -120,7 +125,8 @@
         const ext = d3.brushSelection(this);
         t1 = xscale.invert(ext[0]);
         t2 = xscale.invert(ext[1]);
-        // update data shown for the graph, but make it clear that this is not supposed to update the brushable area
+        currentExt = ext
+        // update  data shown for the graph, but make it clear that this is not supposed to update the brushable area
         let timeBoundedData = [];
         for (let entry of userData) {
           // 8 cases, TODO this can probably be condensed
