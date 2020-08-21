@@ -212,8 +212,8 @@
         .domain([minCircleScale.invert(5), Math.max(...durations)])
         .range([5, 20]);
       createLegend();
-      // force correct radius
-
+      // filter out the missing coordinate buildings
+      graphData = graphData.filter(building=> building.coords!=undefined)
       // update legend so values change
       console.log("graph data ", graphData);
       // calculate the nw corner of a bounding box on the points
