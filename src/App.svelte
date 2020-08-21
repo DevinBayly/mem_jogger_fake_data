@@ -84,7 +84,7 @@
             new NotPermitted({
               target: document.body,
               props: {
-                reason: "User has no data to show"
+                reason: "nodata"
               }
             });
           });
