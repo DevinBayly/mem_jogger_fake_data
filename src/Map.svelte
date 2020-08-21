@@ -217,19 +217,14 @@
       // update legend so values change
       console.log("graph data ", graphData);
       // calculate the nw corner of a bounding box on the points
-      let bbox = { x: {}, y: {} };
+      let bbox = { x: {min:-110.970542,max:-110.933505}, y: {min:32.223594,max:32.246132} };
       // calculate the bounding box on the circles that are being drawn, decide on a max radius, and use it
       for (let i = 0; i < graphData.length; i++) {
         let d = graphData[i].coords;
+        console.log('using ',d)
         if (d == undefined) {
           console.log("missing coords", d);
 
-          continue;
-        }
-        if (i == 0) {
-          // set minmax off the bat
-          bbox.x.min = bbox.x.max = d.lng;
-          bbox.y.min = bbox.y.max = d.lat;
           continue;
         }
         if (d.lat > bbox.y.max) {
