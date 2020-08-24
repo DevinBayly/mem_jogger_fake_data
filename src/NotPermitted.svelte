@@ -3,7 +3,7 @@
   let holder;
   import { onMount } from "svelte";
   onMount(() => {
-    if (Array.isArray(response)) {
+    if (reason == "nodata") {
       // create h1 and other p too, or else just add the p element
       let h2 = document.createElement("h2");
       h2.innerHTML = "Your Memory Location Results";
@@ -14,7 +14,7 @@
       holder.append(p);
     } else {
       let p = document.createElement("p");
-      p.innerHTML = response;
+      p.innerHTML = reason;
       holder.append(p);
     }
   });
