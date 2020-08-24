@@ -106,6 +106,14 @@
         .scaleBand()
         .domain(d3.range(buildings.length + 1))
         .range([0, dims.height - dims.margin]);
+      // make a k
+      let clipPath = svg.append("g")
+      .attr("transform",`translate(${dims.margin},${dims.margin})`)
+      .append("clipPath")
+      .attr("id","cliprect")
+      .append("rect")
+      .attr("width",dims.width - dims.margin*2)
+      .attr("height",dims.height)
       // make a label axis for bottom chart
       brushXAxis = d3.axisTop(xscale).tickPadding(0);
       brushXAxisG = svg
@@ -118,7 +126,8 @@
       d3.selectAll(".tick text").style("cursor", "pointer");
       blocksG = svg
         .append("g")
-        .attr("transform", `translate(${dims.margin},${dims.margin})`);
+        .attr("transform", `translate(${dims.margin},${dims.margin})`)
+        .attr("clip-path","url(#cliprect)");
 
       // brush steps
       //define a brush event
