@@ -77,7 +77,7 @@
       buildings = [];
       devices = {};
       for (let entry of userData) {
-        times.push(d3.isoParse(entry._time));
+        times.push({start:d3.isoParse(entry._time),end:calcWidth(entry)});
         if (buildings.indexOf(entry.apBuildingNumber) == -1) {
           buildings.push(entry.apBuildingNumber);
         }
@@ -85,11 +85,12 @@
           devices[entry["deviceType"]] = { checked: true };
         }
       }
-      let last_time = new Date(d3.max(times).getTime());
-      last_time.setHours(last_time.getHours() + 24);
+      // 
+      let last_time = new Date(d3.max(times.map(e=> e.end)).getTime());
+      last_time.setHours(last_time.getHours() + 1);
       // create the xscale that handles time
-      let first_time = new Date(d3.min(times).getTime());
-      first_time.setHours(first_time.getHours() - 24);
+      let first_time = new Date(d3.min(times.map(e=> e.start)).getTime());
+      first_time.setHours(first_time.getHours() - 1);
 
       xscale = d3
         .scaleTime()

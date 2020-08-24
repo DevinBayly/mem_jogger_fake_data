@@ -148,11 +148,14 @@
     let updateData = userData => {
       //
       console.log("running data");
-      if (userData.length == 0) {
+      document.querySelector("#legendInfo").innerHTML = "Estimated Minutes Spent in Area";
+      if (userData.length == 0 || window.doIt==true) {
         // just pick a graphData
         // remove the legend
-        legendG.remove();
-        document.querySelector("#legend");
+        if (legendG != undefined){
+          legendG.remove();
+        }
+        document.querySelector("#legendInfo").innerHTML = "No data found for this time interval, drag to select a different one.";
         graphData = [];
         redraw();
         return;
@@ -374,7 +377,7 @@
   <div id="mapid">
 
     <div id="legendHolder">
-      <p>Estimated Minutes Spent in Area</p>
+      <p id="legendInfo">Estimated Minutes Spent in Area</p>
       <svg id="legend" />
     </div>
   </div>
