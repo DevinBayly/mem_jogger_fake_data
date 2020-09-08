@@ -14,7 +14,7 @@
       ClientId: "4qkpam1nldvol9i736l6fvbnu9", // Your client id here
       AppWebDomain: "uacap-tst-domain.auth.us-west-2.amazoncognito.com", // Exclude the "https://" part.
       TokenScopesArray: ["openid", "profile", "email", "phone"],
-      RedirectUriSignIn: "https://test.timescape.arizona.edu/index.html",
+      RedirectUriSignIn: "https://memoryjog.timescape.arizona.edu/index.html",
       RedirectUriSignOut: "https://shibboleth.arizona.edu/cgi-bin/logout.pl",
       userPoolId: "us-west-2_9zt4gLEaV"
     };
@@ -35,7 +35,7 @@
         console.log("token is" + token);
         currentSession(auth);
         const Url =
-          "https://a11kuxg1y2.execute-api.us-west-2.amazonaws.com/tst/retrieveReport";
+          "https://0bx58bg6ib.execute-api.us-west-2.amazonaws.com/prd/retrieveReport";
         signInButton.style.color = "white";
         signInHolder.style.position = "absolute";
         signInHolder.style.right = "10px";
