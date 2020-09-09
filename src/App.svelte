@@ -1,5 +1,5 @@
 <script>
-  // change to cause build
+  // change to cause build.
   import UAHeader from "./UAHeader.svelte";
   import NotPermitted from "./NotPermitted.svelte";
   import IV from "./IndividualVis.svelte";
