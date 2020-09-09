@@ -11,12 +11,12 @@
   function initCognitoSDK() {
     //
     var authData = {
-      ClientId: "4qkpam1nldvol9i736l6fvbnu9", // Your client id here
+      ClientId: "2f1odhsgm1tron4nocm2e8adu5", // Your client id here
       AppWebDomain: "uacap-prd-domain.auth.us-west-2.amazoncognito.com/", // Exclude the "https://" part.
       TokenScopesArray: ["openid", "profile", "email", "phone"],
       RedirectUriSignIn: "https://memoryjog.timescape.arizona.edu/index.html",
       RedirectUriSignOut: "https://shibboleth.arizona.edu/cgi-bin/logout.pl",
-      userPoolId: "us-west-2_9zt4gLEaV"
+      userPoolId: "us-west-2_8ktrIgtu1"
     };
     var auth = new AmazonCognitoIdentity.CognitoAuth(authData);
     // You can also set state parameter
