@@ -12,7 +12,7 @@
     //
     var authData = {
       ClientId: "4qkpam1nldvol9i736l6fvbnu9", // Your client id here
-      AppWebDomain: "uacap-tst-domain.auth.us-west-2.amazoncognito.com", // Exclude the "https://" part.
+      AppWebDomain: "http://uacap-prd-domain.auth.us-west-2.amazoncognito.com/", // Exclude the "https://" part.
       TokenScopesArray: ["openid", "profile", "email", "phone"],
       RedirectUriSignIn: "https://test.timescape.arizona.edu/index.html",
       RedirectUriSignOut: "https://shibboleth.arizona.edu/cgi-bin/logout.pl",
