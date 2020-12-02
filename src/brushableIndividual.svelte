@@ -273,13 +273,13 @@
               )
               .attr("height", yscale.bandwidth())
               .attr("width", d => {
-                return xscale(calcWidth(d)) - xscale(d._time);
+                return xscale(calcWidth(d)) - xscale(d3.isoParse(d._time));
               }),
           update =>
             update
               .attr("x", d => xscale(d3.isoParse(d._time)))
               .attr("width", d => {
-                return xscale(calcWidth(d)) - xscale(d._time);
+                return xscale(calcWidth(d)) - xscale(d3.isoParse(d._time));
               }),
           exit => exit.remove()
         );

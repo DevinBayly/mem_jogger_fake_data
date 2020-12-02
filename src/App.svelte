@@ -8,46 +8,19 @@
   import { wifiData } from "./store.js";
   let auth, signInButton, signInHolder, introText;
   //Teresa Portela's auth functions
-  function initCognitoSDK() {
-    //
-    var authData = {
-      ClientId: "2f1odhsgm1tron4nocm2e8adu5", // Your client id here
-      AppWebDomain: "uacap-prd-domain.auth.us-west-2.amazoncognito.com/", // Exclude the "https://" part.
-      TokenScopesArray: ["openid", "profile", "email", "phone"],
-      RedirectUriSignIn: "https://memoryjog.timescape.arizona.edu/index.html",
-      RedirectUriSignOut: "https://shibboleth.arizona.edu/cgi-bin/logout.pl",
-      userPoolId: "us-west-2_8ktrIgtu1"
-    };
-    var auth = new AmazonCognitoIdentity.CognitoAuth(authData);
-    // You can also set state parameter
-    // auth.setState(<state parameter>);
-    auth.userhandler = {
-      onSuccess: function(result) {
+  function loadData() {
         //remove the removable elements
         for (let e of document.querySelectorAll(".removable")) {
           e.remove();
         }
-        console.log("Sign in success", auth);
-        console.log("auth is " + JSON.stringify(auth));
-        var cognitoUser = auth.getSignInUserSession();
-        var token = cognitoUser.idToken.jwtToken;
-        console.log("username is " + cognitoUser);
-        console.log("token is" + token);
-        currentSession(auth);
-        const Url =
-          "https://0bx58bg6ib.execute-api.us-west-2.amazonaws.com/prd/retrieveReport";
+        console.log("Sign in success");
         signInButton.style.color = "white";
         signInHolder.style.position = "absolute";
         signInHolder.style.right = "10px";
         signInHolder.style.top = "20px";
         signInHolder.style.margin = "0px";
         // converted fetch from ajax code
-        fetch(Url, {
-          headers: {
-            Authorization: token,
-            "Content-Type": "application/json"
-          }
-        })
+        fetch("my_fake_data_1606869759.json")
           .then(res => res.json())
           .then(jsonData => {
             // load the individual visualizations at this point
@@ -60,8 +33,6 @@
             console.log("json data is ", jsonData);
             console.log("type of json data ", typeof jsonData);
             jsonData = jsonData.map(e => {
-              e = e.eventData;
-              e._time = e._time * 1000;
               return e;
             });
             // bump up the times less than 5 mins
@@ -88,23 +59,7 @@
               }
             });
           });
-      },
-      onFailure: function(error) {
-        console.error("Sign in error", error);
-        console.log(error);
-        signInHolder.remmove();
-        new NotPermitted({
-          target: document.body,
-          props: {
-            reason: "Sign in error"
-          }
-        });
       }
-    };
-    // The default response_type is "token", uncomment the next line will make it be "code".
-    // auth.useCodeGrantFlow();
-    return auth;
-  }
   function userButton(auth) {
     var state = signInButton.innerHTML;
     if (state === "Sign Out") {
@@ -132,47 +87,17 @@ document.querySelector("#signin").remove()
         }
       });
       //add a notpermitted page with the reason "you are logged out"
-      setTimeout(() => {
-        auth.signOut({ global: true });
-      }, 3000);
     } else {
-      auth.getSession();
+      signInButton.innerHTML = "Sign Out";
+      loadData()
     }
   }
 
-  // Operations when signed in.
-  function currentSession(auth) {
-    signInButton.innerHTML = "Sign Out";
-    var session = auth.getSignInUserSession();
-    // the actual user
-    var idToken = session.getIdToken().getJwtToken();
-    if (idToken) {
-      var payload = idToken.split(".")[1];
-      var tokenobj = JSON.parse(atob(payload));
-      var formatted = JSON.stringify(tokenobj, undefined, 2);
-      console.log("Id Token Info", formatted);
-    }
-    var accessToken = session.getAccessToken().getJwtToken();
-    if (accessToken) {
-      var payload = accessToken.split(".")[1];
-      var tokenobj = JSON.parse(atob(payload));
-      var formatted = JSON.stringify(tokenobj, undefined, 2);
-      console.log("Access Token Info", formatted);
-    }
-    var refreshToken = session.getRefreshToken().getToken();
-    if (refreshToken) {
-      var payload = refreshToken.split(".")[1];
-      var formatted = JSON.parse(atob(payload));
-      console.log("Refresh Token Info", formatted);
-    }
-  }
 
   onMount(() => {
-    auth = initCognitoSDK();
     signInButton.addEventListener("click", () => {
-      userButton(auth);
+      userButton();
     });
-    auth.parseCognitoWebResponse(window.location.href);
   });
 </script>
 
