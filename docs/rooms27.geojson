@@ -1,0 +1,460 @@
+{
+ "displayFieldName": "Level_12.DocName",
+ "fieldAliases": {
+  "Level_12.OBJECTID": "OBJECTID",
+  "Level_12.Handle": "Handle",
+  "Level_12.DocName": "DocName",
+  "Level_12.Shape_Length": "Shape_Length",
+  "Level_12.Shape_Area": "Shape_Area",
+  "Level_12.Join_Key": "Join_Key",
+  "ROOMEXT.OBJECTID": "OBJECTID",
+  "ROOMEXT.dwgname": "dwgname",
+  "ROOMEXT.ehandle": "ehandle",
+  "ROOMEXT.Join_Key": "Join_Key",
+  "ROOMEXT.bl_id": "bl_id",
+  "ROOMEXT.fl_id": "fl_id",
+  "ROOMEXT.RM_ID": "RM_ID",
+  "ROOMEXT.RoomName": "RoomName",
+  "ROOMEXT.BldgAlpha": "BldgAlpha",
+  "ROOMEXT.BldgName": "BldgName",
+  "ROOMEXT.CollegeID": "CollegeID",
+  "ROOMEXT.CollegeName": "CollegeName",
+  "ROOMEXT.DeptID": "DeptID",
+  "ROOMEXT.DeptName": "DeptName",
+  "ROOMEXT.TypeID": "TypeID",
+  "ROOMEXT.RoomType": "RoomType",
+  "ROOMEXT.CatID": "CatID",
+  "ROOMEXT.RoomCategory": "RoomCategory",
+  "ROOMEXT.rm_use": "rm_use",
+  "ROOMEXT.RoomUse": "RoomUse",
+  "ROOMEXT.area": "area",
+  "ROOMEXT.ROOM_CLASSIFICATION": "ROOM_CLASSIFICATION",
+  "ROOMEXT.restricted": "restricted",
+  "ROOMEXT.EmpCount": "EmpCount",
+  "ROOMEXT.date_inv": "date_inv",
+  "ROOMEXT.capacity": "capacity",
+  "ROOMEXT.rm_key": "rm_key",
+  "ROOMEXT.roomKey": "roomKey"
+ },
+ "geometryType": "esriGeometryPolygon",
+ "spatialReference": {
+  "wkid": 102100,
+  "latestWkid": 3857
+ },
+ "fields": [
+  {
+   "name": "Level_12.OBJECTID",
+   "type": "esriFieldTypeOID",
+   "alias": "OBJECTID"
+  },
+  {
+   "name": "Level_12.Handle",
+   "type": "esriFieldTypeString",
+   "alias": "Handle",
+   "length": 16
+  },
+  {
+   "name": "Level_12.DocName",
+   "type": "esriFieldTypeString",
+   "alias": "DocName",
+   "length": 255
+  },
+  {
+   "name": "Level_12.Shape_Length",
+   "type": "esriFieldTypeDouble",
+   "alias": "Shape_Length"
+  },
+  {
+   "name": "Level_12.Shape_Area",
+   "type": "esriFieldTypeDouble",
+   "alias": "Shape_Area"
+  },
+  {
+   "name": "Level_12.Join_Key",
+   "type": "esriFieldTypeString",
+   "alias": "Join_Key",
+   "length": 255
+  },
+  {
+   "name": "ROOMEXT.OBJECTID",
+   "type": "esriFieldTypeInteger",
+   "alias": "OBJECTID"
+  },
+  {
+   "name": "ROOMEXT.dwgname",
+   "type": "esriFieldTypeString",
+   "alias": "dwgname",
+   "length": 132
+  },
+  {
+   "name": "ROOMEXT.ehandle",
+   "type": "esriFieldTypeString",
+   "alias": "ehandle",
+   "length": 64
+  },
+  {
+   "name": "ROOMEXT.Join_Key",
+   "type": "esriFieldTypeString",
+   "alias": "Join_Key",
+   "length": 197
+  },
+  {
+   "name": "ROOMEXT.bl_id",
+   "type": "esriFieldTypeString",
+   "alias": "bl_id",
+   "length": 8
+  },
+  {
+   "name": "ROOMEXT.fl_id",
+   "type": "esriFieldTypeString",
+   "alias": "fl_id",
+   "length": 4
+  },
+  {
+   "name": "ROOMEXT.RM_ID",
+   "type": "esriFieldTypeString",
+   "alias": "RM_ID",
+   "length": 8
+  },
+  {
+   "name": "ROOMEXT.RoomName",
+   "type": "esriFieldTypeString",
+   "alias": "RoomName",
+   "length": 16
+  },
+  {
+   "name": "ROOMEXT.BldgAlpha",
+   "type": "esriFieldTypeString",
+   "alias": "BldgAlpha",
+   "length": 8
+  },
+  {
+   "name": "ROOMEXT.BldgName",
+   "type": "esriFieldTypeString",
+   "alias": "BldgName",
+   "length": 70
+  },
+  {
+   "name": "ROOMEXT.CollegeID",
+   "type": "esriFieldTypeString",
+   "alias": "CollegeID",
+   "length": 16
+  },
+  {
+   "name": "ROOMEXT.CollegeName",
+   "type": "esriFieldTypeString",
+   "alias": "CollegeName",
+   "length": 40
+  },
+  {
+   "name": "ROOMEXT.DeptID",
+   "type": "esriFieldTypeString",
+   "alias": "DeptID",
+   "length": 16
+  },
+  {
+   "name": "ROOMEXT.DeptName",
+   "type": "esriFieldTypeString",
+   "alias": "DeptName",
+   "length": 40
+  },
+  {
+   "name": "ROOMEXT.TypeID",
+   "type": "esriFieldTypeString",
+   "alias": "TypeID",
+   "length": 10
+  },
+  {
+   "name": "ROOMEXT.RoomType",
+   "type": "esriFieldTypeString",
+   "alias": "RoomType",
+   "length": 96
+  },
+  {
+   "name": "ROOMEXT.CatID",
+   "type": "esriFieldTypeString",
+   "alias": "CatID",
+   "length": 12
+  },
+  {
+   "name": "ROOMEXT.RoomCategory",
+   "type": "esriFieldTypeString",
+   "alias": "RoomCategory",
+   "length": 96
+  },
+  {
+   "name": "ROOMEXT.rm_use",
+   "type": "esriFieldTypeString",
+   "alias": "rm_use",
+   "length": 16
+  },
+  {
+   "name": "ROOMEXT.RoomUse",
+   "type": "esriFieldTypeString",
+   "alias": "RoomUse",
+   "length": 35
+  },
+  {
+   "name": "ROOMEXT.area",
+   "type": "esriFieldTypeDouble",
+   "alias": "area"
+  },
+  {
+   "name": "ROOMEXT.ROOM_CLASSIFICATION",
+   "type": "esriFieldTypeString",
+   "alias": "ROOM_CLASSIFICATION",
+   "length": 100
+  },
+  {
+   "name": "ROOMEXT.restricted",
+   "type": "esriFieldTypeString",
+   "alias": "restricted",
+   "length": 1
+  },
+  {
+   "name": "ROOMEXT.EmpCount",
+   "type": "esriFieldTypeInteger",
+   "alias": "EmpCount"
+  },
+  {
+   "name": "ROOMEXT.date_inv",
+   "type": "esriFieldTypeString",
+   "alias": "date_inv",
+   "length": 10
+  },
+  {
+   "name": "ROOMEXT.capacity",
+   "type": "esriFieldTypeInteger",
+   "alias": "capacity"
+  },
+  {
+   "name": "ROOMEXT.rm_key",
+   "type": "esriFieldTypeInteger",
+   "alias": "rm_key"
+  },
+  {
+   "name": "ROOMEXT.roomKey",
+   "type": "esriFieldTypeString",
+   "alias": "roomKey",
+   "length": 17
+  }
+ ],
+ "features": [
+  {
+   "attributes": {
+    "Level_12.OBJECTID": 1,
+    "Level_12.Handle": "7B64A",
+    "Level_12.DocName": "77-12.dwg",
+    "Level_12.Shape_Length": 18.799385617588676,
+    "Level_12.Shape_Area": 18.134206673002655,
+    "Level_12.Join_Key": "77-12.dwg+7B64A",
+    "ROOMEXT.OBJECTID": 27332,
+    "ROOMEXT.dwgname": "77-12.dwg",
+    "ROOMEXT.ehandle": "7B64A",
+    "ROOMEXT.Join_Key": "77-12.dwg+7B64A",
+    "ROOMEXT.bl_id": "0077.00",
+    "ROOMEXT.fl_id": "12",
+    "ROOMEXT.RM_ID": "1200W",
+    "ROOMEXT.RoomName": "",
+    "ROOMEXT.BldgAlpha": "77",
+    "ROOMEXT.BldgName": "Gould-Simpson",
+    "ROOMEXT.CollegeID": "BUGN",
+    "ROOMEXT.CollegeName": "Business Affairs General",
+    "ROOMEXT.DeptID": "9956",
+    "ROOMEXT.DeptName": "Unassignable Space",
+    "ROOMEXT.TypeID": "030.00",
+    "ROOMEXT.RoomType": "Mechanical Area",
+    "ROOMEXT.CatID": "030",
+    "ROOMEXT.RoomCategory": "Mechanical Area",
+    "ROOMEXT.rm_use": "084",
+    "ROOMEXT.RoomUse": "Physical Plant",
+    "ROOMEXT.area": 179,
+    "ROOMEXT.ROOM_CLASSIFICATION": "None",
+    "ROOMEXT.restricted": "",
+    "ROOMEXT.EmpCount": null,
+    "ROOMEXT.date_inv": "1986-05-01",
+    "ROOMEXT.capacity": 0,
+    "ROOMEXT.rm_key": 27344,
+    "ROOMEXT.roomKey": "77+1200W"
+   },
+   "geometry": {
+    "rings": [
+     [
+      [
+       -12351486.943599999,
+       3793503.2845000029
+      ],
+      [
+       -12351486.9636,
+       3793496.7670999989
+      ],
+      [
+       -12351489.666099999,
+       3793496.7753999978
+      ],
+      [
+       -12351489.659499999,
+       3793498.947800003
+      ],
+      [
+       -12351489.8388,
+       3793498.9483999982
+      ],
+      [
+       -12351489.828600001,
+       3793502.5692000017
+      ],
+      [
+       -12351489.4683,
+       3793502.5680999979
+      ],
+      [
+       -12351489.4661,
+       3793503.2921999991
+      ],
+      [
+       -12351486.943599999,
+       3793503.2845000029
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "Level_12.OBJECTID": 2,
+    "Level_12.Handle": "7B64B",
+    "Level_12.DocName": "77-12.dwg",
+    "Level_12.Shape_Length": 22.736406219611723,
+    "Level_12.Shape_Area": 28.051659764632699,
+    "Level_12.Join_Key": "77-12.dwg+7B64B",
+    "ROOMEXT.OBJECTID": 27343,
+    "ROOMEXT.dwgname": "77-12.dwg",
+    "ROOMEXT.ehandle": "7B64B",
+    "ROOMEXT.Join_Key": "77-12.dwg+7B64B",
+    "ROOMEXT.bl_id": "0077.00",
+    "ROOMEXT.fl_id": "12",
+    "ROOMEXT.RM_ID": "1201",
+    "ROOMEXT.RoomName": "",
+    "ROOMEXT.BldgAlpha": "77",
+    "ROOMEXT.BldgName": "Gould-Simpson",
+    "ROOMEXT.CollegeID": "BUGN",
+    "ROOMEXT.CollegeName": "Business Affairs General",
+    "ROOMEXT.DeptID": "9956",
+    "ROOMEXT.DeptName": "Unassignable Space",
+    "ROOMEXT.TypeID": "030.00",
+    "ROOMEXT.RoomType": "Mechanical Area",
+    "ROOMEXT.CatID": "030",
+    "ROOMEXT.RoomCategory": "Mechanical Area",
+    "ROOMEXT.rm_use": "084",
+    "ROOMEXT.RoomUse": "Physical Plant",
+    "ROOMEXT.area": 259,
+    "ROOMEXT.ROOM_CLASSIFICATION": "None",
+    "ROOMEXT.restricted": "",
+    "ROOMEXT.EmpCount": null,
+    "ROOMEXT.date_inv": "1986-05-01",
+    "ROOMEXT.capacity": 0,
+    "ROOMEXT.rm_key": 27355,
+    "ROOMEXT.roomKey": "77+1201"
+   },
+   "geometry": {
+    "rings": [
+     [
+      [
+       -12351491.450199999,
+       3793502.5742999986
+      ],
+      [
+       -12351491.461300001,
+       3793498.9535000026
+      ],
+      [
+       -12351499.2086,
+       3793498.9773000032
+      ],
+      [
+       -12351499.197700001,
+       3793502.5979999974
+      ],
+      [
+       -12351491.450199999,
+       3793502.5742999986
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "attributes": {
+    "Level_12.OBJECTID": 3,
+    "Level_12.Handle": "7B6DD",
+    "Level_12.DocName": "77-12.dwg",
+    "Level_12.Shape_Length": 20.312111807183776,
+    "Level_12.Shape_Area": 20.299208509549391,
+    "Level_12.Join_Key": "77-12.dwg+7B6DD",
+    "ROOMEXT.OBJECTID": 27192,
+    "ROOMEXT.dwgname": "77-12.dwg",
+    "ROOMEXT.ehandle": "7B6DD",
+    "ROOMEXT.Join_Key": "77-12.dwg+7B6DD",
+    "ROOMEXT.bl_id": "0077.00",
+    "ROOMEXT.fl_id": "12",
+    "ROOMEXT.RM_ID": "1200SW",
+    "ROOMEXT.RoomName": "",
+    "ROOMEXT.BldgAlpha": "77",
+    "ROOMEXT.BldgName": "Gould-Simpson",
+    "ROOMEXT.CollegeID": "BUGN",
+    "ROOMEXT.CollegeName": "Business Affairs General",
+    "ROOMEXT.DeptID": "9956",
+    "ROOMEXT.DeptName": "Unassignable Space",
+    "ROOMEXT.TypeID": "030.00",
+    "ROOMEXT.RoomType": "Mechanical Area",
+    "ROOMEXT.CatID": "030",
+    "ROOMEXT.RoomCategory": "Mechanical Area",
+    "ROOMEXT.rm_use": "084",
+    "ROOMEXT.RoomUse": "Physical Plant",
+    "ROOMEXT.area": 133,
+    "ROOMEXT.ROOM_CLASSIFICATION": "None",
+    "ROOMEXT.restricted": "",
+    "ROOMEXT.EmpCount": null,
+    "ROOMEXT.date_inv": "1986-05-01",
+    "ROOMEXT.capacity": 0,
+    "ROOMEXT.rm_key": 27204,
+    "ROOMEXT.roomKey": "77+1200SW"
+   },
+   "geometry": {
+    "rings": [
+     [
+      [
+       -12351489.688200001,
+       3793489.5336999968
+      ],
+      [
+       -12351489.667199999,
+       3793496.4133000001
+      ],
+      [
+       -12351488.045699999,
+       3793496.4082999974
+      ],
+      [
+       -12351488.1031,
+       3793496.7705999985
+      ],
+      [
+       -12351486.783399999,
+       3793496.7665999979
+      ],
+      [
+       -12351486.805500001,
+       3793489.5248999968
+      ],
+      [
+       -12351489.688200001,
+       3793489.5336999968
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}
