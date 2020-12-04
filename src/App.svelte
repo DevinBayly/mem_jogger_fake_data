@@ -120,22 +120,20 @@ document.querySelector("#signin").remove()
 <UAHeader />
 <div bind:this={introText} class="removable">
   <div id="Title">
-    <h1>UA Timescape</h1>
+    <h1>Leaflet + D3</h1>
   </div>
   <div id="summary">
     <p>
-      Minimizing exposure to the novel coronavirus is key to protecting UArizona
-      students, faculty and staff from COVID-19. This site has been created to
-      support strategic efforts related to crowd density, managing campus
-      spaces, mitigating spread, and learning about risk factors.
+	Demonstration of coupling leaflet webmaps with interactive D3 visualizations
     </p>
-    <p>You will need authorization to log in to this site using your NetID.</p>
   </div>
 
 </div>
 <div id="signin" bind:this={signInHolder}>
-  <a bind:this={signInButton}>Sign In</a>
+  <a bind:this={signInButton}>Proceed</a>
 </div>
 <div id="contact" class="removable">
-  <p id="small">For questions, please contact: uacap@list.arizona.edu</p>
+  <p id="small">For questions, please contact:</p>
+  <p id="small"> baylyd@email.arizona.edu</p> 
+  <p id="small">vislab-consult@list.arizona.edu</p>
 </div>

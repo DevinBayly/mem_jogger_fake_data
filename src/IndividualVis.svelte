@@ -101,67 +101,20 @@ li a {
 
 <div id="holder" bind:this={holder}>
   <div id="horizontal">
-    <div id="lhs">
-      <div id="lhsHeader" class="sublhs">
-        <p id="lhsHeader">
-          <b>Memory Map Help</b>
-        </p>
-      </div>
-
-      <div id="about" class="sublhs">
-        <ul class="basic">
-          <li>
-
-            <p
-              href="#"
-              title=" This Memory Jog map is designed to help you remember where
-              you’ve been on the UA campus for the two weeks prior to your
-              survey. Please understand that the displayed locations and other
-              data is a “best guess”, based on UA wifi connection information
-              from your internet-enabled devices, such as a smart watch, or
-              mobile phone. The connection information can be ambiguous, and
-              vary widely from one smart device to another. This tool is only to
-              help jog your memory, and is not guaranteed to be completely
-              accurate.This Memory Jog map is designed to help you remember
-              where you’ve been on the UA campus for the two weeks prior to your
-              survey. Please understand that the displayed locations and other
-              data is a “best guess”, based on UA wifi connection information
-              from your internet-enabled devices, such as a smart watch, or
-              mobile phone. The connection information can be ambiguous, and
-              vary widely from one smart device to another. This tool is only to
-              help jog your memory, and is not guaranteed to be completely
-              accurate. ">
-              About this tool
-            </p>
-          </li>
-        </ul>
-      </div>
-
-      <div id="screencast" class="sublhs">
-        <ul class="basic">
-          <li>
-            <a href="instructions.webm">How-to use (video)</a>
-          </li>
-        </ul>
-      </div>
-    </div>
     <div id="rhs">
       <div id="title">
-        <h3>Memory Jogger</h3>
+        <h3>Campus position viewer</h3>
       </div>
       <div id="subIntro">
         <p id="introItalic">
-          Note: this tool is only intended to help Jog your memory. The
-          displayed locations are a "best guess," and aren't guaranteed to be
-          completely accurate.
+        Interact with the brushable element above the map to select data from different dates to place on the map
         </p>
       </div>
       <div id="options">
         <div id="map-side" on:click={map}>
           <VisOp
             imgSrc="map_background_updated.png"
-            summaryText="Click the image to explore where you've been on campus
-            for over 15 minutes at a time overlaid on this campus map" />
+            summaryText="Click the image to explore. You will then have the map with overlays of positions and mousable tooltips." />
         </div>
       </div>
     </div>
